@@ -1,7 +1,4 @@
 <?php
-function d2($a) {
-	var_dump($a);exit;
-}
 /**
  * The file that defines the core plugin class
  *
@@ -104,8 +101,8 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
-			$this->version = PLUGIN_NAME_VERSION;
+		if ( defined( 'WOOCOMMERCE_CORREIOS_PRODUTO_PLUGIN_NAME_VERSION' ) ) {
+			$this->version = WOOCOMMERCE_CORREIOS_PRODUTO_PLUGIN_NAME_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
