@@ -125,14 +125,33 @@
 })( jQuery );
 
 
-		/**
-		*	Função de Máscara em Javascript
-		*/
-		function mascara(t, mask) {
-			var i = t.value.length;
-			var saida = mask.substring(1,0);
-			var texto = mask.substring(i)
-			if (texto.substring(0,1) != saida){
-				t.value += texto.substring(0,1);
-			}
+/**
+*	Função auxiliar para verificar se algo é um número
+*/
+function validateNumber(event) {
+    var key = window.event ? event.keyCode : event.which;
+    if (event.keyCode === 8 || event.keyCode === 46) {
+        return true;
+    } else if ( key < 48 || key > 57 ) {
+        return false;
+    } else {
+        return true;
+    }
+};
+
+/**
+*	Função de Máscara em Javascript
+*/
+function mascara(t, mask) {
+	var digitou_agora = t.value.substr(t.value.length - 1);
+	if (!isNaN(digitou_agora)) {
+		var i = t.value.length;
+		var saida = mask.substring(1,0);
+		var texto = mask.substring(i);
+		if (texto.substring(0,1) != saida){
+			t.value += texto.substring(0,1);
 		}
+	} else {
+		t.value = t.value.slice(0, -1);
+	}
+}
