@@ -108,13 +108,12 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 		}
 		$this->plugin_name = 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto';
 
-		$this->check_woocommerce();
-
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 		add_action( 'plugins_loaded', array($this, 'escutar_solicitacoes_de_frete') );
+		add_action( 'admin_init', array($this, 'check_woocommerce') );
 	}
 
 	/**
