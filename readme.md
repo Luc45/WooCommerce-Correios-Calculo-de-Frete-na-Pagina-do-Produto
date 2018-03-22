@@ -12,3 +12,6 @@ Considerações:
 - Se o produto não tiver as dimensões ou peso especificados, o box de cálculo de frete não aparece para aquele produto.
 
 Este plugin é gratuito e open-source. Pull-requests são bem vindos!
+
+## Link no repositório oficial de plugins do WordPress:
+https://br.wordpress.org/plugins/woo-correios-calculo-de-frete-na-pagina-do-produto/
