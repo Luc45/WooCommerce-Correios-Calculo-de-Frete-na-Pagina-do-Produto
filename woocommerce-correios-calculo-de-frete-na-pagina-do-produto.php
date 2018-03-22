@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       WooCommerce Correios - Cálculo de Frete na Página do Produto
  * Description:       Habilita o cálculo de frete na página do produto.
- * Version:           1.0.0
+ * Version:           1.3.2
  * Author:            Lucas Bustamante
  * Author URI:        http://www.lucasbustamante.com.br
  * License:           GPL-2.0+

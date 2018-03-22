@@ -49,8 +49,12 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 
 = 1.0 =
 * Primeiro lançamento.
+= 1.3.2 =
+* Small fixes
 
 == Upgrade Notice ==
 
 = 1.0 =
 Primeiro lançamento.
+= 1.3.2 =
+* Small fixes
