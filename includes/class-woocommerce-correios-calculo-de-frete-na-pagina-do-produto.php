@@ -245,7 +245,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 	/**
 	 * Verifica se o WooCommerce está devidamente instalado.
 	 */
-	private function check_woocommerce() {
+	public function check_woocommerce() {
         // Verifica se o WooCommerce está ativado
         if (!is_plugin_active('woocommerce/woocommerce.php') && is_admin()) {
             wp_die("O plugin WooCommerce deve estar ativo para usar este plugin.");

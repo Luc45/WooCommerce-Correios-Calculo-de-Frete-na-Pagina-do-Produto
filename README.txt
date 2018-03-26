@@ -3,8 +3,8 @@ Contributors: lucasbustamante
 Donate link: http://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
 Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 4.3
+Tested up to: 4.9.2
+Stable tag: 4.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,18 +12,17 @@ Habilita o cálculo de frete na página do produto.
 
 == Description ==
 
-# WooCommerce Correios - Cálculo de Frete na Página do Produto
-
 Desde o lançamento da versão 3.0.0 do WooCommerce Correios em 26/06/2016, o WooCommerce Correios perdeu a capacidade de calcular o frete na página do produto.
 
 Este plugin implementa novamente esta função. Basta instalar e ativar.
 
 ![exemplo de implementação do cálculo de frete na página do produto no WooCommerce](https://www.lucasbustamante.com.br/uploads/u/2018/03/dia-15_16h46m15s_chrome.jpg)
 
-Considerações:
-- O CEP de origem será calculado a partir do CEP informado em WooCommerce -> Configurações -> CEP.
-- Será informado preço e prazo de entrega para PAC e SEDEX (sem contrato).
-- Se o produto não tiver as dimensões ou peso especificados, o box de cálculo de frete não aparece para aquele produto.
+= Considerações: =
+1. O CEP de origem será calculado a partir do CEP informado em WooCommerce -> Configurações -> CEP.
+2. Será informado preço e prazo de entrega para PAC e SEDEX (sem contrato).
+3. Se o produto não tiver as dimensões ou peso especificados, o box de cálculo de frete não aparece para aquele produto.
+4. O preço mostrado no carrinho pode ter uma alteração de cerca de 5% (estou tentando resolver isso)
 
 Este plugin é gratuito e open-source. Pull-requests são bem vindos!
 
@@ -53,6 +52,12 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Small fixes
 = 1.3.3 =
 * Changing version number
+= 1.3.5 =
+* Changing version number
+= 1.3.6 =
+* Updated WordPress compatible version number
+= 1.3.7 =
+* Fix Warning: call_user_func_array() expects parameter 1 to be a valid callback
 
 == Upgrade Notice ==
 
@@ -62,3 +67,9 @@ Primeiro lançamento.
 * Small fixes
 = 1.3.3 =
 * Changing version number
+= 1.3.5 =
+* Changing version number
+= 1.3.6 =
+* Updated WordPress compatible version number
+= 1.3.7 =
+* Fix Warning: call_user_func_array() expects parameter 1 to be a valid callback
