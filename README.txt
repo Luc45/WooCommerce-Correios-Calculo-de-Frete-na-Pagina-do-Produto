@@ -58,6 +58,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Updated WordPress compatible version number
 = 1.3.7 =
 * Fix Warning: call_user_func_array() expects parameter 1 to be a valid callback
+= 1.3.8 =
+* Fix pequena variação de preços no frete
 
 == Upgrade Notice ==
 
@@ -73,3 +75,5 @@ Primeiro lançamento.
 * Updated WordPress compatible version number
 = 1.3.7 =
 * Fix Warning: call_user_func_array() expects parameter 1 to be a valid callback
+= 1.3.8 =
+* Fix pequena variação de preços no frete
