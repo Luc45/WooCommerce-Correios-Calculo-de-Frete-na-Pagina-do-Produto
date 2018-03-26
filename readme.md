@@ -13,3 +13,6 @@ Este plugin implementa novamente esta função. Basta instalar e ativar.
 4. O preço mostrado no carrinho pode ter uma alteração de cerca de 5% (estou tentando resolver isso)
 
 Este plugin é gratuito e open-source. Pull-requests são bem vindos!
+
+## Link no repositório oficial de plugins do WordPress:
+https://br.wordpress.org/plugins/woo-correios-calculo-de-frete-na-pagina-do-produto/
