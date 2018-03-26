@@ -300,9 +300,11 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 			&&
 			isset($_POST['produto_peso']) && !empty($_POST['produto_peso'])
 			&&
+			isset($_POST['produto_peso']) && !empty($_POST['produto_preco'])
+			&&
 			isset($_POST['solicita_calculo_frete']) && wp_verify_nonce($_POST['solicita_calculo_frete'], 'solicita_calculo_frete')
 		) {
-			$this->prepara_calculo_de_frete($_POST['cep_origem'], $_POST['produto_altura'], $_POST['produto_largura'], $_POST['produto_comprimento'], $_POST['produto_peso']);
+			$this->prepara_calculo_de_frete($_POST['cep_origem'], $_POST['produto_altura'], $_POST['produto_largura'], $_POST['produto_comprimento'], $_POST['produto_peso'], $_POST['produto_preco']);
 		}
 	}
 
@@ -315,6 +317,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 	    $this->width = $product->get_width();
 	    $this->length = $product->get_length();
 	    $this->weight = $product->get_weight();
+	    $this->price = number_format($product->get_price(), 2, '.', ',');
 	    $this->id = $product->get_id();
 	}
 
@@ -322,7 +325,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 	 * Verifica se o produto têm os dados necessários para cálculo de frete
 	 */
 	public function verifica_produto() {
-	    return is_numeric($this->height) && is_numeric($this->width) && is_numeric($this->length) && is_numeric($this->weight);
+	    return is_numeric($this->height) && is_numeric($this->width) && is_numeric($this->length) && is_numeric($this->weight) && is_numeric($this->price);
 	}
 
 	/**
@@ -337,6 +340,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 				<input type="hidden" id="calculo_frete_produto_largura" value="<?php echo $this->width;?>">
 				<input type="hidden" id="calculo_frete_produto_comprimento" value="<?php echo $this->length;?>">
 				<input type="hidden" id="calculo_frete_produto_peso" value="<?php echo $this->weight;?>">
+				<input type="hidden" id="calculo_frete_produto_preco" value="<?php echo $this->price;?>">
 				<input type="hidden" id="id_produto" value="<?php echo $this->id;?>">
 				<div class="calculo-de-frete">
 					<input type="text" maxlength="9" onkeyup="return mascara(this, '#####-###');">
@@ -373,7 +377,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 	/**
 	 * Retorna um JSON com os preços do frete
 	 */
-	public function prepara_calculo_de_frete($cep_destino, $altura, $largura, $comprimento, $peso) {
+	public function prepara_calculo_de_frete($cep_destino, $altura, $largura, $comprimento, $peso, $preco) {
 		$erro = false;
 		$cep = preg_replace('/[^0-9]/', '', $cep_destino);
 		if (strlen($cep) !== 8) {
@@ -382,7 +386,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 			$result['mensagem'] = 'Por favor, informe um CEP válido.';
 			$this->retornar_json($result);
 		}
-		if (!is_numeric($altura) || !is_numeric($largura) || !is_numeric($comprimento) || !is_numeric($peso)) {
+		if (!is_numeric($altura) || !is_numeric($largura) || !is_numeric($comprimento) || !is_numeric($peso) || !is_numeric($preco)) {
 			$erro = true;
 			$result['status'] = 'erro';
 			$result['mensagem'] = 'Por favor, informe dimensões válidas.';
@@ -395,6 +399,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 			$this->produto_largura_final = $largura;
 			$this->produto_comprimento_final = $comprimento;
 			$this->produto_peso_final = $peso;
+			$this->produto_preco_final = $preco;
 			$this->id_produto = $id_produto;
 			add_action('plugins_loaded', array($this, 'calcula_frete'), 15);
 		}
@@ -444,6 +449,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 		$correiosWebService->set_width($this->produto_largura_final);
 		$correiosWebService->set_length($this->produto_comprimento_final);
 		$correiosWebService->set_weight($this->produto_peso_final);
+		$correiosWebService->set_declared_value($this->produto_preco_final);
 		$correiosWebService->set_destination_postcode($this->cep_destino);
 		$correiosWebService->set_origin_postcode(get_option( 'woocommerce_store_postcode' ));
 		$correiosWebService->set_service($code);

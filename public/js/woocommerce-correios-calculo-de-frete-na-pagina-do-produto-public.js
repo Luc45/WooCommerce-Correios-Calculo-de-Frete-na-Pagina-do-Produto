@@ -41,6 +41,7 @@
 			var largura = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_largura').val();
 			var comprimento = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_comprimento').val();
 			var peso = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_peso').val();
+			var preco = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_preco').val();
 			var id_produto = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #id_produto').val();
 			var solicita_calculo_frete = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #solicita_calculo_frete').val();
 		 	if (cep.length != 8) {
@@ -61,6 +62,7 @@
 		 			'produto_largura': largura,
 		 			'produto_comprimento': comprimento,
 		 			'produto_peso': peso,
+		 			'produto_preco': preco,
 		 			'id_produto': id_produto,
 		 			'solicita_calculo_frete': solicita_calculo_frete
 		 		},
