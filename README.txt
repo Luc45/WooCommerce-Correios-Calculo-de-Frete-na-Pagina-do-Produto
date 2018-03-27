@@ -59,6 +59,10 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Fix pequena variação de preços no frete
 = 1.3.9 =
 * Fix mensagem de erro caso WooCommerce não esteja instalado ou CEP não esteja preenchido
+= 1.4.0 =
+* Plugin adaptado para rodar também em PHP 5
+= 1.4.1 =
+* Adicionado compatibilidade com versões do WooCommerce inferiores à 3.2.0
 
 == Upgrade Notice ==
 
@@ -78,3 +82,7 @@ Primeiro lançamento.
 * Fix pequena variação de preços no frete
 = 1.3.9 =
 * Fix mensagem de erro caso WooCommerce não esteja instalado ou CEP não esteja preenchido
+= 1.4.0 =
+* Plugin adaptado para rodar também em PHP 5
+= 1.4.1 =
+* Adicionado compatibilidade com versões do WooCommerce inferiores à 3.2.0

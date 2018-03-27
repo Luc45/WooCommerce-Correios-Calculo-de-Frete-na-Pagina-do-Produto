@@ -94,7 +94,11 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 		</svg>';
 
 	// Mensagem de erros
-	protected $mensagem;
+	protected $mensagem_erro;
+	protected $mensagem_aviso;
+
+	// Cep da loja
+	protected $cep_remetente;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -112,6 +116,17 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 			$this->version = '1.0.0';
 		}
 		$this->plugin_name = 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto';
+
+		// Preenche o CEP do remetente
+		if (defined('WOO_CORREIOS_CALCULO_CEP')) {
+			$woo_correios_calculo_cep = preg_replace('/[^0-9]/', '', WOO_CORREIOS_CALCULO_CEP);
+			if (strlen($woo_correios_calculo_cep) !== 8) {
+				$this->do_fatal_error('O WOO_CORREIOS_CALCULO_CEP está num formato inválido, por favor preencha exatamente neste formato: XXXXX-XXX, substituindo os X pelo número do seu CEP.');
+			}
+			$this->cep_remetente = WOO_CORREIOS_CALCULO_CEP;
+		} else {
+			$this->cep_remetente = get_option( 'woocommerce_store_postcode' );
+		}
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -254,7 +269,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 		?>
 		    <div class="error notice">
 		        <p style="font-weight: bold;">Ops!</p>
-		        <p>O plugin Cálculo de Frete na Página do Produto foi desativado: <strong><?php echo $this->mensagem ?></strong></p>
+		        <p>O plugin Cálculo de Frete na Página do Produto foi desativado: <strong><?php echo $this->mensagem_erro ?></strong></p>
 		    </div>
 		<?php
 	}
@@ -262,10 +277,30 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 	/**
 	 * Dá uma mensagem de erro e desativa o plugin
 	 */
-	public function do_fatal_error($mensagem) {
-		$this->mensagem = $mensagem;
-    	add_action( 'admin_notices', [$this, 'exibe_mensagem_de_erro'], 10 );
+	public function do_fatal_error($mensagem_erro) {
+		$this->mensagem_erro = $mensagem_erro;
+    	add_action( 'admin_notices', array($this, 'exibe_mensagem_de_erro'), 10 );
     	deactivate_plugins( '/woocommerce-correios-calculo-de-frete-na-pagina-do-produto/woocommerce-correios-calculo-de-frete-na-pagina-do-produto.php' );
+	}
+
+	/**
+	 * Exibe uma mensagem de aviso no painel do WordPress
+	 */
+	public function exibe_mensagem_de_aviso() {
+		?>
+		    <div class="notice-warning notice">
+		        <p style="font-weight: bold;">Atenção!!</p>
+		        <p><?php echo $this->mensagem_aviso ?></p>
+		    </div>
+		<?php
+	}
+
+	/**
+	 * Dá uma mensagem de aviso
+	 */
+	public function do_warning($mensagem_aviso) {
+		$this->mensagem_aviso = $mensagem_aviso;
+    	add_action( 'admin_notices', array($this, 'exibe_mensagem_de_aviso'), 10 );
 	}
 
 	/**
@@ -276,6 +311,15 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         if (!is_plugin_active('woocommerce/woocommerce.php') && is_admin()) {
         	$this->do_fatal_error('O plugin WooCommerce deve estar ativo para usar este plugin.');
         }
+        // Verifica se a versão do WooCommerce instalada é suportada
+		if ( class_exists( 'WooCommerce' ) ) {
+			global $woocommerce;
+			if ( !version_compare( $woocommerce->version, '3.2.0', ">=" ) ) {
+				if (!defined('WOO_CORREIOS_CALCULO_CEP')) {
+					$this->do_warning('O plugin Cálculo de Frete na Página requer WooCommerce 3.2.0 ou superior. Como você está usando uma versão inferior, é necessário adicionar este código no seu wp-config.php: <strong>define("WOO_CORREIOS_CALCULO_CEP", "XXXXX-XXX");</strong> (coloque logo abaixo do WP_DEBUG)');
+				}
+			}
+		}
         // Verifica se o WooCommerce Correios está ativado
         if (!is_plugin_active('woocommerce-correios/woocommerce-correios.php') && is_admin()) {
         	$this->do_fatal_error('O plugin WooCommerce Correios deve estar ativo para usar este plugin.');
@@ -477,7 +521,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 		$correiosWebService->set_weight($this->produto_peso_final);
 		$correiosWebService->set_declared_value($this->produto_preco_final);
 		$correiosWebService->set_destination_postcode($this->cep_destino);
-		$correiosWebService->set_origin_postcode(get_option( 'woocommerce_store_postcode' ));
+		$correiosWebService->set_origin_postcode($this->cep_remetente);
 		$correiosWebService->set_service($code);
 		return $correiosWebService->get_shipping();
 	}
