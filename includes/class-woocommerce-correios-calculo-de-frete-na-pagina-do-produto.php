@@ -72,6 +72,8 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 	protected $length;
 	protected $weight;
 
+
+	// SVG Inline (Só Deus pode me julgar)
 	protected $caminhao_svg = '<?xml version="1.0" encoding="utf-8"?>
 		<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 			 viewBox="0 0 32 24.3" style="enable-background:new 0 0 32 24.3;" xml:space="preserve">
@@ -90,6 +92,9 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 				c0-0.3,0.3-0.6,0.6-0.6S6.7,2.7,6.7,3v2.6L8.2,6c0.3,0.1,0.5,0.4,0.4,0.8C8.6,7.1,8.3,7.2,8.1,7.2z"/>
 		</g>
 		</svg>';
+
+	// Mensagem de erros
+	protected $mensagem;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -243,21 +248,42 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 	}
 
 	/**
+	 * Exibe uma mensagem de erro no painel do WordPress
+	 */
+	public function exibe_mensagem_de_erro() {
+		?>
+		    <div class="error notice">
+		        <p style="font-weight: bold;">Ops!</p>
+		        <p>O plugin Cálculo de Frete na Página do Produto foi desativado: <strong><?php echo $this->mensagem ?></strong></p>
+		    </div>
+		<?php
+	}
+
+	/**
+	 * Dá uma mensagem de erro e desativa o plugin
+	 */
+	public function do_fatal_error($mensagem) {
+		$this->mensagem = $mensagem;
+    	add_action( 'admin_notices', [$this, 'exibe_mensagem_de_erro'], 10 );
+    	deactivate_plugins( '/woocommerce-correios-calculo-de-frete-na-pagina-do-produto/woocommerce-correios-calculo-de-frete-na-pagina-do-produto.php' );
+	}
+
+	/**
 	 * Verifica se o WooCommerce está devidamente instalado.
 	 */
 	public function check_woocommerce() {
         // Verifica se o WooCommerce está ativado
         if (!is_plugin_active('woocommerce/woocommerce.php') && is_admin()) {
-            wp_die("O plugin WooCommerce deve estar ativo para usar este plugin.");
+        	$this->do_fatal_error('O plugin WooCommerce deve estar ativo para usar este plugin.');
         }
         // Verifica se o WooCommerce Correios está ativado
         if (!is_plugin_active('woocommerce-correios/woocommerce-correios.php') && is_admin()) {
-            wp_die("O plugin WooCommerce Correios deve estar ativo para usar este plugin.");
+        	$this->do_fatal_error('O plugin WooCommerce Correios deve estar ativo para usar este plugin.');
         }
         $cep_origem = get_option( 'woocommerce_store_postcode' );
 		$cep_origem = preg_replace('/[^0-9]/', '', $cep_origem);
 		if (strlen($cep_origem) !== 8) {
-			wp_die("Antes de usar este plugin, configure o CEP da sua loja em WooCommerce -> Configurações.");
+			$this->do_fatal_error('Antes de usar este plugin, configure o CEP da sua loja em WooCommerce -> Configurações.');
 		}
 	}
 

@@ -57,6 +57,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Fix Warning: call_user_func_array() expects parameter 1 to be a valid callback
 = 1.3.8 =
 * Fix pequena variação de preços no frete
+= 1.3.9 =
+* Fix mensagem de erro caso WooCommerce não esteja instalado ou CEP não esteja preenchido
 
 == Upgrade Notice ==
 
@@ -74,3 +76,5 @@ Primeiro lançamento.
 * Fix Warning: call_user_func_array() expects parameter 1 to be a valid callback
 = 1.3.8 =
 * Fix pequena variação de preços no frete
+= 1.3.9 =
+* Fix mensagem de erro caso WooCommerce não esteja instalado ou CEP não esteja preenchido
