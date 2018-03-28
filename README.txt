@@ -65,6 +65,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Adicionado compatibilidade com versões do WooCommerce inferiores à 3.2.0
 = 1.5.0 =
 * Plugin re-escrito do zero para ficar mais simples
+= 1.5.1 =
+* Renomeando arquivos do plugin para ficar de acordo com o SVN do WordPress
 
 == Upgrade Notice ==
 
@@ -90,3 +92,5 @@ Primeiro lançamento.
 * Adicionado compatibilidade com versões do WooCommerce inferiores à 3.2.0
 = 1.5.0 =
 * Plugin re-escrito do zero para ficar mais simples
+= 1.5.1 =
+* Renomeando arquivos do plugin para ficar de acordo com o SVN do WordPress
