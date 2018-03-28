@@ -90,7 +90,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
     public function do_fatal_error($mensagem_erro) {
         $this->mensagem_erro = $mensagem_erro;
         add_action( 'admin_notices', array($this, 'exibe_mensagem_de_erro'), 10 );
-        deactivate_plugins( '/woo-correios-calculo-de-frete-na-pagina-do-produto/woo-correios-calculo-de-frete-na-pagina-do-produto.php' );
+        deactivate_plugins( '/woo-correios-calculo-de-frete-na-pagina-do-produto/woocorreios-calculo-de-frete-na-pagina-do-produto.php' );
     }
 
     /**
