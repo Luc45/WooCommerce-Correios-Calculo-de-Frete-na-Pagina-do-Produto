@@ -37,22 +37,15 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
     // Base URL do plugin
     protected $base_url;
 
+    // Impede o plugin de aparecer
+    protected $plugin_desabilitado = false;
+
     public function __construct() {
 
-        // Preenche o CEP do remetente
-        if (defined('WOO_CORREIOS_CALCULO_CEP')) {
-            $woo_correios_calculo_cep = preg_replace('/[^0-9]/', '', WOO_CORREIOS_CALCULO_CEP);
-            if (strlen($woo_correios_calculo_cep) !== 8) {
-                $this->do_fatal_error('O WOO_CORREIOS_CALCULO_CEP está num formato inválido, por favor preencha exatamente neste formato: XXXXX-XXX, substituindo os X pelo número do seu CEP.');
-            }
-            $this->cep_remetente = WOO_CORREIOS_CALCULO_CEP;
-        } else {
-            $this->cep_remetente = get_option( 'woocommerce_store_postcode' );
-        }
-
         // Hooks
+        add_action( 'init', array($this, 'check_woocommerce'), 10);
+        add_action( 'init', array($this, 'check_cep_remetente_valido'), 11);
         add_action( 'plugins_loaded', array($this, 'escutar_solicitacoes_de_frete') );
-        add_action( 'admin_init', array($this, 'check_woocommerce') );
         add_action( 'wp_enqueue_scripts', array($this, 'enqueue_css_js_frontend') );
 
         // Outros
@@ -90,7 +83,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
     public function do_fatal_error($mensagem_erro) {
         $this->mensagem_erro = $mensagem_erro;
         add_action( 'admin_notices', array($this, 'exibe_mensagem_de_erro'), 10 );
-        deactivate_plugins( '/woo-correios-calculo-de-frete-na-pagina-do-produto/woocorreios-calculo-de-frete-na-pagina-do-produto.php' );
+        $this->plugin_desabilitado = true;
     }
 
     /**
@@ -114,6 +107,28 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
     }
 
     /**
+     * Verifica se o CEP do remetente é válido
+     */
+    public function check_cep_remetente_valido() {
+        // Preferência para o CEP definido na constante
+        if (defined('WOO_CORREIOS_CALCULO_CEP')) {
+            $check_cep_constant = preg_replace('/[^0-9]/', '', WOO_CORREIOS_CALCULO_CEP);
+            if (strlen($check_cep_constant) !== 8) {
+                $this->do_fatal_error('O WOO_CORREIOS_CALCULO_CEP está num formato inválido, por favor preencha exatamente neste formato: XXXXX-XXX, substituindo os X pelo número do seu CEP.');
+            }
+            $this->cep_remetente = WOO_CORREIOS_CALCULO_CEP;
+        } else {
+            // DEFINED não está definido.
+            $check_cep_options = preg_replace('/[^0-9]/', '', get_option( 'woocommerce_store_postcode' ));
+            // Verifica se o CEP informado é válido
+            if (strlen($check_cep_options) !== 8) {
+                $this->do_fatal_error('Antes de usar este plugin, configure o CEP da sua loja em WooCommerce -> Configurações. Verifique também que o cep informado tenha 8 dígitos numéricos: XXXXXXXX ou XXXXX-XXX');
+            }
+            $this->cep_remetente = get_option( 'woocommerce_store_postcode' );
+        }
+    }
+
+    /**
      * Verifica se o WooCommerce está devidamente instalado.
      */
     public function check_woocommerce() {
@@ -134,11 +149,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         if (!is_plugin_active('woocommerce-correios/woocommerce-correios.php') && is_admin()) {
             $this->do_fatal_error('O plugin WooCommerce Correios deve estar ativo para usar este plugin.');
         }
-        $cep_origem = get_option( 'woocommerce_store_postcode' );
-        $cep_origem = preg_replace('/[^0-9]/', '', $cep_origem);
-        if (strlen($cep_origem) !== 8) {
-            $this->do_fatal_error('Antes de usar este plugin, configure o CEP da sua loja em WooCommerce -> Configurações.');
-        }
+
     }
 
     /**
@@ -155,7 +166,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         global $product;
         if (is_product()) {
             $this->prepara_produto($product);
-            if ($this->verifica_produto()) {
+            if ($this->verifica_produto() && !$this->plugin_desabilitado) {
                 add_action('woocommerce_before_add_to_cart_button', array($this, 'add_calculo_de_frete'), 11);
             }
         }
@@ -320,6 +331,9 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
      */
     protected function get_valor_frete_wc_correios($code) {
         $correiosWebService = new WC_Correios_Webservice;
+
+        // Preenche a variável $this->cep_remetente
+        $this->check_cep_remetente_valido();
 
         $correiosWebService->set_height($this->produto_altura_final);
         $correiosWebService->set_width($this->produto_largura_final);

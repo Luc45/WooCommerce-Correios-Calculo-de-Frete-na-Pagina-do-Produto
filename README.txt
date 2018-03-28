@@ -69,6 +69,10 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Renomeando arquivos do plugin para ficar de acordo com o SVN do WordPress
 = 1.5.2 =
 * Small fix SVN
+= 1.5.3 =
+* Small fix SVN
+= 1.5.4 =
+* Melhoria no sistema de verificação de dependências e outros
 
 == Upgrade Notice ==
 
@@ -98,3 +102,7 @@ Primeiro lançamento.
 * Renomeando arquivos do plugin para ficar de acordo com o SVN do WordPress
 = 1.5.2 =
 * Small fix SVN
+= 1.5.3 =
+* Small fix SVN
+= 1.5.4 =
+* Melhoria no sistema de verificação de dependências e outros
