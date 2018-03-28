@@ -73,6 +73,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Small fix SVN
 = 1.5.4 =
 * Melhoria no sistema de verificação de dependências e outros
+= 1.5.5 =
+* Adicionado verificação de segurança para is_plugin_active()
 
 == Upgrade Notice ==
 
@@ -106,3 +108,5 @@ Primeiro lançamento.
 * Small fix SVN
 = 1.5.4 =
 * Melhoria no sistema de verificação de dependências e outros
+= 1.5.5 =
+* Adicionado verificação de segurança para is_plugin_active()

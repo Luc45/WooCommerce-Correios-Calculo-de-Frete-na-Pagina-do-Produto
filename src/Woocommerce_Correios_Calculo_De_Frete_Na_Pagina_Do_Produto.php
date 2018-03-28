@@ -132,6 +132,10 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
      * Verifica se o WooCommerce está devidamente instalado.
      */
     public function check_woocommerce() {
+        // Como esta função está sendo chamada no hook init, isso não deve ser necessário, mas vamos adicionar essa verificação de segurança de toda forma
+        if( !function_exists('is_plugin_active') ) {
+            include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        }
         // Verifica se o WooCommerce está ativado
         if (!is_plugin_active('woocommerce/woocommerce.php') && is_admin()) {
             $this->do_fatal_error('O plugin WooCommerce deve estar ativo para usar este plugin.');
