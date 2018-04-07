@@ -77,6 +77,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Adicionado verificação de segurança para is_plugin_active()
 = 1.5.6 =
 * Corrigido "Valor" of undefined para alguns usuários
+= 1.5.7 =
+* Desabilita o "Valor Declarado" para produtos com preço menor que 18.50
 
 == Upgrade Notice ==
 
@@ -114,3 +116,5 @@ Primeiro lançamento.
 * Adicionado verificação de segurança para is_plugin_active()
 = 1.5.6 =
 * Corrigido "Valor" of undefined para alguns usuários
+= 1.5.7 =
+* Desabilita o "Valor Declarado" para produtos com preço menor que 18.50

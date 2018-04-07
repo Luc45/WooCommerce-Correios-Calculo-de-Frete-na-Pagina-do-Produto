@@ -360,7 +360,9 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         $correiosWebService->set_width($this->produto_largura_final);
         $correiosWebService->set_length($this->produto_comprimento_final);
         $correiosWebService->set_weight($this->produto_peso_final);
-        $correiosWebService->set_declared_value($this->produto_preco_final);
+        if ($this->produto_preco_final > 18.50) {
+            $correiosWebService->set_declared_value($this->produto_preco_final);
+        }
         $correiosWebService->set_destination_postcode($this->cep_destino);
         $correiosWebService->set_origin_postcode($this->cep_remetente);
         $correiosWebService->set_service($code);
