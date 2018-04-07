@@ -75,6 +75,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Melhoria no sistema de verificação de dependências e outros
 = 1.5.5 =
 * Adicionado verificação de segurança para is_plugin_active()
+= 1.5.6 =
+* Corrigido "Valor" of undefined para alguns usuários
 
 == Upgrade Notice ==
 
@@ -110,3 +112,5 @@ Primeiro lançamento.
 * Melhoria no sistema de verificação de dependências e outros
 = 1.5.5 =
 * Adicionado verificação de segurança para is_plugin_active()
+= 1.5.6 =
+* Corrigido "Valor" of undefined para alguns usuários

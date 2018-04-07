@@ -56,17 +56,20 @@
 		 		url: url,
 		 		type:"POST",
 		 		data: {
-		 			'action': 'escutar_solicitacoes_de_frete',
-		 			'cep_origem': cep,
-		 			'produto_altura': altura,
-		 			'produto_largura': largura,
-		 			'produto_comprimento': comprimento,
-		 			'produto_peso': peso,
-		 			'produto_preco': preco,
-		 			'id_produto': id_produto,
-		 			'solicita_calculo_frete': solicita_calculo_frete
+		 			'action' : 'escutar_solicitacoes_de_frete',
+		 			'data' : {
+			 			'cep_origem': cep,
+			 			'produto_altura': altura,
+			 			'produto_largura': largura,
+			 			'produto_comprimento': comprimento,
+			 			'produto_peso': peso,
+			 			'produto_preco': preco,
+			 			'id_produto': id_produto,
+			 			'solicita_calculo_frete': solicita_calculo_frete
+		 			}
 		 		},
 		 		success:function(result) {
+		 			console.log(result);
 		 			if (result.status == 'erro') {
 		 				alert(result.status.mensagem);
 		 				return false;

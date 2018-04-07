@@ -45,8 +45,11 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         // Hooks
         add_action( 'init', array($this, 'check_woocommerce'), 10);
         add_action( 'init', array($this, 'check_cep_remetente_valido'), 11);
-        add_action( 'plugins_loaded', array($this, 'escutar_solicitacoes_de_frete') );
         add_action( 'wp_enqueue_scripts', array($this, 'enqueue_css_js_frontend') );
+
+        // Escuta AJAX de usuários logados e deslogados
+        add_action( 'wp_ajax_escutar_solicitacoes_de_frete', array($this, 'escutar_solicitacoes_de_frete') );
+        add_action( 'wp_ajax_nopriv_escutar_solicitacoes_de_frete', array($this, 'escutar_solicitacoes_de_frete') );
 
         // Outros
         $this->base_path = WOO_CORREIOS_CALCULO_CEP_BASE_PATH;
@@ -181,22 +184,35 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
      */
     public function escutar_solicitacoes_de_frete() {
         // Verifica se estamos solicitando um cálculo de frete...
+        if (!empty($_POST['data']) && is_array($_POST['data']) && count($_POST['data']) == 8) {
+            $cep_origem = $_POST['data']['cep_origem'];
+            $produto_altura = $_POST['data']['produto_altura'];
+            $produto_largura = $_POST['data']['produto_largura'];
+            $produto_comprimento = $_POST['data']['produto_comprimento'];
+            $produto_peso = $_POST['data']['produto_peso'];
+            $produto_preco = $_POST['data']['produto_preco'];
+            $solicita_calculo_frete = $_POST['data']['solicita_calculo_frete'];
+        } else {
+            die('Erro no "escutar_solicitacoes_de_frete", verifique o que está vindo em $_POST["data"]');
+        }
         if (
-            isset($_POST['cep_origem']) && !empty($_POST['cep_origem'])
+            !empty($cep_origem)
             &&
-            isset($_POST['produto_altura']) && !empty($_POST['produto_altura'])
+            !empty($produto_altura)
             &&
-            isset($_POST['produto_largura']) && !empty($_POST['produto_largura'])
+            !empty($produto_largura)
             &&
-            isset($_POST['produto_comprimento']) && !empty($_POST['produto_comprimento'])
+            !empty($produto_comprimento)
             &&
-            isset($_POST['produto_peso']) && !empty($_POST['produto_peso'])
+            !empty($produto_peso)
             &&
-            isset($_POST['produto_peso']) && !empty($_POST['produto_preco'])
-            &&
-            isset($_POST['solicita_calculo_frete']) && wp_verify_nonce($_POST['solicita_calculo_frete'], 'solicita_calculo_frete')
+            !empty($produto_preco)
         ) {
-            $this->prepara_calculo_de_frete($_POST['cep_origem'], $_POST['produto_altura'], $_POST['produto_largura'], $_POST['produto_comprimento'], $_POST['produto_peso'], $_POST['produto_preco']);
+            if (wp_verify_nonce($solicita_calculo_frete, 'solicita_calculo_frete')) {
+                $this->prepara_calculo_de_frete($cep_origem, $produto_altura, $produto_largura, $produto_comprimento, $produto_peso, $produto_preco);
+            } else {
+                die('NONCE FAIL');
+            }
         }
     }
 
@@ -227,7 +243,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         ?>
             <div id="woocommerce-correios-calculo-de-frete-na-pagina-do-produto">
                 <?php wp_nonce_field('solicita_calculo_frete', 'solicita_calculo_frete'); ?>
-                <input type="hidden" id="calculo_frete_endpoint_url" value="<?php echo get_site_url();?>">
+                <input type="hidden" id="calculo_frete_endpoint_url" value="<?php echo admin_url( 'admin-ajax.php' ); ?>">
                 <input type="hidden" id="calculo_frete_produto_altura" value="<?php echo $this->height;?>">
                 <input type="hidden" id="calculo_frete_produto_largura" value="<?php echo $this->width;?>">
                 <input type="hidden" id="calculo_frete_produto_comprimento" value="<?php echo $this->length;?>">
@@ -293,7 +309,8 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
             $this->produto_peso_final = $peso;
             $this->produto_preco_final = $preco;
             $this->id_produto = $id_produto;
-            add_action('plugins_loaded', array($this, 'calcula_frete'), 15);
+            
+            $this->calcula_frete();
         }
     }
 
