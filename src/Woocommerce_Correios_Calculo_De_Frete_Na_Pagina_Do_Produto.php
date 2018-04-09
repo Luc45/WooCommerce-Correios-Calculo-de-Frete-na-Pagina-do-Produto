@@ -173,7 +173,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         global $product;
         if (is_product()) {
             $this->prepara_produto($product);
-            if ($this->verifica_produto() && !$this->plugin_desabilitado) {
+            if (!$this->plugin_desabilitado) {
                 add_action('woocommerce_before_add_to_cart_button', array($this, 'add_calculo_de_frete'), 11);
             }
         }
@@ -233,53 +233,149 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
      * Verifica se o produto têm os dados necessários para cálculo de frete
      */
     public function verifica_produto() {
-        return is_numeric($this->height) && is_numeric($this->width) && is_numeric($this->length) && is_numeric($this->weight) && is_numeric($this->price);
+        // Vamos ver se todos os fatores estão de acordo com as regras dos correios.
+        $erros = [];
+
+        // Altura
+        if (!is_numeric($this->height)) {
+            $erros[] = 'Altura inválida ou não preenchida.';
+        } elseif (is_numeric($this->height) && $this->height > 105) {
+            $erros[] = 'Altura ('.$this->height.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
+        } elseif (is_numeric($this->height) && $this->height < 2) {
+            $erros[] = 'Altura ('.$this->height.'cm) é menor do que o mínimo permitido pelos correios (2cm).';
+        }
+
+        // Largura
+        if (!is_numeric($this->width)) {
+            $erros[] = 'Largura inválida ou não preenchida.';
+        } elseif (is_numeric($this->width) && $this->width > 105) {
+            $erros[] = 'Largura ('.$this->width.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
+        } elseif (is_numeric($this->width) && $this->width < 11) {
+            $erros[] = 'Largura ('.$this->width.'cm) é menor do que o mínimo permitido pelos correios (11cm).';
+        }
+
+        // Comprimento
+        if (!is_numeric($this->length)) {
+            $erros[] = 'Comprimento inválido ou não preenchido.';
+        } elseif (is_numeric($this->length) && $this->length > 105) {
+            $erros[] = 'Comprimento ('.$this->length.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
+        } elseif (is_numeric($this->length) && $this->length < 11) {
+            $erros[] = 'Comprimento ('.$this->length.'cm) é menor do que o mínimo permitido pelos correios (16cm).';
+        }
+
+        // Soma da Altura, Largura e Comprimento
+        if (is_numeric($this->height) && is_numeric($this->width) && is_numeric($this->length)) {
+            if ($this->height + $this->width + $this->length > 200) {
+                $erros[] = 'Soma da Altura, Largura e Comprimento ('.$this->height + $this->width + $this->length.') ultrapassa o máximo permitido pelos correios (200cm).';
+            }
+        }
+
+        // Peso
+        if (!is_numeric($this->weight)) {
+            $erros[] = 'Peso inválido ou não preenchido.';
+        } elseif (is_numeric($this->weight) && $this->weight > 30) {
+            $erros[] = 'Peso ('.$this->weight.'kg) ultrapassa o máximo permitido pelos correios (30kg).';
+        }
+
+        // Preço
+        if (!is_numeric($this->price)) {
+            $erros[] = 'Preço inválido ou não preenchido.';
+        } elseif (is_numeric($this->price) && $this->price > 10000) {
+            $erros[] = 'Preço ('.$this->price.'kg) ultrapassa o máximo permitido pelos correios (R$ 10.000,00).';
+        }
+        
+        if (!empty($erros)) {
+            $string = '';
+            foreach ($erros as $erro) {
+                $string .= '<li>'.$erro.'</li>';
+            }
+            return $string;
+        }
+        return true;
     }
 
     /**
     * Adiciona o HTML do cálculo de frete na página do produto
     */
     public function add_calculo_de_frete() {
-        ?>
-            <div id="woocommerce-correios-calculo-de-frete-na-pagina-do-produto">
-                <?php wp_nonce_field('solicita_calculo_frete', 'solicita_calculo_frete'); ?>
-                <input type="hidden" id="calculo_frete_endpoint_url" value="<?php echo admin_url( 'admin-ajax.php' ); ?>">
-                <input type="hidden" id="calculo_frete_produto_altura" value="<?php echo $this->height;?>">
-                <input type="hidden" id="calculo_frete_produto_largura" value="<?php echo $this->width;?>">
-                <input type="hidden" id="calculo_frete_produto_comprimento" value="<?php echo $this->length;?>">
-                <input type="hidden" id="calculo_frete_produto_peso" value="<?php echo $this->weight;?>">
-                <input type="hidden" id="calculo_frete_produto_preco" value="<?php echo $this->price;?>">
-                <input type="hidden" id="id_produto" value="<?php echo $this->id;?>">
-                <div class="calculo-de-frete">
-                    <input type="text" maxlength="9" onkeyup="return mascara(this, '#####-###');">
-                    <div id="calcular-frete"><?php echo $this->caminhao_svg;?> Calcular Frete</div>
-                    <div id="calcular-frete-loader"></div>
+        $verifica_produto = $this->verifica_produto();
+        if ($verifica_produto !== true && current_user_can('manage_options')):
+            echo '<div id="woocommerce-correios-calculo-de-frete-na-pagina-do-produto-incompleto">
+                <p>Atenção</p>
+                <p>O cálculo de frete na página do produto não está sendo exibido aqui pois:</p>
+                <p><ul>'.$verifica_produto.'</ul></p>
+                <p>(Não se preocupe, somente administradores do site vêem esta mensagem)</p>
+            </div>';
+        else:
+            ?>
+                <?php echo $this->inline_js(); ?>
+                <div id="woocommerce-correios-calculo-de-frete-na-pagina-do-produto">
+                    <?php wp_nonce_field('solicita_calculo_frete', 'solicita_calculo_frete'); ?>
+                    <input type="hidden" id="calculo_frete_endpoint_url" value="<?php echo admin_url( 'admin-ajax.php' ); ?>">
+                    <input type="hidden" id="calculo_frete_produto_altura" value="<?php echo $this->height;?>">
+                    <input type="hidden" id="calculo_frete_produto_largura" value="<?php echo $this->width;?>">
+                    <input type="hidden" id="calculo_frete_produto_comprimento" value="<?php echo $this->length;?>">
+                    <input type="hidden" id="calculo_frete_produto_peso" value="<?php echo $this->weight;?>">
+                    <input type="hidden" id="calculo_frete_produto_preco" value="<?php echo $this->price;?>">
+                    <input type="hidden" id="id_produto" value="<?php echo $this->id;?>">
+                    <div class="calculo-de-frete">
+                        <input type="text" maxlength="9" onkeyup="return mascara(this, '#####-###');">
+                        <div id="calcular-frete"><?php echo $this->caminhao_svg;?> Calcular Frete</div>
+                        <div id="calcular-frete-loader"></div>
+                    </div>
+                    <div class="resultado-frete">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>Forma de envio</td>
+                                    <td>Custo estimado</td>
+                                    <td>Entrega estimada</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-formaenvio="pac">
+                                    <td>PAC</td>
+                                    <td>R$ <span data-custo></span></td>
+                                    <td>Em até <span data-entrega></span> dias</td>
+                                </tr>
+                                <tr data-formaenvio="sedex">
+                                    <td>SEDEX</td>
+                                    <td>R$ <span data-custo></span></td>
+                                    <td>Em até <span data-entrega></span> dias</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="resultado-frete">
-                    <table>
-                        <thead>
-                            <tr>
-                                <td>Forma de envio</td>
-                                <td>Custo estimado</td>
-                                <td>Entrega estimada</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr data-formaenvio="pac">
-                                <td>PAC</td>
-                                <td>R$ <span data-custo></span></td>
-                                <td>Em até <span data-entrega></span> dias</td>
-                            </tr>
-                            <tr data-formaenvio="sedex">
-                                <td>SEDEX</td>
-                                <td>R$ <span data-custo></span></td>
-                                <td>Em até <span data-entrega></span> dias</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        <?php
+            <?php
+        endif;
+    }
+
+    /**
+    *   Função para exibir javascript inline
+    */
+    private function inline_js() {
+        echo '
+            <script>
+                /**
+                *   Função de Máscara em Javascript
+                */
+                function mascara(t, mask) {
+                    console.log(\'rodando máscara\');
+                    var digitou_agora = t.value.substr(t.value.length - 1);
+                    if (!isNaN(digitou_agora)) {
+                        var i = t.value.length;
+                        var saida = mask.substring(1,0);
+                        var texto = mask.substring(i);
+                        if (texto.substring(0,1) != saida){
+                            t.value += texto.substring(0,1);
+                        }
+                    } else {
+                        t.value = t.value.slice(0, -1);
+                    }
+                }
+            </script>
+        ';
     }
 
     /**

@@ -12,10 +12,3 @@ function CalculoFretePaginaProdutoAutoLoader($className) {
         require_once __DIR__.'/src/'.$className.'.php';
     }
 }
-
-/**
- * Debug function
- */
-//function dd($a) {
-//    var_dump($a);exit;
-//}

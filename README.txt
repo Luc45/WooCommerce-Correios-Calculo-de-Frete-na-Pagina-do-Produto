@@ -79,6 +79,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Corrigido "Valor" of undefined para alguns usuários
 = 1.5.7 =
 * Desabilita o "Valor Declarado" para produtos com preço menor que 18.50
+= 1.6.0 =
+* Feedback para o admin caso o cálculo não seja exibido pois o produto está com algum dado inválido/incompleto. Calculando valor declarado para produtos variáveis. Fix máscara de CEP que não funcionava às vezes.
 
 == Upgrade Notice ==
 
@@ -118,3 +120,5 @@ Primeiro lançamento.
 * Corrigido "Valor" of undefined para alguns usuários
 = 1.5.7 =
 * Desabilita o "Valor Declarado" para produtos com preço menor que 18.50
+= 1.6.0 =
+* Feedback para o admin caso o cálculo não seja exibido pois o produto está com algum dado inválido/incompleto. Calculando valor declarado para produtos variáveis. Fix máscara de CEP que não funcionava às vezes.

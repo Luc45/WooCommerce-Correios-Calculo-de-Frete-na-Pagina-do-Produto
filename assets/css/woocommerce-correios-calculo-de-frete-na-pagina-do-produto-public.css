@@ -42,6 +42,14 @@ div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto table {
 div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto td {
     padding: 5px 10px;
 }
+div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto-incompleto {
+    background: #ffc4c4;
+    color: #771c1c;
+    padding: 25px;
+    margin: 25px 0;
+    border: 1px solid #771c1c;
+    border-radius: 5px;
+}
 #calcular-frete-loader {
     display: none;
     border: 8px solid #03a9f4;
