@@ -225,7 +225,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         $this->width = $product->get_width();
         $this->length = $product->get_length();
         $this->weight = $product->get_weight();
-        $this->price = number_format($product->get_price(), 2, '.', ',');
+        $this->price = $product->get_price();
         $this->id = $product->get_id();
     }
 
@@ -279,11 +279,11 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 
         // Preço
         if (!is_numeric($this->price)) {
-            $erros[] = 'Preço inválido ou não preenchido.';
+            $erros[] = 'Preço inválido ou não preenchido. ('.$this->price.')';
         } elseif (is_numeric($this->price) && $this->price > 10000) {
-            $erros[] = 'Preço ('.$this->price.'kg) ultrapassa o máximo permitido pelos correios (R$ 10.000,00).';
+            $erros[] = 'Preço (R$ '.$this->price.') ultrapassa o máximo permitido pelos correios (R$ 10.000,00).';
         }
-        
+
         if (!empty($erros)) {
             $string = '';
             foreach ($erros as $erro) {
@@ -299,13 +299,16 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
     */
     public function add_calculo_de_frete() {
         $verifica_produto = $this->verifica_produto();
-        if ($verifica_produto !== true && current_user_can('manage_options')):
-            echo '<div id="woocommerce-correios-calculo-de-frete-na-pagina-do-produto-incompleto">
-                <p>Atenção</p>
-                <p>O cálculo de frete na página do produto não está sendo exibido aqui pois:</p>
-                <p><ul>'.$verifica_produto.'</ul></p>
-                <p>(Não se preocupe, somente administradores do site vêem esta mensagem)</p>
-            </div>';
+        if ($verifica_produto !== true):
+            // Se o produto estiver com dimensões inválidas, exibe uma mensagem apenas para o admin
+            if (current_user_can('manage_options')):
+                echo '<div id="woocommerce-correios-calculo-de-frete-na-pagina-do-produto-incompleto">
+                    <p>Atenção</p>
+                    <p>O cálculo de frete na página do produto não está sendo exibido aqui pois:</p>
+                    <p><ul>'.$verifica_produto.'</ul></p>
+                    <p>(Não se preocupe, somente administradores do site vêem esta mensagem)</p>
+                </div>';
+            endif;
         else:
             ?>
                 <?php echo $this->inline_js(); ?>
@@ -319,7 +322,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
                     <input type="hidden" id="calculo_frete_produto_preco" value="<?php echo $this->price;?>">
                     <input type="hidden" id="id_produto" value="<?php echo $this->id;?>">
                     <div class="calculo-de-frete">
-                        <input type="text" maxlength="9" onkeyup="return mascara(this, '#####-###');">
+                        <input type="text" maxlength="9" onkeydown="return mascara(this, '#####-###');">
                         <div id="calcular-frete"><?php echo $this->caminhao_svg;?> Calcular Frete</div>
                         <div id="calcular-frete-loader"></div>
                     </div>
@@ -405,7 +408,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
             $this->produto_peso_final = $peso;
             $this->produto_preco_final = $preco;
             $this->id_produto = $id_produto;
-            
+
             $this->calcula_frete();
         }
     }
