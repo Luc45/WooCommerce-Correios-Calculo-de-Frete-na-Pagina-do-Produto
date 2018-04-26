@@ -69,19 +69,32 @@
 		 			}
 		 		},
 		 		success:function(result) {
-		 			console.log(result);
-		 			if (result.status == 'erro') {
-		 				alert(result.status.mensagem);
+		 			// Teve erro?
+		 			if (result.status.erro) {
+		 				alert(result.status.erro);
+						esconderLoader();
+						esconderTabela();
+						resetarTabela();
 		 				return false;
 		 			}
-		 			var tabela = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete table');
-		 			var pac = tabela.find('[data-formaenvio="pac"]');
-		 			pac.find('[data-custo]').text(result.pac.Valor);
-		 			pac.find('[data-entrega]').text(result.pac.PrazoEntrega);
-
-		 			var sedex = tabela.find('[data-formaenvio="sedex"]');
-		 			sedex.find('[data-custo]').text(result.sedex.Valor);
-		 			sedex.find('[data-entrega]').text(result.sedex.PrazoEntrega);
+		 			var row = '';
+		 			// Tem Retirar no local?
+		 			if (result.retirar_no_local == 'sim') {
+	 					row += '<tr>\
+		                            <td>Retirar no local</td>\
+		                            <td>Grátis</td>\
+		                            <td>-</td>\
+	                        	</tr>';
+                    }
+		 			// Outros métodos de envio
+	 				$(result.shipping_methods).each(function(i, v) {
+	 					row += '<tr>\
+		                            <td>'+v.Nome+'</td>\
+		                            <td>R$ '+v.Valor+'</td>\
+		                            <td>Em até '+v.PrazoEntrega+' dias</td>\
+	                        	</tr>';
+	 				});
+		 			$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete table tbody').append(row);
 		 			esconderLoader();
 		 			exibirTabela();
 		 			console.log(result);
@@ -113,18 +126,13 @@
 
 		 // Reseta a tabela
 		 function resetarTabela() {
- 			var tabela = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete table');
- 			var pac = tabela.find('[data-formaenvio="pac"]');
- 			pac.find('[data-custo]').text('XX');
- 			pac.find('[data-entrega]').text('XX');
-
- 			var sedex = tabela.find('[data-formaenvio="sedex"]');
- 			sedex.find('[data-custo]').text('XX');
- 			sedex.find('[data-entrega]').text('XX');
+		 	$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete table tbody').html('');
 		 }
 
 		// Altera o preço do produto caso uma nova variação seja selecionada
 		$( ".single_variation_wrap" ).on( "show_variation", function ( event, variation ) {
+			resetarTabela();
+			esconderTabela();
 			$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_preco').val(variation.display_price.toFixed(2));
 		} );
 

@@ -40,6 +40,9 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
     // Impede o plugin de aparecer
     protected $plugin_desabilitado = false;
 
+    // Lista de métodos de entrega
+    protected $metodos_de_entrega;
+
     public function __construct() {
 
         // Hooks
@@ -185,7 +188,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
     public function escutar_solicitacoes_de_frete() {
         // Verifica se estamos solicitando um cálculo de frete...
         if (!empty($_POST['data']) && is_array($_POST['data']) && count($_POST['data']) == 8) {
-            $cep_origem = $_POST['data']['cep_origem'];
+            $cep_destinatario = $_POST['data']['cep_origem'];
             $produto_altura = $_POST['data']['produto_altura'];
             $produto_largura = $_POST['data']['produto_largura'];
             $produto_comprimento = $_POST['data']['produto_comprimento'];
@@ -206,13 +209,15 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
             &&
             !empty($produto_peso)
             &&
-            !empty($produto_preco)
+            !empty($produto_preco) || $produto_preco == '0'
         ) {
             if (wp_verify_nonce($solicita_calculo_frete, 'solicita_calculo_frete')) {
-                $this->prepara_calculo_de_frete($cep_origem, $produto_altura, $produto_largura, $produto_comprimento, $produto_peso, $produto_preco);
+                $this->prepara_calculo_de_frete($cep_destinatario, $produto_altura, $produto_largura, $produto_comprimento, $produto_peso, $produto_preco);
             } else {
                 die('NONCE FAIL');
             }
+        } else {
+            die('Algum valor está vazio.');
         }
     }
 
@@ -284,6 +289,11 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
             $erros[] = 'Preço (R$ '.$this->price.') ultrapassa o máximo permitido pelos correios (R$ 10.000,00).';
         }
 
+        // Tem algum erro nos métodos de entrega?
+        if (!empty($this->metodos_de_entrega['erro'])) {
+            $erros[] = $this->metodos_de_entrega['erro'];
+        }
+
         if (!empty($erros)) {
             $string = '';
             foreach ($erros as $erro) {
@@ -336,16 +346,6 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-formaenvio="pac">
-                                    <td>PAC</td>
-                                    <td>R$ <span data-custo></span></td>
-                                    <td>Em até <span data-entrega></span> dias</td>
-                                </tr>
-                                <tr data-formaenvio="sedex">
-                                    <td>SEDEX</td>
-                                    <td>R$ <span data-custo></span></td>
-                                    <td>Em até <span data-entrega></span> dias</td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -409,6 +409,12 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
             $this->produto_preco_final = $preco;
             $this->id_produto = $id_produto;
 
+            /**
+            *   Pega a lista de Shipping Zones cadastradas no WooCommerce e preenche o array de métodos de entrega
+            */
+            $shipping_zones = new WCCCFPP_Shipping_Zones();
+            $this->metodos_de_entrega = $shipping_zones->get_metodos_de_entrega($cep_destino);
+
             $this->calcula_frete();
         }
     }
@@ -426,30 +432,29 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
      */
     public function calcula_frete() {
         $output = array();
-        if ( class_exists('WC_Correios') ) {
-            // Carrega o WC_Correios
-            $correios = new WC_Correios;
-            $correios->init();
 
-            // Pega os valores propriamente dito
-            $pac = (array) $this->get_valor_frete_wc_correios('04510'); // PAC
-            $sedex = (array) $this->get_valor_frete_wc_correios('04014'); // SEDEX
+        $output['retirar_no_local'] = $this->metodos_de_entrega['retirar_no_local'];
 
-            // Faz algumas verificações de segurança pra garantir que está tudo certo
-            $pac = $this->verifica_retorno_wc_correios($pac);
-            $sedex = $this->verifica_retorno_wc_correios($sedex);
-
-            // Preenche o Output
-            $output['pac'] = $pac;
-            $output['sedex'] = $sedex;
+        // Pega os valores propriamente dito
+        foreach ($this->metodos_de_entrega['shipping_methods'] as $key => $metodo_de_entrega) {
+            if ($metodo_de_entrega['cep_destinatario_permitido']) {
+                $output['shipping_methods'][$key] = (array) $this->get_valor_frete_wc_correios($metodo_de_entrega);
+                $output['shipping_methods'][$key] = $this->verifica_retorno_wc_correios($output['shipping_methods'][$key]);
+                $output['shipping_methods'][$key]['Nome'] = $metodo_de_entrega['title'];
+            }
         }
+
+        if (empty($output['shipping_methods']) && $output['retirar_no_local'] == false) {
+            $output['status']['erro'] = 'Desculpe, não existem métodos de entrega disponiveis para esta região.';
+        }
+
         $this->retornar_json($output);
     }
 
     /**
      * Envia os dados para a API do WC_Correios e retorna o valor do frete
      */
-    protected function get_valor_frete_wc_correios($code) {
+    protected function get_valor_frete_wc_correios($metodo_de_entrega) {
         $correiosWebService = new WC_Correios_Webservice;
 
         // Preenche a variável $this->cep_remetente
@@ -459,13 +464,54 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         $correiosWebService->set_width($this->produto_largura_final);
         $correiosWebService->set_length($this->produto_comprimento_final);
         $correiosWebService->set_weight($this->produto_peso_final);
-        if ($this->produto_preco_final > 18.50) {
-            $correiosWebService->set_declared_value($this->produto_preco_final);
-        }
         $correiosWebService->set_destination_postcode($this->cep_destino);
         $correiosWebService->set_origin_postcode($this->cep_remetente);
-        $correiosWebService->set_service($code);
-        return $correiosWebService->get_shipping();
+        $correiosWebService->set_service($metodo_de_entrega['code']);
+
+        // Agora vamos setar os condicionais...
+
+        // Valor declarado
+        if ($metodo_de_entrega['declare_value'] && $this->produto_preco_final > 18.50) {
+            $correiosWebService->set_declared_value($this->produto_preco_final);
+        }
+
+        // Mão Propria
+        if (!empty($metodo_de_entrega['own_hands'])) {
+            $correiosWebService->set_own_hands = 'S';
+        }
+
+        // Peso extra
+        if (!empty($metodo_de_entrega['extra_weight'])) {
+            $correiosWebService->set_extra_weight($metodo_de_entrega['extra_weight']);
+        }
+
+        // Aviso de recebimento
+        if (!empty($metodo_de_entrega['receipt_notice'])) {
+            $correiosWebService->set_receipt_notice('S');
+        }
+
+        $entrega = $correiosWebService->get_shipping();
+
+        // Dias adicionais
+        if (!empty($metodo_de_entrega['additional_time'])) {
+            $entrega->PrazoEntrega = $entrega->PrazoEntrega + $metodo_de_entrega['additional_time'];
+            $entrega->DiasAdicionais = $metodo_de_entrega['additional_time'];
+        }
+
+        // Custo adicional
+        if (!empty($metodo_de_entrega['fee'])) {
+            if (substr($metodo_de_entrega['fee'], -1) == '%') {
+                $porcentagem = preg_replace('/[^0-9]/', '', $metodo_de_entrega['fee']);
+                $entrega->Valor = ($entrega->Valor/100)*(100+$porcentagem);
+                $entrega->Fee = $porcentagem.'%';
+            } else {
+                $entrega->Valor = $entrega->Valor + $metodo_de_entrega['fee'];
+                $entrega->Fee = $metodo_de_entrega['fee'];
+            }
+        }
+
+        return $entrega;
+
     }
 
     /**

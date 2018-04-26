@@ -83,6 +83,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Feedback para o admin caso o cálculo não seja exibido pois o produto está com algum dado inválido/incompleto. Calculando valor declarado para produtos variáveis. Fix máscara de CEP que não funcionava às vezes.
 = 1.6.1 =
 * Fix produtos acima 1000 reais. Fix cálculo sendo exibido para usuário mesmo quando algum dado estava inválido/incompleto.
+= 2.0.0 =
+* Integração com métodos de entrega do WooCommerce. Agora o plugin irá reconhecer configurações de envio do WooCommerce como dias adicionais, sobretaxas de envio, além de identificar o CEP do destinatário por país, estado ou faixa de CEP.
 
 == Upgrade Notice ==
 
@@ -126,3 +128,5 @@ Primeiro lançamento.
 * Feedback para o admin caso o cálculo não seja exibido pois o produto está com algum dado inválido/incompleto. Calculando valor declarado para produtos variáveis. Fix máscara de CEP que não funcionava às vezes.
 = 1.6.1 =
 * Fix produtos acima 1000 reais. Fix cálculo sendo exibido para usuário mesmo quando algum dado estava inválido/incompleto.
+= 2.0.0 =
+* Integração com métodos de entrega do WooCommerce. Agora o plugin irá reconhecer configurações de envio do WooCommerce como dias adicionais, sobretaxas de envio, além de identificar o CEP do destinatário por país, estado ou faixa de CEP.
