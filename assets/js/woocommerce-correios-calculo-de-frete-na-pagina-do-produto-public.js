@@ -68,14 +68,41 @@
 			 			'solicita_calculo_frete': solicita_calculo_frete
 		 			}
 		 		},
+		 		error:function(jqXHR, exception) {
+			       var msg = '';
+			        if (jqXHR.status === 0) {
+			            msg = 'Not connect.\n Verify Network.';
+			        } else if (jqXHR.status == 404) {
+			            msg = 'Requested page not found. [404]';
+			        } else if (jqXHR.status == 500) {
+			            msg = 'Internal Server Error [500].';
+			        } else if (exception === 'parsererror') {
+			            msg = 'Requested JSON parse failed.';
+			        } else if (exception === 'timeout') {
+			            msg = 'Time out error.';
+			        } else if (exception === 'abort') {
+			            msg = 'Ajax request aborted.';
+			        } else {
+			            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+			        }
+			        console.log(msg);
+					esconderLoader();
+					esconderTabela();
+					resetarTabela();
+					return false;
+		 		},
 		 		success:function(result) {
 		 			// Teve erro?
-		 			if (result.status.erro) {
-		 				alert(result.status.erro);
+		 			if (result.erro) {
+		 				alert(result.erro);
 						esconderLoader();
 						esconderTabela();
 						resetarTabela();
 		 				return false;
+		 			}
+		 			// Teve notices?
+		 			if (result.notices) {
+		 				console.log(result.notices);
 		 			}
 		 			var row = '';
 		 			// Tem Retirar no local?
@@ -87,13 +114,15 @@
 	                        	</tr>';
                     }
 		 			// Outros métodos de envio
-	 				$(result.shipping_methods).each(function(i, v) {
-	 					row += '<tr>\
-		                            <td>'+v.Nome+'</td>\
-		                            <td>R$ '+v.Valor+'</td>\
-		                            <td>Em até '+v.PrazoEntrega+' dias</td>\
-	                        	</tr>';
-	 				});
+		 			if (result.shipping_methods) {
+		 				$(result.shipping_methods).each(function(i, v) {
+		 					row += '<tr>\
+			                            <td>'+v.Nome+'</td>\
+			                            <td>R$ '+v.Valor+'</td>\
+			                            <td>Em até '+v.PrazoEntrega+' dias</td>\
+		                        	</tr>';
+		 				});
+		 			}
 		 			$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete table tbody').append(row);
 		 			esconderLoader();
 		 			exibirTabela();

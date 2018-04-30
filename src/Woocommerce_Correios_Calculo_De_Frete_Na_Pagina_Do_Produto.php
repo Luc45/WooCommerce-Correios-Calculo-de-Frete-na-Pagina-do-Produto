@@ -199,7 +199,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
             die('Erro no "escutar_solicitacoes_de_frete", verifique o que está vindo em $_POST["data"]');
         }
         if (
-            !empty($cep_origem)
+            !empty($cep_destinatario)
             &&
             !empty($produto_altura)
             &&

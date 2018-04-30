@@ -43,16 +43,31 @@ class WCCCFPP_Shipping_Zones {
                         break;
                     case 'postcode':
                         // CEPs Específicos
-                        // É um wildcard?
-                        if (strpos($zone_location->code, '*') !== false) {
-                            $before_wildcard = strtok($zone_location->code, '*');
-                            $tamanho_string = strlen($before_wildcard);
-                            if (substr($cep_destinatario, 0, $tamanho_string) == $before_wildcard) {
-                                $cep_destinatario_permitido = true;
+                        // Vamos dar um foreach nas linhas
+                        $ceps = explode(PHP_EOL, $zone_location->code);
+                        foreach ($ceps as $key => $value) {
+                            // É um range?
+                            if (strpos($zone_location->code, '...') !== false) {
+                                $ranges = explode('...', $value);
+                                if (count($ranges) == 2 && is_numeric($ranges[0]) && is_numeric($ranges[1])) {
+                                    if ($cep_destinatario > (int) $ranges[0] && $cep_destinatario < (int) $ranges[1]) {
+                                        $cep_destinatario_permitido = true;
+                                    }
+                                }
+                                continue;
                             }
-                        } else {
-                            if ($cep_destinatario == $zone_location->code) {
-                                $cep_destinatario_permitido = true;
+                            // É um wildcard?
+                            if (strpos($zone_location->code, '*') !== false) {
+                                $before_wildcard = strtok($zone_location->code, '*');
+                                $tamanho_string = strlen($before_wildcard);
+                                if (substr($cep_destinatario, 0, $tamanho_string) == $before_wildcard) {
+                                    $cep_destinatario_permitido = true;
+                                }
+                            } else {
+                                // É uma comparação literal?
+                                if ($cep_destinatario == $zone_location->code) {
+                                    $cep_destinatario_permitido = true;
+                                }
                             }
                         }
                         break;
