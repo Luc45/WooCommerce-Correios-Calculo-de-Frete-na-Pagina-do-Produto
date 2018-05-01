@@ -87,6 +87,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Integração com métodos de entrega do WooCommerce. Agora o plugin irá reconhecer configurações de envio do WooCommerce como dias adicionais, sobretaxas de envio, além de identificar o CEP do destinatário por país, estado ou faixa de CEP.
 = 2.0.1 =
 * Fix bug na versão 2.0.0 que impedia o cálculo de frete em alguns casos.
+= 2.1.0 =
+* Fix minor bug que impedia o cálculo de frete em alguns casos.
 
 == Upgrade Notice ==
 
@@ -134,3 +136,5 @@ Primeiro lançamento.
 * Integração com métodos de entrega do WooCommerce. Agora o plugin irá reconhecer configurações de envio do WooCommerce como dias adicionais, sobretaxas de envio, além de identificar o CEP do destinatário por país, estado ou faixa de CEP.
 = 2.0.1 =
 * Fix bug na versão 2.0.0 que impedia o cálculo de frete em alguns casos.
+= 2.1.0 =
+* Fix minor bug que impedia o cálculo de frete em alguns casos.
