@@ -412,7 +412,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
             /**
             *   Pega a lista de Shipping Zones cadastradas no WooCommerce e preenche o array de métodos de entrega
             */
-            $shipping_zones = new WCCCFPP_Shipping_Zones();
+            $shipping_zones = new CFPP_Shipping_Zones();
             $this->metodos_de_entrega = $shipping_zones->get_metodos_de_entrega($cep_destino);
 
             $this->calcula_frete();

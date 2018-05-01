@@ -1,6 +1,6 @@
 <?php
 
-class WCCCFPP_Shipping_Zones {
+class CFPP_Shipping_Zones {
 
     /**
     *   Retorna a lista de métodos de entrega
