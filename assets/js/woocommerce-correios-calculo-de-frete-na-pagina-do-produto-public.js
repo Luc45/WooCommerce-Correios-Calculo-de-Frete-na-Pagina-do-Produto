@@ -113,6 +113,16 @@
 		                            <td>-</td>\
 	                        	</tr>';
                     }
+
+		 			// Tem Frete Grátis?
+		 			if (result.frete_gratis == 'sim') {
+	 					row += '<tr>\
+		                            <td>Frete Grátis</td>\
+		                            <td>Grátis</td>\
+		                            <td>-</td>\
+	                        	</tr>';
+                    }
+
 		 			// Outros métodos de envio
 		 			if (result.shipping_methods) {
 		 				$(result.shipping_methods).each(function(i, v) {

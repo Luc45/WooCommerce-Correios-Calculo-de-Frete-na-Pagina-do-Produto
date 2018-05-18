@@ -5,7 +5,7 @@ class CFPP_Shipping_Zones {
     /**
     *   Retorna a lista de métodos de entrega
     */
-    public function get_metodos_de_entrega($cep_destinatario) {
+    public function get_metodos_de_entrega($cep_destinatario, $preco_produto) {
 
         $metodos_de_entrega = [];
 
@@ -20,6 +20,7 @@ class CFPP_Shipping_Zones {
         // Inicia o array de métodos de entrega desta delivery_zone
         $metodos_de_entrega = [
             'retirar_no_local' => '',
+            'frete_gratis' => '',
             'shipping_methods' => []
         ];
 
@@ -86,6 +87,7 @@ class CFPP_Shipping_Zones {
 
             // Loop pelas shipping zones
             foreach ($delivery_zone['shipping_methods'] as $key => $shipping_method) {
+
                 // Retirar no local?
                 if (get_class($shipping_method) == 'WC_Shipping_Local_Pickup') {
                     if ($shipping_method->enabled == 'yes' && $cep_destinatario_permitido) {
@@ -93,6 +95,22 @@ class CFPP_Shipping_Zones {
                     }
                     continue;
                 }
+
+                // Frete Grátis
+                if (get_class($shipping_method) == 'WC_Shipping_Free_Shipping') {
+                    if ($cep_destinatario_permitido) {
+                        if (empty($shipping_method->requires)) {
+                            $metodos_de_entrega['frete_gratis'] = 'sim';
+                        } elseif ($shipping_method->requires == 'min_amount' || $shipping_method->requires == 'either') {
+                            if (is_numeric($shipping_method->min_amount)) {
+                                if ($preco_produto > $shipping_method->min_amount) {
+                                    $metodos_de_entrega['frete_gratis'] = 'sim';
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // Queremos sobrescrever os métodos permitidos?
                 if (defined('WOO_CORREIOS_SHIPPING_METHODS') && is_array(WOO_CORREIOS_SHIPPING_METHODS)) {
                     $allowed_shipping_methods = WOO_CORREIOS_SHIPPING_METHODS;

@@ -413,7 +413,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
             *   Pega a lista de Shipping Zones cadastradas no WooCommerce e preenche o array de métodos de entrega
             */
             $shipping_zones = new CFPP_Shipping_Zones();
-            $this->metodos_de_entrega = $shipping_zones->get_metodos_de_entrega($cep_destino);
+            $this->metodos_de_entrega = $shipping_zones->get_metodos_de_entrega($cep_destino, $preco);
 
             $this->calcula_frete();
         }
@@ -434,6 +434,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         $output = array();
 
         $output['retirar_no_local'] = $this->metodos_de_entrega['retirar_no_local'];
+        $output['frete_gratis'] = $this->metodos_de_entrega['frete_gratis'];
 
         // Pega os valores propriamente dito
         foreach ($this->metodos_de_entrega['shipping_methods'] as $key => $metodo_de_entrega) {
