@@ -472,7 +472,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         // Agora vamos setar os condicionais...
 
         // Valor declarado
-        if ($metodo_de_entrega['declare_value'] && $this->produto_preco_final > 18.50) {
+        if ('yes' == $metodo_de_entrega['declare_value'] && $this->produto_preco_final > 18.50) {
             $correiosWebService->set_declared_value($this->produto_preco_final);
         }
 
@@ -487,7 +487,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         }
 
         // Aviso de recebimento
-        if (!empty($metodo_de_entrega['receipt_notice'])) {
+        if ('yes' == $metodo_de_entrega['receipt_notice']) {
             $correiosWebService->set_receipt_notice('S');
         }
 
