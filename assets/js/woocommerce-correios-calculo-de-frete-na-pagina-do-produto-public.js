@@ -106,18 +106,18 @@
 		 			}
 		 			var row = '';
 		 			// Tem Retirar no local?
-		 			if (result.retirar_no_local == 'sim') {
+		 			if (result.retirar_no_local.length) {
 	 					row += '<tr>\
-		                            <td>Retirar no local</td>\
+		                            <td>'+ result.retirar_no_local +'</td>\
 		                            <td>Grátis</td>\
 		                            <td>-</td>\
 	                        	</tr>';
+						
                     }
-
 		 			// Tem Frete Grátis?
-		 			if (result.frete_gratis == 'sim') {
+		 			if (result.frete_gratis.length) {
 	 					row += '<tr>\
-		                            <td>Frete Grátis</td>\
+		                            <td>'+ result.frete_gratis +'</td>\
 		                            <td>Grátis</td>\
 		                            <td>-</td>\
 	                        	</tr>';
