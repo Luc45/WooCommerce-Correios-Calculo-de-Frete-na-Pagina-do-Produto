@@ -91,7 +91,7 @@ class CFPP_Shipping_Zones {
                 // Retirar no local?
                 if (get_class($shipping_method) == 'WC_Shipping_Local_Pickup') {
                     if ($shipping_method->enabled == 'yes' && $cep_destinatario_permitido) {
-                        $metodos_de_entrega['retirar_no_local'] = 'sim';
+                        $metodos_de_entrega['retirar_no_local'] = $shipping_method->title;
                     }
                     continue;
                 }
@@ -100,11 +100,11 @@ class CFPP_Shipping_Zones {
                 if (get_class($shipping_method) == 'WC_Shipping_Free_Shipping') {
                     if ($cep_destinatario_permitido) {
                         if (empty($shipping_method->requires)) {
-                            $metodos_de_entrega['frete_gratis'] = 'sim';
+                            $metodos_de_entrega['frete_gratis'] = $shipping_method->title;
                         } elseif ($shipping_method->requires == 'min_amount' || $shipping_method->requires == 'either') {
                             if (is_numeric($shipping_method->min_amount)) {
                                 if ($preco_produto > $shipping_method->min_amount) {
-                                    $metodos_de_entrega['frete_gratis'] = 'sim';
+                                    $metodos_de_entrega['frete_gratis'] = $shipping_method->title;
                                 }
                             }
                         }
