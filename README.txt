@@ -18,7 +18,7 @@ Desde o lançamento da versão 3.0.0 do WooCommerce Correios em 26/06/2016, não
 
 = Considerações: =
 1. O CEP de origem será calculado a partir do CEP informado em WooCommerce -> Configurações -> CEP.
-2. Será informado preço e prazo de entrega para PAC e SEDEX (sem contrato).
+2. Será informado preço e prazo de entrega para PAC e SEDEX (com ou sem contrato).
 3. Se o produto não tiver as dimensões ou peso especificados, o box de cálculo de frete não aparece para aquele produto.
 
 Este plugin é gratuito, open-source e está disponível no GitHub!
@@ -93,6 +93,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Exibe a opção de "Frete Grátis" para produtos com valor mínimo específicado nas áreas de entrega do WooCommerce
 = 2.3.0 =
 * Fix peso em gramas. Adicionado painel de administração.
+= 2.3.1 =
+* Fix valor adicional.
 
 == Upgrade Notice ==
 
@@ -146,3 +148,5 @@ Primeiro lançamento.
 * Exibe a opção de "Frete Grátis" para produtos com valor mínimo específicado nas áreas de entrega do WooCommerce
 = 2.3.0 =
 * Fix peso em gramas. Adicionado painel de administração.
+= 2.3.1 =
+* Fix valor adicional.
