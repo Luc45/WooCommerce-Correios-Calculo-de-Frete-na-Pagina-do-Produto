@@ -91,8 +91,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Fix minor bug que impedia o cálculo de frete em alguns casos.
 = 2.2.0 =
 * Exibe a opção de "Frete Grátis" para produtos com valor mínimo específicado nas áreas de entrega do WooCommerce
-= 2.2.1 =
-* Exibe a opção de "Frete Grátis" para produtos com valor mínimo específicado nas áreas de entrega do WooCommerce; 2.2.1 minor version bumper.
+= 2.3.0 =
+* Fix peso em gramas. Adicionado painel de administração.
 
 == Upgrade Notice ==
 
@@ -144,5 +144,5 @@ Primeiro lançamento.
 * Fix minor bug que impedia o cálculo de frete em alguns casos.
 = 2.2.0 =
 * Exibe a opção de "Frete Grátis" para produtos com valor mínimo específicado nas áreas de entrega do WooCommerce
-= 2.2.1 =
-* Exibe a opção de "Frete Grátis" para produtos com valor mínimo específicado nas áreas de entrega do WooCommerce; 2.2.1 minor version bumper.
+= 2.3.0 =
+* Fix peso em gramas. Adicionado painel de administração.

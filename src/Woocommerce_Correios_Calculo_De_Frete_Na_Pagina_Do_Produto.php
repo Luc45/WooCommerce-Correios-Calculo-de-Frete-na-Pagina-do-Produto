@@ -43,6 +43,9 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
     // Lista de métodos de entrega
     protected $metodos_de_entrega;
 
+    // Opções configuradas no painel de administração
+    protected $options;
+
     public function __construct() {
 
         // Hooks
@@ -59,6 +62,14 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         $this->base_url = WOO_CORREIOS_CALCULO_CEP_BASE_URL;
         $this->caminhao_svg = file_get_contents($this->base_path.'/assets/img/caminhao.svg');
 
+        // Admin
+        if( is_admin() ) {
+            $cfpp_settings = new CFPP_Admin();
+            add_action( 'admin_enqueue_scripts', array($this, 'enqueue_css_js_admin') );
+        } else {
+            $this->options = get_option('cfpp_options');
+        }
+
     }
 
     /**
@@ -66,9 +77,19 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
      */
     public function enqueue_css_js_frontend() {
         // CSS
-        wp_enqueue_style( 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto-css', $this->base_url . '/assets/css/woocommerce-correios-calculo-de-frete-na-pagina-do-produto-public.css', array(), filemtime($this->base_path.'/assets/css/woocommerce-correios-calculo-de-frete-na-pagina-do-produto-public.css'), 'all' );
+        wp_enqueue_style( 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto-css', $this->base_url . '/assets/css/cfpp.css', array(), filemtime($this->base_path.'/assets/css/cfpp.css'), 'all' );
         // Javascript
-        wp_enqueue_script( 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto-js', $this->base_url . '/assets/js/woocommerce-correios-calculo-de-frete-na-pagina-do-produto-public.js', array('jquery'), filemtime($this->base_path.'/assets/js/woocommerce-correios-calculo-de-frete-na-pagina-do-produto-public.js'), false );
+        wp_enqueue_script( 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto-js', $this->base_url . '/assets/js/cfpp.js', array('jquery'), filemtime($this->base_path.'/assets/js/cfpp.js'), false );
+    }
+
+    /**
+     * Registra os CSS e JS que devem aparecer no admin
+     */
+    public function enqueue_css_js_admin() {
+        // CSS
+        wp_enqueue_style( 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto-css', $this->base_url . '/assets/css/cfpp_admin.css', array(), filemtime($this->base_path.'/assets/css/cfpp_admin.css'), 'all' );
+        // Javascript
+        wp_enqueue_script( 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto-js', $this->base_url . '/assets/js/cfpp_admin.js', array('jquery'), filemtime($this->base_path.'/assets/js/cfpp_admin.js'), false );
     }
 
     /**
@@ -222,6 +243,40 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
     }
 
     /**
+    *   Formata peso do produto de acordo com a unidade de medida
+    */
+    public function formata_peso_produto($peso) {
+        $medida = get_option('woocommerce_weight_unit');
+
+        switch ($medida) {
+            case 'g':
+                $fator = 1000;
+                break;
+            default:
+                $fator = 1;
+                break;
+        }
+
+        return number_format($peso / $fator, 2, '.', ',');
+    }
+
+    /**
+    *   Recebe um peso e determina se é válido
+    */
+    public function valida_peso_produto($peso) {
+        $medida = get_option('woocommerce_weight_unit');
+
+        switch ($medida) {
+            case 'g':
+                return $peso <= 30000;
+                break;
+            default:
+                return $peso <= 30;
+                break;
+        }
+    }
+
+    /**
      * Salva os dados do produto na memória
      */
     public function prepara_produto($product) {
@@ -229,7 +284,7 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
         $this->height = $product->get_height();
         $this->width = $product->get_width();
         $this->length = $product->get_length();
-        $this->weight = $product->get_weight();
+        $this->weight = $this->formata_peso_produto($product->get_weight());
         $this->price = $product->get_price();
         $this->id = $product->get_id();
     }
@@ -277,8 +332,8 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
 
         // Peso
         if (!is_numeric($this->weight)) {
-            $erros[] = 'Peso inválido ou não preenchido.';
-        } elseif (is_numeric($this->weight) && $this->weight > 30) {
+            $erros[] = 'Peso inválido ou não preenchido. ('.$this->weight.')';
+        } elseif (is_numeric($this->weight) && !$this->valida_peso_produto($this->weight)) {
             $erros[] = 'Peso ('.$this->weight.'kg) ultrapassa o máximo permitido pelos correios (30kg).';
         }
 
@@ -323,6 +378,11 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
             ?>
                 <?php echo $this->inline_js(); ?>
                 <div id="woocommerce-correios-calculo-de-frete-na-pagina-do-produto">
+                    <style>
+                        div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto div.calculo-de-frete div#calcular-frete svg {fill:<?php echo $this->options['cor_do_texto']?>;}
+                        div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto div.calculo-de-frete div#calcular-frete {color:<?php echo $this->options['cor_do_texto']?>;}
+                        div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto div.calculo-de-frete div#calcular-frete {background-color:<?php echo $this->options['cor_do_botao']?>;}
+                    </style>
                     <?php wp_nonce_field('solicita_calculo_frete', 'solicita_calculo_frete'); ?>
                     <input type="hidden" id="calculo_frete_endpoint_url" value="<?php echo admin_url( 'admin-ajax.php' ); ?>">
                     <input type="hidden" id="calculo_frete_produto_altura" value="<?php echo $this->height;?>">
@@ -333,7 +393,10 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
                     <input type="hidden" id="id_produto" value="<?php echo $this->id;?>">
                     <div class="calculo-de-frete">
                         <input type="text" maxlength="9" onkeydown="return mascara(this, '#####-###');">
-                        <div id="calcular-frete"><?php echo $this->caminhao_svg;?> Calcular Frete</div>
+                        <div id="calcular-frete">
+                            <?php echo $this->caminhao_svg;?> Calcular Frete
+                            <a href="https://www.lucasbustamante.com.br" title="Cálculo de Frete na Página do Produto, por Lucas Bustamante" target="_blank" id="cfpp_credits">CFPP</a>
+                        </div>
                         <div id="calcular-frete-loader"></div>
                     </div>
                     <div class="resultado-frete">

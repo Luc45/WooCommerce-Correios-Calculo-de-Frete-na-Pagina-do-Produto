@@ -2,6 +2,13 @@
 
 class CFPP_Shipping_Zones {
 
+    // Opções do CFPP vindas do painel de administração
+    protected $options;
+
+    public function __construct() {
+        $this->options = get_option('cfpp_options');
+    }
+
     /**
     *   Retorna a lista de métodos de entrega
     */
@@ -90,33 +97,34 @@ class CFPP_Shipping_Zones {
 
                 // Retirar no local?
                 if (get_class($shipping_method) == 'WC_Shipping_Local_Pickup') {
-                    if ($shipping_method->enabled == 'yes' && $cep_destinatario_permitido) {
-                        $metodos_de_entrega['retirar_no_local'] = 'sim';
+                    if ($this->options['exibir_retirar_em_maos'] == 'true') {
+                        if ($shipping_method->enabled == 'yes' && $cep_destinatario_permitido) {
+                            $metodos_de_entrega['retirar_no_local'] = 'sim';
+                        }
                     }
                     continue;
                 }
 
                 // Frete Grátis
                 if (get_class($shipping_method) == 'WC_Shipping_Free_Shipping') {
-                    if ($cep_destinatario_permitido) {
-                        if (empty($shipping_method->requires)) {
-                            $metodos_de_entrega['frete_gratis'] = 'sim';
-                        } elseif ($shipping_method->requires == 'min_amount' || $shipping_method->requires == 'either') {
-                            if (is_numeric($shipping_method->min_amount)) {
-                                if ($preco_produto > $shipping_method->min_amount) {
-                                    $metodos_de_entrega['frete_gratis'] = 'sim';
+                    if ($this->options['exibir_frete_gratis'] == 'true') {
+                        if ($cep_destinatario_permitido) {
+                            if (empty($shipping_method->requires)) {
+                                $metodos_de_entrega['frete_gratis'] = 'sim';
+                            } elseif ($shipping_method->requires == 'min_amount' || $shipping_method->requires == 'either') {
+                                if (is_numeric($shipping_method->min_amount)) {
+                                    if ($preco_produto > $shipping_method->min_amount) {
+                                        $metodos_de_entrega['frete_gratis'] = 'sim';
+                                    }
                                 }
                             }
                         }
                     }
                 }
 
-                // Queremos sobrescrever os métodos permitidos?
-                if (defined('WOO_CORREIOS_SHIPPING_METHODS') && is_array(WOO_CORREIOS_SHIPPING_METHODS)) {
-                    $allowed_shipping_methods = WOO_CORREIOS_SHIPPING_METHODS;
-                } else {
-                    $allowed_shipping_methods = ['WC_Correios_Shipping_PAC', 'WC_Correios_Shipping_SEDEX'];
-                }
+                // Quais os métodos permitidos no painel de administração?
+                $allowed_shipping_methods = $this->options['metodos_entrega'];
+
                 // O método atual é permitido?
                 if (!in_array(get_class($shipping_method), $allowed_shipping_methods)) {
                     continue;
