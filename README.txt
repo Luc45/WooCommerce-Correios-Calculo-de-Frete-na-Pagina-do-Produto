@@ -97,6 +97,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Fix valor adicional.
 = 2.3.2 =
 * Fix undefined no javascript.
+= 2.3.3 =
+* Fix undefined no javascript.
 
 
 == Upgrade Notice ==
@@ -154,4 +156,6 @@ Primeiro lançamento.
 = 2.3.1 =
 * Fix valor adicional.
 = 2.3.2 =
+* Fix undefined no javascript.
+= 2.3.3 =
 * Fix undefined no javascript.
