@@ -113,7 +113,7 @@ class CFPP_Shipping_Zones {
                                 $metodos_de_entrega['frete_gratis'] = 'sim';
                             } elseif ($shipping_method->requires == 'min_amount' || $shipping_method->requires == 'either') {
                                 if (is_numeric($shipping_method->min_amount)) {
-                                    if ($preco_produto > $shipping_method->min_amount) {
+                                    if ($preco_produto >= $shipping_method->min_amount) {
                                         $metodos_de_entrega['frete_gratis'] = 'sim';
                                     }
                                 }
