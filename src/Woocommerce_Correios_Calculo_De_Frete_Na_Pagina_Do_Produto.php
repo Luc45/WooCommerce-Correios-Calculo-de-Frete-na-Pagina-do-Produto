@@ -257,7 +257,9 @@ class Woocommerce_Correios_Calculo_De_Frete_Na_Pagina_Do_Produto {
                 break;
         }
 
-        return number_format($peso / $fator, 2, '.', ',');
+
+        return $peso ? number_format($peso / $fator, 2, '.', ',') : 0;
+        
     }
 
     /**
