@@ -2,8 +2,8 @@
 
 namespace CFPP\Admin;
 
-use CFPP\Admin\Notifications;
-use CFPP\Common\Cep;
+use CFPP\Admin\Notifications,
+    CFPP\Common\Cep;
 
 class Requirements {
 
@@ -31,7 +31,7 @@ class Requirements {
      */
     public function wooCommerceInstalled()
     {
-        if (!is_plugin_active(WP_PLUGIN_DIR.'/woocommerce/woocommerce.php')) {
+        if (!in_array('woocommerce/woocommerce.php', get_option( 'active_plugins' ))) {
             $this->notifications->fatal(__('O plugin WooCommerce deve estar ativo para usar este plugin.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
             return false;
         }
@@ -53,6 +53,18 @@ class Requirements {
             }
             return true;
         }
+    }
+
+    /**
+     * Checks if WooCommerce Correios is installed
+     */
+    public function wooCommerceCorreiosInstalled()
+    {
+        if (!in_array('woocommerce-correios/woocommerce-correios.php', get_option( 'active_plugins' ))) {
+            $this->notifications->fatal(__('O plugin WooCommerce Correios deve estar ativo para usar este plugin.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+            return false;
+        }
+        return true;
     }
 
     /**

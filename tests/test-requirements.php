@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class RequirementsTest
  *
@@ -14,7 +15,7 @@ class RequirementsTest extends WP_UnitTestCase {
     public function setUp()
     {
         parent::setUp();
-        $this->requirements = new CFPP\Requirements;
+        $this->requirements = new CFPP\Admin\Requirements;
 
         # We'll be running these in the Admin screen
         set_current_screen( 'dashboard' );

@@ -23,13 +23,7 @@ require_once $_tests_dir . '/includes/functions.php';
  * Manually load the plugin being tested.
  */
 function _manually_load_plugin() {
-    // Update array with plugins to include ...
-    $plugins_to_active = [
-        'woocommerce/woocommerce.php'
-    ];
-    update_option( 'active_plugins', $plugins_to_active );
-
-	require dirname( dirname( __FILE__ ) ) . '/woo-correios-calculo-de-frete-na-pagina-do-produto.php';
+	require __DIR__.'/../woo-correios-calculo-de-frete-na-pagina-do-produto.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 

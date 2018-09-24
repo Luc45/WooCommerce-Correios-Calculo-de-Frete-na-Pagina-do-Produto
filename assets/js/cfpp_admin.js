@@ -3,11 +3,7 @@
 
     $(function() {
 
-
-
     });
-
-
 
 })( jQuery );
 

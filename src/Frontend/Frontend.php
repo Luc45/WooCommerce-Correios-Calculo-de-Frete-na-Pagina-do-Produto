@@ -3,20 +3,20 @@
 namespace CFPP\Frontend;
 
 use CFPP\Frontend\Assets,
-    CFPP\Frontend\Ajax;
+    CFPP\Frontend\Product;
 
 class Frontend {
 
     /**
-    *   Runs when in admin and CFPP is active
+    *   Runs when in Front-end and CFPP is active
     */
     public function run()
     {
         add_action( 'wp_enqueue_scripts', array($this, 'enqueueAssets') );
 
-        // Listens for AJAX calls on the front-end
-        $ajax = new Ajax;
-        $ajax->listen();
+        // Displays the HTML for the plugin in the product page
+        $product = new Product;
+        add_action( 'woocommerce_before_add_to_cart_button', array($product, 'displayCFPPInProductPage'));
     }
 
     /**
@@ -25,8 +25,8 @@ class Frontend {
     public function enqueueAssets()
     {
         $frontEndAssets =  new Assets;
-        $this->frontEndAssets->enqueueCss();
-        $this->frontEndAssets->enqueueJavaScript();
+        $frontEndAssets->enqueueCss();
+        $frontEndAssets->enqueueJavaScript();
     }
 
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class CepTest
  *
@@ -15,7 +16,7 @@ class CepTest extends WP_UnitTestCase {
     public function setUp()
     {
         parent::setUp();
-        $this->cep = new CFPP\Cep;
+        $this->cep = new CFPP\Common\Cep;
     }
 
     /**

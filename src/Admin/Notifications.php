@@ -45,7 +45,7 @@ class Notifications {
     {
         ?>
             <div class="notice-warning notice">
-                <p style="font-weight: bold;">Atenção!!</p>
+                <p style="font-weight: bold;">Cálculo de Frete na Página do Produto</p>
                 <p><?php echo $this->warning ?></p>
             </div>
         <?php

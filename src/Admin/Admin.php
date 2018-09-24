@@ -20,8 +20,8 @@ class Admin {
     public function enqueueAssets()
     {
         $adminAssets =  new Assets;
-        $this->adminAssets->enqueueCss();
-        $this->adminAssets->enqueueJavaScript();
+        $adminAssets->enqueueCss();
+        $adminAssets->enqueueJavaScript();
     }
 
 }
