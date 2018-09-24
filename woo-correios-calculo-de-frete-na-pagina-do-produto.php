@@ -30,9 +30,6 @@ function run_cfpp_plugin()
     define('CFPP_BASE_PATH', __DIR__);
     define('CFPP_BASE_URL', plugin_dir_url( __FILE__ ));
 
-    // Procedural helper functions
-    require_once plugin_dir_path( __FILE__ ) . 'src/helpers.php';
-
     $cfpp = new Core();
     $cfpp->run();
 }
