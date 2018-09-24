@@ -1,5 +1,7 @@
 {
-    "require-dev": {
-        "lucatume/wp-browser": "^2.1"
+    "autoload": {
+        "psr-4": {
+            "CFPP\\": "src"
+        }
     }
 }
