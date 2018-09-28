@@ -18,7 +18,7 @@
 			var peso = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_peso').val();
 			var preco = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_preco').val();
 			var id_produto = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #id_produto').val();
-			var solicita_calculo_frete = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #solicita_calculo_frete').val();
+			var cfpp_nonce = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #cfpp_nonce').val();
 		 	if (cep.length != 8) {
 		 		alert('Por favor, verifique se o CEP informado é válido.');
 		 		return false;
@@ -31,16 +31,16 @@
 		 		url: url,
 		 		type:"POST",
 		 		data: {
-		 			'action' : 'escutar_solicitacoes_de_frete',
+		 			'action' : 'cfpp_request_shipping_costs',
 		 			'data' : {
-			 			'cep_origem': cep,
+			 			'cep_destinatario': cep,
 			 			'produto_altura': altura,
 			 			'produto_largura': largura,
 			 			'produto_comprimento': comprimento,
 			 			'produto_peso': peso,
 			 			'produto_preco': preco,
 			 			'id_produto': id_produto,
-			 			'solicita_calculo_frete': solicita_calculo_frete
+			 			'cfpp_nonce': cfpp_nonce
 		 			}
 		 		},
 		 		error:function(jqXHR, exception) {
@@ -68,16 +68,11 @@
 		 		},
 		 		success:function(result) {
 		 			// Teve erro?
-		 			if (result.erro) {
-		 				alert(result.erro);
+		 			if (!result.success) {
+		 				console.log('CFPP: '+result.data);
 						esconderLoader();
 						esconderTabela();
 						resetarTabela();
-		 				return false;
-		 			}
-		 			// Teve notices?
-		 			if (result.notices) {
-		 				console.log(result.notices);
 		 			}
 		 			var row = '';
 		 			// Tem Retirar no local?
@@ -116,7 +111,6 @@
 		 			$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete table tbody').append(row);
 		 			esconderLoader();
 		 			exibirTabela();
-		 			console.log(result);
 		 		}
 		 	});
 		 })
