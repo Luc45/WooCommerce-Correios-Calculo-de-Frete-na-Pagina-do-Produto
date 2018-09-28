@@ -4,8 +4,24 @@ namespace CFPP\Admin;
 
 class Notifications {
 
+    // Singleton instance
+    public static $instance;
+
     private $fatal;
     private $warning;
+
+    // Implements Singleton pattern
+    public function __construct() {
+        self::$instance = $this;
+    }
+
+    // Implements Singleton pattern
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
 
     /**
      * Hooks a fatal error notification display
