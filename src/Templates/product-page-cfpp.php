@@ -5,7 +5,7 @@
         div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto div.calculo-de-frete div#calcular-frete {background-color:<?php echo $options['cor_do_botao']?>;}
     </style>
 
-    <?php wp_nonce_field('solicita_calculo_frete', 'solicita_calculo_frete'); ?>
+    <?php wp_nonce_field('cfpp_nonce', 'cfpp_nonce'); ?>
 
     <input type="hidden" id="calculo_frete_endpoint_url" value="<?php echo admin_url( 'admin-ajax.php' ); ?>">
     <input type="hidden" id="calculo_frete_produto_altura" value="<?php echo $product['height'];?>">
