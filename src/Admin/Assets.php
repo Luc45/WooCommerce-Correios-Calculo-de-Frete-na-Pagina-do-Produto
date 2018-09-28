@@ -9,7 +9,7 @@ class Assets {
     */
     public function enqueueCss()
     {
-        wp_enqueue_style( 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto-css', $this->base_url . '/assets/css/cfpp_admin.css', array(), filemtime($this->base_path.'/assets/css/cfpp_admin.css'), 'all' );
+        wp_enqueue_style( 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto-css', CFPP_BASE_URL . '/assets/css/cfpp_admin.css', array(), filemtime(CFPP_BASE_PATH.'/assets/css/cfpp_admin.css'), 'all' );
     }
 
     /**
@@ -17,7 +17,7 @@ class Assets {
     */
     public function enqueueJavaScript()
     {
-        wp_enqueue_script( 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto-js', $this->base_url . '/assets/js/cfpp_admin.js', array('jquery'), filemtime($this->base_path.'/assets/js/cfpp_admin.js'), false );
+        wp_enqueue_script( 'woocommerce-correios-calculo-de-frete-na-pagina-do-produto-js', CFPP_BASE_URL . '/assets/js/cfpp_admin.js', array('jquery'), filemtime(CFPP_BASE_PATH.'/assets/js/cfpp_admin.js'), false );
     }
 
 }
