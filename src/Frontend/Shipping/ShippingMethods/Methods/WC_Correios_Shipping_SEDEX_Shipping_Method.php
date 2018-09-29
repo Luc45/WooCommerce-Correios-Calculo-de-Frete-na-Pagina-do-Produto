@@ -1,16 +1,15 @@
 <?php
 
-namespace CFPP\Frontend\Shipping\ShippingMethods;
+use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsInterface;
+    CFPP\Frontend\Shipping\ShippingMethods\Validations\WC_Correios_Shipping_Methods_Abstract;
 
-use CFPP\Frontend\Shipping\ShippingMethodsInterface;
-
-class WC_Correios_Shipping_PAC implements ShippingMethodsInterface {
+class WC_Correios_Shipping_SEDEX_Shipping_Method extends WC_Correios_Shipping_Methods_Abstract implements ShippingMethodsInterface {
 
     /**
     *   Returns the Display name for this Shipping Method
     */
-    public function getDisplayName() {
-        return 'PAC';
+    public function getName() {
+        return 'SEDEX';
     }
 
     /**
