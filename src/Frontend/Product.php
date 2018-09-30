@@ -53,9 +53,6 @@ class Product {
 
                 } else {
 
-                    // Valid product data. Displays CFPP HTML
-                    Template::include('product-page-inline-javascript');
-
                     $data = array(
                         'product' => $productShippingInfo,
                         'options' => array(

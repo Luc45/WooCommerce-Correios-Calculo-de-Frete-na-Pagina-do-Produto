@@ -16,13 +16,17 @@
     <input type="hidden" id="id_produto" value="<?php echo $product['id'];?>">
 
     <div class="calculo-de-frete">
-        <input type="text" maxlength="9" onkeydown="return mascara(this, '#####-###');">
+
+        <input type="text" maxlength="9">
+
         <div id="calcular-frete">
             <?php echo $caminhao_svg;?> Calcular Frete
             <a href="https://www.lucasbustamante.com.br" title="Cálculo de Frete na Página do Produto, por Lucas Bustamante" target="_blank" id="cfpp_credits">CFPP</a>
         </div>
+
         <div id="calcular-frete-loader"></div>
     </div>
+
     <div class="resultado-frete">
         <table>
             <thead>
