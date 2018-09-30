@@ -45,8 +45,13 @@ trait WC_Correios_Shipping_Method_Trait {
 
         $entrega = $correiosWebService->get_shipping();
 
+        // Normalize Shipping Price
+        $price = $entrega->Valor;
+        $price = (string) $price;
+        $price = floatval(str_replace(',', '.', str_replace('.', '', $price)));
+
         // Dias adicionais
-        if (!empty($shipping_method->additional_time)) {
+        if (!empty($shipping_method->additional_time) && $shipping_method->show_delivery_time == 'yes') {
             $entrega->PrazoEntrega = $entrega->PrazoEntrega + $shipping_method->additional_time;
             $entrega->DiasAdicionais = $shipping_method->additional_time;
         }
@@ -55,14 +60,21 @@ trait WC_Correios_Shipping_Method_Trait {
         if (!empty($shipping_method->fee)) {
             if (substr($shipping_method->fee, -1) == '%') {
                 $porcentagem = preg_replace('/[^0-9]/', '', $shipping_method->fee);
-                $entrega->Valor = ($entrega->Valor/100)*(100+$porcentagem);
+                $price = ($price/100)*(100+$porcentagem);
                 $entrega->Fee = $porcentagem.'%';
             } else {
-                $entrega->Valor = $entrega->Valor + $shipping_method->fee;
+                $price = $price + $shipping_method->fee;
                 $entrega->Fee = $shipping_method->fee;
             }
         }
-        return $entrega;
+
+        $return = array();
+
+        $return['price'] = number_format($price, 2);
+        $return['days'] = (int) $entrega->PrazoEntrega;
+        $return['debug'] = $entrega;
+
+        return $return;
     }
 
     /**
