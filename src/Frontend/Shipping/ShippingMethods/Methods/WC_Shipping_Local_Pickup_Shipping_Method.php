@@ -23,7 +23,10 @@ class WC_Shipping_Local_Pickup_Shipping_Method extends ShippingMethodsAbstract {
         if (is_numeric($this->shipping_method->cost))
             $cost += $this->shipping_method->cost;
 
-        return $cost;
+        return array(
+            'price' => (string) $cost,
+            'days' => '-'
+        );
     }
 
 }
