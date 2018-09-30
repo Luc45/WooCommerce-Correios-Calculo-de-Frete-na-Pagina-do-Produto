@@ -15,12 +15,15 @@ class WC_Shipping_Local_Pickup_Shipping_Method extends ShippingMethodsAbstract {
     /**
     *   Receives a Request and calculates the shipping
     */
-    public function calculate(array $request) {
-        $request['produto_altura'];
-        $request['produto_largura'];
-        $request['produto_comprimento'];
-        $request['produto_peso'];
-        $request['produto_preco'];
+    public function calculate(array $request)
+    {
+        $cost = 0;
+
+        // Additional cost for local pickup?
+        if (is_numeric($this->shipping_method->cost))
+            $cost += $this->shipping_method->cost;
+
+        return $cost;
     }
 
 }
