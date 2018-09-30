@@ -151,21 +151,20 @@
 
 	});
 
+	$(document).ready(function() {
+		var input_cep = $(".calculo-de-frete input[type='text']");
 
+		// Máscara de CEP
+		VMasker(input_cep).maskPattern("99999-999");
+
+		// Faz com que "Enter" calcule o frete
+		input_cep.on('keydown', function (e) {
+		    if (e.keyCode == 13) {
+		 		$('#calcular-frete').click();
+		    	e.preventDefault();
+		        return false;
+		    }
+		});
+	})
 
 })( jQuery );
-
-
-/**
-*	Função auxiliar para verificar se algo é um número
-*/
-function validateNumber(event) {
-    var key = window.event ? event.keyCode : event.which;
-    if (event.keyCode === 8 || event.keyCode === 46) {
-        return true;
-    } else if ( key < 48 || key > 57 ) {
-        return false;
-    } else {
-        return true;
-    }
-};
