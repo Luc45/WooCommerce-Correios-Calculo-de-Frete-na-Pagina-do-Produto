@@ -1,14 +1,17 @@
 <?php
 
-use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsInterface;
-    CFPP\Frontend\Shipping\ShippingMethods\Validations\WC_Correios_Shipping_Methods_Abstract;
+use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsAbstract,
+    CFPP\Frontend\Shipping\ShippingMethods\Traits\WC_Correios_Shipping_Method_Trait;
 
-class WC_Correios_Shipping_PAC_Shipping_Method extends WC_Correios_Shipping_Methods_Abstract implements ShippingMethodsInterface {
+class WC_Correios_Shipping_PAC_Shipping_Method extends ShippingMethodsAbstract {
+
+    use WC_Correios_Shipping_Method_Trait;
 
     /**
     *   Returns the Display name for this Shipping Method
     */
-    public function getName() {
+    public function getName()
+    {
         return 'PAC';
     }
 
