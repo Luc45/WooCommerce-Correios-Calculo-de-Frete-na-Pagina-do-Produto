@@ -18,12 +18,15 @@ class WC_Correios_Shipping_PAC_Shipping_Method extends ShippingMethodsAbstract {
     /**
     *   Receives a Request and calculates the shipping
     */
-    public function calculate(array $request) {
-        $request['produto_altura'];
-        $request['produto_largura'];
-        $request['produto_comprimento'];
-        $request['produto_peso'];
-        $request['produto_preco'];
+    public function calculate(array $request)
+    {
+        $errors = $this->validate($request);
+
+        if (empty($errors)) {
+           return $this->calculateCorreiosCosts($this->shipping_method, $request);
+        } else {
+            return false;
+        }
     }
 
 }
