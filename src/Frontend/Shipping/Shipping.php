@@ -17,11 +17,11 @@ class Shipping {
     {
         $request = $this->sanitizeAndValidateRequest($_POST);
 
-        // Get Shipping Zones available for this post code
-        $shipping_zones = new ShippingZones;
-        $available_shipping_zones = $shipping_zones->getShippingZonesByCEP($request['cep_destinatario']);
+        // WooCommerce matches the first Shipping Zone from top to bottom as the shipping zone used for calculations.
+        $shipping_zone = new ShippingZones;
+        $shipping_zone = $shipping_zone->getFirstMatchingShippingZone($request['cep_destinatario']);
 
-        if (!$available_shipping_zones)
+        if ($shipping_zone === false)
             wp_send_json_error('Não há Áreas de Entrega disponíveis para o CEP informado. Verifique suas Áreas de entrega. Leia: https://docs.woocommerce.com/document/setting-up-shipping-zones/');
 
 
@@ -29,29 +29,9 @@ class Shipping {
 
         // Gets Shipping Costs for each Shipping Method
         $shipping_methods = new ShippingMethods;
-        foreach ($available_shipping_zones as $available_shipping_zone) {
-            $cfpp_shipping_costs[$available_shipping_zone['zone_name']] = $shipping_methods->calculateShippingOptions($available_shipping_zone['shipping_methods'], $request);
-        }
-
-        dd($cfpp_shipping_costs);
+        $cfpp_shipping_costs = $shipping_methods->calculateShippingOptions($shipping_zone['shipping_methods'], $request);
 
         wp_send_json_success( $cfpp_shipping_costs );
-
-        dd($available_shipping_zones);
-
-
-
-        $available_shipping_zones = $shipping_zones->get(
-                                        $request['cep_destinatario'],
-                                        $request['produto_preco'],
-                                        $this->getAllowedShippingMethods()
-                                    );
-
-        dd($available_shipping_zones);
-
-        $shipping = new WooCommerceCorreios;
-        $shipping->calculate($request, $available_shipping_zones);
-        //$this->prepara_calculo_de_frete($cep_destinatario, $produto_altura, $produto_largura, $produto_comprimento, $produto_peso, $produto_preco);
     }
 
     /**

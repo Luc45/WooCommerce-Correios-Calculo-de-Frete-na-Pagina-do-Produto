@@ -7,9 +7,9 @@ use CFPP\Common\Helpers;
 class ShippingZones {
 
     /**
-    *   Returns a list of Shipping Zones by CEP
+    *   Returns first matching Shipping Zone for destination CEP.
     */
-    public function getShippingZonesByCEP($destination_cep)
+    public function getFirstMatchingShippingZone($destination_cep)
     {
         $available_shipping_zones = array();
 
@@ -24,24 +24,24 @@ class ShippingZones {
 
                     case 'country':
                             if ($this->checkZoneLocationByCountry($zone_location))
-                                $available_shipping_zones[] = $shipping_zone;
+                                return $shipping_zone;
                         break;
 
                     case 'postcode':
                             if ($this->checkZoneLocationByPostCode($zone_location, $destination_cep))
-                                $available_shipping_zones[] = $shipping_zone;
+                                return $shipping_zone;
                         break;
 
                     case 'state':
                             if ($this->checkZoneLocationByState($zone_location, $destination_cep))
-                                $available_shipping_zones[] = $shipping_zone;
+                                return $shipping_zone;
                         break;
 
                 }
             }
         }
 
-        return $available_shipping_zones;
+        return false;
     }
 
     /**
