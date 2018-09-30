@@ -30,7 +30,7 @@ class Shipping {
         // Gets Shipping Costs for each Shipping Method
         $shipping_methods = new ShippingMethods;
         foreach ($available_shipping_zones as $available_shipping_zone) {
-            $cfpp_shipping_costs[$available_shipping_zone->zone_name] = $shipping_methods->calculateShippingOptions($available_shipping_zone['shipping_methods'], $request);
+            $cfpp_shipping_costs[$available_shipping_zone['zone_name']] = $shipping_methods->calculateShippingOptions($available_shipping_zone['shipping_methods'], $request);
         }
 
         dd($cfpp_shipping_costs);
