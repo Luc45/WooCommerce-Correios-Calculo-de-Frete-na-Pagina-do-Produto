@@ -18,7 +18,12 @@ class WC_Shipping_Free_Shipping_Shipping_Method extends ShippingMethodsAbstract 
     public function calculate(array $request)
     {
         // Return 0 for Free Shipping, False otherwise.
-        return $this->meetsFreeShippingRequirements($request) ? 0 : false;
+        $should_show = $this->meetsFreeShippingRequirements($request) ? 'Grátis' : 'false';
+
+        return array(
+            'price' => $should_show,
+            'days' => '-'
+        );
     }
 
     /**
