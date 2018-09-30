@@ -1,32 +1,95 @@
 <?php
 
-namespace CFPP\Frontend\Shipping\ShippingMethods\Validations;
+namespace CFPP\Frontend\Shipping\ShippingMethods\Traits;
 
-abstract class WC_Correios_Shipping_Methods_Abstract {
+use CFPP\Common\Cep;
+
+trait WC_Correios_Shipping_Method_Trait {
+
+    /**
+    *   Calculates Correios Costs
+    */
+    public function calculateCorreiosCosts($shipping_method, $request)
+    {
+        $correiosWebService = new \WC_Correios_Webservice;
+
+        $correiosWebService->set_height($request['produto_altura']);
+        $correiosWebService->set_width($request['produto_largura']);
+        $correiosWebService->set_length($request['produto_comprimento']);
+        $correiosWebService->set_weight($request['produto_peso']);
+        $correiosWebService->set_destination_postcode($request['cep_destinatario']);
+        $correiosWebService->set_origin_postcode(Cep::getOriginCep());
+        $correiosWebService->set_service($shipping_method->get_code());
+
+        // Agora vamos setar os condicionais...
+
+        // Valor declarado
+        if ($shipping_method->declare_value == 'yes' && $request['produto_preco'] > 18.50) {
+            $correiosWebService->set_declared_value($request['produto_preco']);
+        }
+
+        // Mão Propria
+        if ($shipping_method->own_hands == 'yes') {
+            $correiosWebService->set_own_hands = 'S';
+        }
+
+        // Peso extra
+        if (!empty($shipping_method->extra_weight)) {
+            $correiosWebService->set_extra_weight($shipping_method->extra_weight);
+        }
+
+        // Aviso de recebimento
+        if ($shipping_method->receipt_notice == 'yes') {
+            $correiosWebService->set_receipt_notice('S');
+        }
+
+        $entrega = $correiosWebService->get_shipping();
+
+        // Dias adicionais
+        if (!empty($shipping_method->additional_time)) {
+            $entrega->PrazoEntrega = $entrega->PrazoEntrega + $shipping_method->additional_time;
+            $entrega->DiasAdicionais = $shipping_method->additional_time;
+        }
+
+        // Custo adicional
+        if (!empty($shipping_method->fee)) {
+            if (substr($shipping_method->fee, -1) == '%') {
+                $porcentagem = preg_replace('/[^0-9]/', '', $shipping_method->fee);
+                $entrega->Valor = ($entrega->Valor/100)*(100+$porcentagem);
+                $entrega->Fee = $porcentagem.'%';
+            } else {
+                $entrega->Valor = $entrega->Valor + $shipping_method->fee;
+                $entrega->Fee = $shipping_method->fee;
+            }
+        }
+        return $entrega;
+    }
+
     /**
     *   Validates a product according to WooCommerce Correios requirements
     */
     public function validate($request) {
         $errors = array();
 
-        $errors[] = $this->productHeight($product['height']) &
-                    $this->productWidth($product['width']) &
-                    $this->productLength($product['length']) &
-                    $this->productSumHeightWidthLength($product['height'], $product['width'], $product['length']) &
-                    $this->productWeight($product['weight']) &
-                    $this->productPrice($product['price']);
+        // Each of these methods returns an array.
+        $errors[] = $this->checkHeight($request['produto_altura']);
+        $errors[] = $this->checkWidth($request['produto_largura']);
+        $errors[] = $this->checkLength($request['produto_comprimento']);
+        $errors[] = $this->checkWeight($request['produto_peso']);
+        $errors[] = $this->checkPrice($request['produto_preco']);
 
         // Flattens array
         $errors = call_user_func_array('array_merge', $errors);
 
-        dd($errors);
+        // Do we have any error?
+        return $errors;
     }
 
     /**
      * Validates a product height
      * @return array
      */
-    private function productHeight($height) {
+    private function checkHeight($height) {
         $errors = array();
             if (!is_numeric($height)) {
                 $errors[] = 'Altura inválida ou não preenchida.';
@@ -42,7 +105,7 @@ abstract class WC_Correios_Shipping_Methods_Abstract {
      * Validates a product width
      * @return array
      */
-    private function productWidth($width) {
+    private function checkWidth($width) {
         $errors = array();
             if (!is_numeric($width)) {
                 $errors[] = 'Largura inválida ou não preenchida.';
@@ -58,7 +121,7 @@ abstract class WC_Correios_Shipping_Methods_Abstract {
      * Validates a product length
      * @return array
      */
-    private function productLength($length) {
+    private function checkLength($length) {
         $errors = array();
             if (!is_numeric($length)) {
                 $errors[] = 'Comprimento inválido ou não preenchido.';
@@ -74,7 +137,7 @@ abstract class WC_Correios_Shipping_Methods_Abstract {
      * Validates a product length
      * @return array
      */
-    private function productSumHeightWidthLength($height, $width, $length) {
+    private function checkSumHeightWidthLength($height, $width, $length) {
         $errors = array();
             if (is_numeric($height) && is_numeric($width) && is_numeric($length)) {
                 if ($height + $width + $length > 200) {
@@ -88,7 +151,7 @@ abstract class WC_Correios_Shipping_Methods_Abstract {
      * Validates a product weight
      * @return array
      */
-    private function productWeight($weight) {
+    private function checkWeight($weight) {
         $errors = array();
             if (!is_numeric($weight)) {
                 $errors[] = 'Peso inválido ou não preenchido.';
@@ -102,7 +165,7 @@ abstract class WC_Correios_Shipping_Methods_Abstract {
      * Validates a product price
      * @return array
      */
-    private function productPrice($price) {
+    private function checkPrice($price) {
         $errors = array();
             if (!is_numeric($price)) {
                 $errors[] = 'Preço inválido ou não preenchido. ('.$price.')';
@@ -111,5 +174,4 @@ abstract class WC_Correios_Shipping_Methods_Abstract {
             }
         return $errors;
     }
-
 }
