@@ -8,8 +8,6 @@ class ShippingMethods {
 
     /**
     *   Calculates the shipping costs from the shipping zones provided
-    *
-    *   @todo Provide feedback if $cfpp_shipping_method === false
     */
     public function calculateShippingOptions($shipping_methods, $request)
     {
@@ -23,9 +21,10 @@ class ShippingMethods {
                 $cfpp_shipping_method = $factory->getClass(get_class($shipping_method));
 
                 // Makes sure CFPP have Method created for this
-                if ($cfpp_shipping_method === false)
+                if ($cfpp_shipping_method === false) {
+                    $shipping_costs[$cfpp_shipping_method->getName()] = 'Not_Available';
                     continue;
-                    //wp_send_json_error('Não foi possível instanciar a classe do Shipping Method: '.get_class($shipping_method));
+                }
 
                 // Pass the Shipping Method class to the CFPP Shipping Method
                 $cfpp_shipping_method->setup($shipping_method);
