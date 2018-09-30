@@ -37,7 +37,7 @@ class Helpers {
     /**
     *   Returns true if a CEP belongs to a certain state
     */
-    public function isCepFromState($cep, $estado)
+    public static function isCepFromState($cep, $estado)
     {
         $cep = substr($cep, 0, 5); // 5 primeiros dígitos
         $cep = (int)$cep;
