@@ -22,6 +22,7 @@ class Validate {
         $product['length'] = $request['produto_comprimento'];
         $product['weight'] = $request['produto_peso'];
         $product['price'] = $request['produto_preco'];
+        $product['quantity'] = $request['quantidade'];
 
         return self::product($product);
     }

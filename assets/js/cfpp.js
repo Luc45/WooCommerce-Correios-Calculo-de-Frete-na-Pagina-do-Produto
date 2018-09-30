@@ -18,6 +18,7 @@
 			var peso = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_peso').val();
 			var preco = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_preco').val();
 			var id_produto = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #id_produto').val();
+			var quantidade = $('input.qty').val();
 			var cfpp_nonce = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #cfpp_nonce').val();
 		 	if (cep.length != 8) {
 		 		alert('Por favor, verifique se o CEP informado é válido.');
@@ -40,6 +41,7 @@
 			 			'produto_peso': peso,
 			 			'produto_preco': preco,
 			 			'id_produto': id_produto,
+			 			'quantidade': quantidade,
 			 			'cfpp_nonce': cfpp_nonce
 		 			}
 		 		},
