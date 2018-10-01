@@ -70,9 +70,11 @@ trait WC_Correios_Shipping_Method_Trait {
 
         $return = array();
 
+        $dia_ou_dias = (int) $entrega->PrazoEntrega > 1 ? 'dias' : 'dia';
+
         $return['name'] = $shipping_method->method_title;
         $return['price'] = 'R$ ' . number_format($price, 2, ',', '.');
-        $return['days'] = 'Em até ' . (int) $entrega->PrazoEntrega . ' dias';
+        $return['days'] = 'Em até ' . (int) $entrega->PrazoEntrega . ' ' . $dia_ou_dias;
         $return['debug'] = $entrega;
 
         return $return;
