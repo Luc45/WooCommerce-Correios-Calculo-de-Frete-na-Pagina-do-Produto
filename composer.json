@@ -5,6 +5,7 @@
         }
     },
     "require-dev": {
-        "lucatume/wp-browser": "^2.1"
+        "lucatume/wp-browser": "^2.1",
+        "phpcompatibility/php-compatibility": "^8.2"
     }
 }

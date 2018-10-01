@@ -90,6 +90,7 @@ class ComposerStaticInitdb35eeab5da81c6a0cbedaee3829c835
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
+            'PHPCompatibility\\' => 17,
         ),
         'M' => 
         array (
@@ -265,6 +266,10 @@ class ComposerStaticInitdb35eeab5da81c6a0cbedaee3829c835
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'PHPCompatibility\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpcompatibility/php-compatibility/PHPCompatibility',
         ),
         'Mustangostang\\' => 
         array (

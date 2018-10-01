@@ -37,6 +37,7 @@ return array(
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
+    'PHPCompatibility\\' => array($vendorDir . '/phpcompatibility/php-compatibility/PHPCompatibility'),
     'Mustangostang\\' => array($vendorDir . '/wp-cli/mustangostang-spyc/src'),
     'MikeMcLin\\WpPassword\\' => array($vendorDir . '/mikemclin/laravel-wp-password/src'),
     'JsonSchema\\' => array($vendorDir . '/justinrainbow/json-schema/src/JsonSchema'),
