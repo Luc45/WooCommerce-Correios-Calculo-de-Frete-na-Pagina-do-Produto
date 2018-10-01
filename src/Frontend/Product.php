@@ -40,6 +40,12 @@ class Product {
 
             if (is_subclass_of($product, 'WC_Product')) {
 
+                // Displays notification for admin if product is virtual
+                if ($product->is_virtual()) {
+                    Notifications::getInstance()->adminOnly('Este produto é do tipo "Virtual".');
+                    return;
+                }
+
                 // Extract shipping data from the product
                 $productShippingInfo = $this->generateProductShippingInfo($product);
 
