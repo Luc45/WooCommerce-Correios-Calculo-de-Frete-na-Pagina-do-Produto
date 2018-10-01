@@ -41,7 +41,8 @@ class ShippingZones {
             }
         }
 
-        return false;
+        // Locations not covered by your other zones
+        return \WC_Shipping_Zones::get_zone(0);
     }
 
     /**
