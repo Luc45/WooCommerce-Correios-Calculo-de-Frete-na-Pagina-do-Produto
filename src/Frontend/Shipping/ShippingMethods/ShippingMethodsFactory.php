@@ -7,7 +7,8 @@ class ShippingMethodsFactory {
     /**
     *   Returns a Shipping Method class
     */
-    public function getClass(string $shipping_method) {
+    public function getClass(string $shipping_method)
+    {
         $class = $shipping_method.'_Shipping_Method';
         $file = __DIR__.'/Methods/'.$class.'.php';
 
