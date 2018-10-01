@@ -102,6 +102,18 @@ trait WC_Correios_Shipping_Method_Trait {
     }
 
     /**
+     * Multiplies the product measurements by the quantity requested
+     */
+    private function multiplyMeasurementsByQuantity($request) {
+        foreach ($request as $k => &$v) {
+            if (in_array($k, array('produto_altura', 'produto_largura', 'produto_comprimento', 'produto_peso', 'produto_preco'))) {
+                $v = $v * $request['quantidade'];
+            }
+        }
+        return $request;
+    }
+
+    /**
      * Validates a product height
      * @return array
      */
