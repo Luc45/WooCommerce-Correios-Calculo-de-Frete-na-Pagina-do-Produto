@@ -29,8 +29,11 @@ class Notifications
     /**
      * Hooks a fatal error notification display
      */
-    public function fatal(string $message)
+    public function fatal($message)
     {
+        // String type-hinting for older versions of PHP
+        if (gettype($message) != 'string') return;
+
         $this->fatal = $message;
         add_action('admin_notices', array($this, 'display_fatal'), 10);
     }
@@ -38,8 +41,11 @@ class Notifications
     /**
      * Hooks a warning notification display
      */
-    public function warning(string $message)
+    public function warning($message)
     {
+        // String type-hinting for older versions of PHP
+        if (gettype($message) != 'string') return;
+
         $this->warning = $message;
         add_action('admin_notices', array($this, 'display_warning'), 10);
     }

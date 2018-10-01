@@ -134,8 +134,11 @@ class Validate
      *  @param string $cep Cep to check if valid
      *  @return boolean
      */
-    public static function cep(string $cep)
+    public static function cep($cep)
     {
+        // String type-hinting for older versions of PHP
+        if (gettype($cep) != 'string') return false;
+
         $cep = preg_replace('/[^0-9]/', '', $cep);
         return strlen($cep) == 8;
     }
