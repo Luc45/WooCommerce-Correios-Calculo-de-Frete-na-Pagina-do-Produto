@@ -7,7 +7,7 @@
 
     <?php wp_nonce_field('cfpp_nonce', 'cfpp_nonce'); ?>
 
-    <input type="hidden" id="calculo_frete_endpoint_url" value="<?php echo admin_url( 'admin-ajax.php' ); ?>">
+    <input type="hidden" id="calculo_frete_endpoint_url" value="<?php echo admin_url('admin-ajax.php'); ?>">
     <input type="hidden" id="calculo_frete_produto_altura" value="<?php echo $product['height'];?>">
     <input type="hidden" id="calculo_frete_produto_largura" value="<?php echo $product['width'];?>">
     <input type="hidden" id="calculo_frete_produto_comprimento" value="<?php echo $product['length'];?>">

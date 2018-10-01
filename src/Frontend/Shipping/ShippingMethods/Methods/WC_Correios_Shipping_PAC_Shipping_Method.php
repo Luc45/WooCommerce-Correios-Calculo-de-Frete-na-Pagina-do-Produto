@@ -1,9 +1,10 @@
 <?php
 
-use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsAbstract,
-    CFPP\Frontend\Shipping\ShippingMethods\Traits\WC_Correios_Shipping_Method_Trait;
+use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsAbstract;
+use CFPP\Frontend\Shipping\ShippingMethods\Traits\WC_Correios_Shipping_Method_Trait;
 
-class WC_Correios_Shipping_PAC_Shipping_Method extends ShippingMethodsAbstract {
+class WC_Correios_Shipping_PAC_Shipping_Method extends ShippingMethodsAbstract
+{
 
     use WC_Correios_Shipping_Method_Trait;
 
@@ -18,7 +19,7 @@ class WC_Correios_Shipping_PAC_Shipping_Method extends ShippingMethodsAbstract {
         $errors = $this->validate($request);
 
         if (empty($errors)) {
-           return $this->calculateCorreiosCosts($this->shipping_method, $request);
+            return $this->calculateCorreiosCosts($this->shipping_method, $request);
         } else {
             $errors = implode(', ', $errors);
             return array(
@@ -28,5 +29,4 @@ class WC_Correios_Shipping_PAC_Shipping_Method extends ShippingMethodsAbstract {
                     );
         }
     }
-
 }

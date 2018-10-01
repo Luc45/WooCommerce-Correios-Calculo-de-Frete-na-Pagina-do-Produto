@@ -4,14 +4,15 @@ namespace CFPP\Admin;
 
 use CFPP\Admin\Assets;
 
-class Admin {
+class Admin
+{
 
     /**
     *   Runs when in admin and CFPP is active
     */
     public function run()
     {
-        add_action( 'admin_enqueue_scripts', array($this, 'enqueueAssets') );
+        add_action('admin_enqueue_scripts', array($this, 'enqueueAssets'));
     }
 
     /**
@@ -23,5 +24,4 @@ class Admin {
         $adminAssets->enqueueCss();
         $adminAssets->enqueueJavaScript();
     }
-
 }

@@ -2,14 +2,15 @@
 
 namespace CFPP\Frontend;
 
-use WC_Product,
-    CFPP\Common\Helpers,
-    CFPP\Common\Validate,
-    CFPP\Frontend\Assets,
-    CFPP\Frontend\Notifications,
-    CFPP\Frontend\Template;
+use WC_Product;
+use CFPP\Common\Helpers;
+use CFPP\Common\Validate;
+use CFPP\Frontend\Assets;
+use CFPP\Frontend\Notifications;
+use CFPP\Frontend\Template;
 
-class Product {
+class Product
+{
 
     /**
      *  Receives an instance of WC_Product
@@ -39,7 +40,6 @@ class Product {
             global $product;
 
             if (is_subclass_of($product, 'WC_Product')) {
-
                 // Displays notification for admin if product is virtual
                 if ($product->is_virtual()) {
                     Notifications::getInstance()->adminOnly('Este produto é do tipo "Virtual".');
@@ -53,12 +53,9 @@ class Product {
                 $validate_product = Validate::product($productShippingInfo);
 
                 if ($validate_product['success'] !== true) {
-
                     // Invalid product data. Show warning to administrator.
                     Notifications::getInstance()->adminOnly($validate_product['message']);
-
                 } else {
-
                     $data = array(
                         'product' => $productShippingInfo,
                         'options' => array(
@@ -69,12 +66,8 @@ class Product {
                     );
 
                     Template::include('product-page-cfpp', $data);
-
                 }
             }
-
         }
-
     }
-
 }

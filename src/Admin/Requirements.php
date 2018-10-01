@@ -2,18 +2,19 @@
 
 namespace CFPP\Admin;
 
-use CFPP\Admin\Notifications,
-    CFPP\Common\Cep,
-    CFPP\Common\Validate;
+use CFPP\Admin\Notifications;
+use CFPP\Common\Cep;
+use CFPP\Common\Validate;
 
-class Requirements {
+class Requirements
+{
 
     /**
      * Checks if the current PHP version is supported
      */
     public function phpVersionSupported()
     {
-        if (version_compare(phpversion(), '5.3.0', '<')){
+        if (version_compare(phpversion(), '5.3.0', '<')) {
             Notifications::getInstance()->fatal(__('Versão mínima do PHP necessária: 5.3.0', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
             return false;
         }
@@ -25,7 +26,7 @@ class Requirements {
      */
     public function wooCommerceInstalled()
     {
-        if (in_array('woocommerce/woocommerce.php', get_option( 'active_plugins' ))) {
+        if (in_array('woocommerce/woocommerce.php', get_option('active_plugins'))) {
             return true;
         } else {
             Notifications::getInstance()->fatal(__('O plugin WooCommerce deve estar ativo para usar este plugin.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
@@ -39,7 +40,7 @@ class Requirements {
     public function wooCommerceVersionSupported()
     {
         global $woocommerce;
-        if ( version_compare( $woocommerce->version, '3.2.0', ">=" ) || defined('CFPP_CEP') ) {
+        if (version_compare($woocommerce->version, '3.2.0', ">=") || defined('CFPP_CEP')) {
             return true;
         } else {
             Notifications::getInstance()->fatal(__('O plugin Cálculo de Frete na Página requer WooCommerce 3.2.0 ou superior. Como você está usando uma versão inferior, é necessário adicionar este código no seu wp-config.php: <strong>define("CFPP_CEP", "XXXXX-XXX");</strong> (coloque logo abaixo do WP_DEBUG)', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
@@ -52,7 +53,7 @@ class Requirements {
      */
     public function wooCommerceCorreiosInstalled()
     {
-        if (in_array('woocommerce-correios/woocommerce-correios.php', get_option( 'active_plugins' ))) {
+        if (in_array('woocommerce-correios/woocommerce-correios.php', get_option('active_plugins'))) {
             return true;
         } else {
             Notifications::getInstance()->fatal(__('O plugin WooCommerce Correios deve estar ativo para usar este plugin.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
@@ -76,5 +77,4 @@ class Requirements {
 
         return true;
     }
-
 }

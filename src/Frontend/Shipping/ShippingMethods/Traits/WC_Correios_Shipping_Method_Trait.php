@@ -4,7 +4,8 @@ namespace CFPP\Frontend\Shipping\ShippingMethods\Traits;
 
 use CFPP\Common\Cep;
 
-trait WC_Correios_Shipping_Method_Trait {
+trait WC_Correios_Shipping_Method_Trait
+{
 
     /**
     *   Calculates Correios Costs
@@ -104,7 +105,8 @@ trait WC_Correios_Shipping_Method_Trait {
     /**
      * Multiplies the product measurements by the quantity requested
      */
-    private function multiplyMeasurementsByQuantity($request) {
+    private function multiplyMeasurementsByQuantity($request)
+    {
         foreach ($request as $k => &$v) {
             if (in_array($k, array('produto_altura', 'produto_largura', 'produto_comprimento', 'produto_peso', 'produto_preco'))) {
                 $v = $v * $request['quantidade'];
@@ -120,13 +122,13 @@ trait WC_Correios_Shipping_Method_Trait {
     private function checkHeight($height)
     {
         $errors = array();
-            if (!is_numeric($height)) {
-                $errors[] = 'Altura inválida ou não preenchida.';
-            } elseif (is_numeric($height) && $height > 105) {
-                $errors[] = 'Altura ('.$height.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
-            } elseif (is_numeric($height) && $height < 2) {
-                $errors[] = 'Altura ('.$height.'cm) é menor do que o mínimo permitido pelos correios (2cm).';
-            }
+        if (!is_numeric($height)) {
+            $errors[] = 'Altura inválida ou não preenchida.';
+        } elseif (is_numeric($height) && $height > 105) {
+            $errors[] = 'Altura ('.$height.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
+        } elseif (is_numeric($height) && $height < 2) {
+            $errors[] = 'Altura ('.$height.'cm) é menor do que o mínimo permitido pelos correios (2cm).';
+        }
         return $errors;
     }
 
@@ -137,13 +139,13 @@ trait WC_Correios_Shipping_Method_Trait {
     private function checkWidth($width)
     {
         $errors = array();
-            if (!is_numeric($width)) {
-                $errors[] = 'Largura inválida ou não preenchida.';
-            } elseif (is_numeric($width) && $width > 105) {
-                $errors[] = 'Largura ('.$width.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
-            } elseif (is_numeric($width) && $width < 11) {
-                $errors[] = 'Largura ('.$width.'cm) é menor do que o mínimo permitido pelos correios (11cm).';
-            }
+        if (!is_numeric($width)) {
+            $errors[] = 'Largura inválida ou não preenchida.';
+        } elseif (is_numeric($width) && $width > 105) {
+            $errors[] = 'Largura ('.$width.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
+        } elseif (is_numeric($width) && $width < 11) {
+            $errors[] = 'Largura ('.$width.'cm) é menor do que o mínimo permitido pelos correios (11cm).';
+        }
         return $errors;
     }
 
@@ -154,13 +156,13 @@ trait WC_Correios_Shipping_Method_Trait {
     private function checkLength($length)
     {
         $errors = array();
-            if (!is_numeric($length)) {
-                $errors[] = 'Comprimento inválido ou não preenchido.';
-            } elseif (is_numeric($length) && $length > 105) {
-                $errors[] = 'Comprimento ('.$length.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
-            } elseif (is_numeric($length) && $length < 11) {
-                $errors[] = 'Comprimento ('.$length.'cm) é menor do que o mínimo permitido pelos correios (16cm).';
-            }
+        if (!is_numeric($length)) {
+            $errors[] = 'Comprimento inválido ou não preenchido.';
+        } elseif (is_numeric($length) && $length > 105) {
+            $errors[] = 'Comprimento ('.$length.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
+        } elseif (is_numeric($length) && $length < 11) {
+            $errors[] = 'Comprimento ('.$length.'cm) é menor do que o mínimo permitido pelos correios (16cm).';
+        }
         return $errors;
     }
 
@@ -171,11 +173,11 @@ trait WC_Correios_Shipping_Method_Trait {
     private function checkSumHeightWidthLength($height, $width, $length)
     {
         $errors = array();
-            if (is_numeric($height) && is_numeric($width) && is_numeric($length)) {
-                if ($height + $width + $length > 200) {
-                    $errors[] = 'Soma da Altura, Largura e Comprimento ('.$height + $width + $length.') ultrapassa o máximo permitido pelos correios (200cm).';
-                }
+        if (is_numeric($height) && is_numeric($width) && is_numeric($length)) {
+            if ($height + $width + $length > 200) {
+                $errors[] = 'Soma da Altura, Largura e Comprimento ('.$height + $width + $length.') ultrapassa o máximo permitido pelos correios (200cm).';
             }
+        }
         return $errors;
     }
 
@@ -186,11 +188,11 @@ trait WC_Correios_Shipping_Method_Trait {
     private function checkWeight($weight)
     {
         $errors = array();
-            if (!is_numeric($weight)) {
-                $errors[] = 'Peso inválido ou não preenchido.';
-            } elseif (is_numeric($weight) && $weight > 30) {
-                $errors[] = 'Peso ('.$weight.'kg) ultrapassa o máximo permitido pelos correios (30kg).';
-            }
+        if (!is_numeric($weight)) {
+            $errors[] = 'Peso inválido ou não preenchido.';
+        } elseif (is_numeric($weight) && $weight > 30) {
+            $errors[] = 'Peso ('.$weight.'kg) ultrapassa o máximo permitido pelos correios (30kg).';
+        }
         return $errors;
     }
 
@@ -202,11 +204,11 @@ trait WC_Correios_Shipping_Method_Trait {
     {
         $maximum_price = $this->shipping_method->id == 'correios-pac' ? 3000 : 10000;
         $errors = array();
-            if (!is_numeric($price)) {
-                $errors[] = 'Preço inválido ou não preenchido. ('.$price.')';
-            } elseif (is_numeric($price) && $price > $maximum_price) {
-                $errors[] = 'Preço (R$ '.$price.') ultrapassa o máximo permitido para esta modalidade de envio (R$ '.$maximum_price.').';
-            }
+        if (!is_numeric($price)) {
+            $errors[] = 'Preço inválido ou não preenchido. ('.$price.')';
+        } elseif (is_numeric($price) && $price > $maximum_price) {
+            $errors[] = 'Preço (R$ '.$price.') ultrapassa o máximo permitido para esta modalidade de envio (R$ '.$maximum_price.').';
+        }
         return $errors;
     }
 }

@@ -4,7 +4,8 @@ namespace CFPP\Frontend\Shipping;
 
 use CFPP\Common\Helpers;
 
-class ShippingZones {
+class ShippingZones
+{
 
     /**
     *   Returns first matching Shipping Zone for destination CEP.
@@ -21,22 +22,23 @@ class ShippingZones {
             foreach ($shipping_zone['zone_locations'] as $zone_location) {
                 // Each Shipping Location can be of type Country, CEP, or State
                 switch ($zone_location->type) {
-
                     case 'country':
-                            if ($this->checkZoneLocationByCountry($zone_location))
-                                return $shipping_zone;
+                        if ($this->checkZoneLocationByCountry($zone_location)) {
+                            return $shipping_zone;
+                        }
                         break;
 
                     case 'postcode':
-                            if ($this->checkZoneLocationByPostCode($zone_location, $destination_cep))
-                                return $shipping_zone;
+                        if ($this->checkZoneLocationByPostCode($zone_location, $destination_cep)) {
+                            return $shipping_zone;
+                        }
                         break;
 
                     case 'state':
-                            if ($this->checkZoneLocationByState($zone_location, $destination_cep))
-                                return $shipping_zone;
+                        if ($this->checkZoneLocationByState($zone_location, $destination_cep)) {
+                            return $shipping_zone;
+                        }
                         break;
-
                 }
             }
         }
@@ -80,7 +82,6 @@ class ShippingZones {
                 if (substr($cep_destinatario, 0, $tamanho_string) == $before_wildcard) {
                     return true;
                 }
-
             }
             // Is it a literal comparison?
             if ($cep_destinatario == $zone_location->code) {
@@ -103,5 +104,4 @@ class ShippingZones {
         }
         return false;
     }
-
 }

@@ -2,7 +2,8 @@
 
 namespace CFPP\Frontend;
 
-class Template {
+class Template
+{
 
     /**
     *   Enqueues CSS for the front-end
@@ -12,5 +13,4 @@ class Template {
         extract($data);
         include_once(CFPP_BASE_PATH.'/src/Templates/'.$template.'.php');
     }
-
 }

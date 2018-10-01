@@ -2,7 +2,8 @@
 
 use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsAbstract;
 
-class WC_Shipping_Free_Shipping_Shipping_Method extends ShippingMethodsAbstract {
+class WC_Shipping_Free_Shipping_Shipping_Method extends ShippingMethodsAbstract
+{
 
     /**
     *   Receives a Request and calculates the shipping
@@ -16,7 +17,7 @@ class WC_Shipping_Free_Shipping_Shipping_Method extends ShippingMethodsAbstract 
             'name' => $this->shipping_method->method_title,
             'status' => $should_show,
             'price' => 'Grátis',
-            'days' => apply_filters( 'cfpp_free_shipping_days', 'Consulte-nos' )
+            'days' => apply_filters('cfpp_free_shipping_days', 'Consulte-nos')
         );
     }
 
@@ -36,5 +37,4 @@ class WC_Shipping_Free_Shipping_Shipping_Method extends ShippingMethodsAbstract 
         }
         return false;
     }
-
 }

@@ -2,12 +2,13 @@
 
 namespace CFPP;
 
-use CFPP\Admin\Requirements,
-    CFPP\Admin\Admin,
-    CFPP\Common\Ajax,
-    CFPP\Frontend\Frontend;
+use CFPP\Admin\Requirements;
+use CFPP\Admin\Admin;
+use CFPP\Common\Ajax;
+use CFPP\Frontend\Frontend;
 
-class Core {
+class Core
+{
 
     /**
      * True if WordPress installation meets minimum requirements. False otherwise.
@@ -43,23 +44,19 @@ class Core {
     private function afterCheckRequirements()
     {
         if ($this->meetsRequirements) {
-
             // Ajax specific actions
             $ajax = new Ajax;
             $ajax->listen();
 
-            if (is_admin())
-            {
+            if (is_admin()) {
                 // Admin specific actions
                 $admin = new Admin;
                 $admin->run();
-            } else
-            {
+            } else {
                 // Front-end specific actions
                 $frontend = new Frontend;
                 $frontend->run();
             }
         }
     }
-
 }

@@ -2,15 +2,17 @@
 
 namespace CFPP\Common;
 
-class Helpers {
+class Helpers
+{
 
     /**
      * Normalize weight to kilos
      */
     public static function normalizeProductWeight($weight)
     {
-        if (!is_numeric($weight))
+        if (!is_numeric($weight)) {
             return $weight;
+        }
 
         $measurement = get_option('woocommerce_weight_unit');
 
@@ -43,6 +45,7 @@ class Helpers {
         $cep = (int)$cep;
 
         switch ($estado) {
+            // phpcs:disable
             case ('AC'): if ($cep > 69900 && $cep < 69999) return true; break;
             case ('AL'): if ($cep > 57000 && $cep < 57999) return true; break;
             case ('AP'): if ($cep > 68900 && $cep < 68999) return true; break;
@@ -71,9 +74,9 @@ class Helpers {
             case ('SP'): if ($cep > 01000 && $cep < 19999) return true; break;
             case ('SE'): if ($cep > 49000 && $cep < 49999) return true; break;
             case ('TO'): if ($cep > 77000 && $cep < 77995) return true; break;
+            // phpcs:enable
             default:
                 return false;
         }
     }
-
 }

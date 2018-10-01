@@ -2,7 +2,8 @@
 
 namespace CFPP\Admin;
 
-class Notifications {
+class Notifications
+{
 
     // Singleton instance
     public static $instance;
@@ -11,12 +12,14 @@ class Notifications {
     private $warning;
 
     // Implements Singleton pattern
-    public function __construct() {
+    public function __construct()
+    {
         self::$instance = $this;
     }
 
     // Implements Singleton pattern
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -29,7 +32,7 @@ class Notifications {
     public function fatal(string $message)
     {
         $this->fatal = $message;
-        add_action( 'admin_notices', array($this, 'display_fatal'), 10 );
+        add_action('admin_notices', array($this, 'display_fatal'), 10);
     }
 
     /**
@@ -38,7 +41,7 @@ class Notifications {
     public function warning(string $message)
     {
         $this->warning = $message;
-        add_action( 'admin_notices', array($this, 'display_warning'), 10 );
+        add_action('admin_notices', array($this, 'display_warning'), 10);
     }
 
     /**
@@ -66,5 +69,4 @@ class Notifications {
             </div>
         <?php
     }
-
 }

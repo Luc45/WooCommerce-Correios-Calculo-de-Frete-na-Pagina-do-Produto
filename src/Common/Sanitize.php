@@ -2,7 +2,8 @@
 
 namespace CFPP\Common;
 
-class Sanitize {
+class Sanitize
+{
 
     /**
     *   Sanitizes a Shipping Cost Ajax Request from CFPP
@@ -23,5 +24,4 @@ class Sanitize {
 
         return $sanitized_post;
     }
-
 }

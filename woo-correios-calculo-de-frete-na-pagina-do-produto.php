@@ -13,7 +13,7 @@
 namespace CFPP;
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
+if (! defined('WPINC')) {
     die;
 }
 /**
@@ -22,11 +22,11 @@ if ( ! defined( 'WPINC' ) ) {
 function run_cfpp_plugin()
 {
     // Composer Autoloader
-    require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+    require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 
     // Constants we will use later on
     define('CFPP_BASE_PATH', __DIR__);
-    define('CFPP_BASE_URL', plugin_dir_url( __FILE__ ));
+    define('CFPP_BASE_URL', plugin_dir_url(__FILE__));
 
     // Yahoooo!
     $cfpp = new Core();

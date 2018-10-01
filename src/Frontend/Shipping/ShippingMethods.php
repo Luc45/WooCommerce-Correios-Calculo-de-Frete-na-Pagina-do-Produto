@@ -4,7 +4,8 @@ namespace CFPP\Frontend\Shipping;
 
 use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsFactory;
 
-class ShippingMethods {
+class ShippingMethods
+{
 
     /**
     *   Calculates the shipping costs from the shipping zones provided
@@ -40,8 +41,9 @@ class ShippingMethods {
                 $response = $cfpp_shipping_method->calculate($request);
 
                 // Normalize output
-                if (empty($response['class']))
+                if (empty($response['class'])) {
                     $response['class'] = '';
+                }
 
                 if ($response['status'] != 'hide') {
                     $shipping_costs[] = $response;
@@ -51,5 +53,4 @@ class ShippingMethods {
 
         return $shipping_costs;
     }
-
 }

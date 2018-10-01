@@ -2,7 +2,8 @@
 
 namespace CFPP\Common;
 
-class Validate {
+class Validate
+{
 
     /**
     *   Validates a Shipping Cost Ajax Request from CFPP
@@ -10,11 +11,12 @@ class Validate {
     public static function cfppShippingCostAjaxRequest(array $request)
     {
         // Since we're receiving this from the front-end, let's not trust it.
-        if (!self::cep($request['cep_destinatario']))
+        if (!self::cep($request['cep_destinatario'])) {
             return array(
                 'success' => false,
                 'message' => 'CEP destinatário inválido.'
             );
+        }
 
         $product = array();
         $product['height'] = $request['produto_altura'];
@@ -65,11 +67,12 @@ class Validate {
      * Validates a product height
      * @return array
      */
-    private static function productHeight($height) {
+    private static function productHeight($height)
+    {
         $errors = array();
-            if (!is_numeric($height)) {
-                $errors[] = 'Altura inválida ou não preenchida.';
-            }
+        if (!is_numeric($height)) {
+            $errors[] = 'Altura inválida ou não preenchida.';
+        }
         return $errors;
     }
 
@@ -77,11 +80,12 @@ class Validate {
      * Validates a product width
      * @return array
      */
-    private static function productWidth($width) {
+    private static function productWidth($width)
+    {
         $errors = array();
-            if (!is_numeric($width)) {
-                $errors[] = 'Largura inválida ou não preenchida.';
-            }
+        if (!is_numeric($width)) {
+            $errors[] = 'Largura inválida ou não preenchida.';
+        }
         return $errors;
     }
 
@@ -89,11 +93,12 @@ class Validate {
      * Validates a product length
      * @return array
      */
-    private static function productLength($length) {
+    private static function productLength($length)
+    {
         $errors = array();
-            if (!is_numeric($length)) {
-                $errors[] = 'Comprimento inválido ou não preenchido.';
-            }
+        if (!is_numeric($length)) {
+            $errors[] = 'Comprimento inválido ou não preenchido.';
+        }
         return $errors;
     }
 
@@ -101,11 +106,12 @@ class Validate {
      * Validates a product weight
      * @return array
      */
-    private static function productWeight($weight) {
+    private static function productWeight($weight)
+    {
         $errors = array();
-            if (!is_numeric($weight)) {
-                $errors[] = 'Peso inválido ou não preenchido.';
-            }
+        if (!is_numeric($weight)) {
+            $errors[] = 'Peso inválido ou não preenchido.';
+        }
         return $errors;
     }
 
@@ -113,11 +119,12 @@ class Validate {
      * Validates a product price
      * @return array
      */
-    private static function productPrice($price) {
+    private static function productPrice($price)
+    {
         $errors = array();
-            if (!is_numeric($price)) {
-                $errors[] = 'Preço inválido ou não preenchido. ('.$price.')';
-            }
+        if (!is_numeric($price)) {
+            $errors[] = 'Preço inválido ou não preenchido. ('.$price.')';
+        }
         return $errors;
     }
 
@@ -132,5 +139,4 @@ class Validate {
         $cep = preg_replace('/[^0-9]/', '', $cep);
         return strlen($cep) == 8;
     }
-
 }
