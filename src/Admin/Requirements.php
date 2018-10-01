@@ -14,8 +14,8 @@ class Requirements
      */
     public function phpVersionSupported()
     {
-        if (version_compare(phpversion(), '5.3.0', '<')) {
-            Notifications::getInstance()->fatal(__('Versão mínima do PHP necessária: 5.3.0', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+        if (version_compare(phpversion(), '5.4.0', '<')) {
+            Notifications::getInstance()->fatal(__('Versão mínima do PHP necessária: 5.4.0', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
             return false;
         }
         return true;
