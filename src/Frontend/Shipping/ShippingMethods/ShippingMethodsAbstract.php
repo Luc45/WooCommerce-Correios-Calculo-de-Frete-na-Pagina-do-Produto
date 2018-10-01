@@ -11,6 +11,5 @@ abstract class ShippingMethodsAbstract
         $this->shipping_method = $shipping_method;
     }
 
-    abstract public function getName();
     abstract public function calculate(array $request);
 }

@@ -22,14 +22,30 @@ class ShippingMethods {
 
                 // Makes sure CFPP have Method created for this
                 if ($cfpp_shipping_method === false) {
-                    $shipping_costs[$cfpp_shipping_method->getName()] = 'Not_Available';
+                    $shipping_costs[] = array(
+                        'name' => $cfpp_shipping_method->method_title,
+                        'status' => 'show',
+                        'price' => 'Prossiga com a compra normalmente para ver o preço deste método de entrega.',
+                        'days' => '-',
+                        'additional_class' => 'cfpp_shipping_method_not_available',
+                        'priceColSpan' => 2
+                    );
                     continue;
                 }
 
                 // Pass the Shipping Method class to the CFPP Shipping Method
                 $cfpp_shipping_method->setup($shipping_method);
 
-                $shipping_costs[$cfpp_shipping_method->getName()] = $cfpp_shipping_method->calculate($request);
+                // Go to specific shipping method class to calculate
+                $response = $cfpp_shipping_method->calculate($request);
+
+                // Normalize output
+                if (empty($response['class']))
+                    $response['class'] = '';
+
+                if ($response['status'] != 'hide') {
+                    $shipping_costs[] = $response;
+                }
             }
         }
 

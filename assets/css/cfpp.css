@@ -71,3 +71,7 @@ a#cfpp_credits {
     font-weight: 100;
     height: 10px;
 }
+
+.cfpp-shipping-mode-debug {
+    display: none !important;
+}

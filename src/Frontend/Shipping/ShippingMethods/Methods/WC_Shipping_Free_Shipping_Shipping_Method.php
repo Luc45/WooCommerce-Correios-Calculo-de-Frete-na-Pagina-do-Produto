@@ -5,23 +5,17 @@ use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsAbstract;
 class WC_Shipping_Free_Shipping_Shipping_Method extends ShippingMethodsAbstract {
 
     /**
-    *   Returns the Display name for this Shipping Method
-    */
-    public function getName()
-    {
-        return 'Frete Grátis';
-    }
-
-    /**
     *   Receives a Request and calculates the shipping
     */
     public function calculate(array $request)
     {
-        // Return 0 for Free Shipping, False otherwise.
-        $should_show = $this->meetsFreeShippingRequirements($request) ? 'Grátis' : 'false';
+        // Check if this product is entitled for free shipping
+        $should_show = $this->meetsFreeShippingRequirements($request) ? 'show' : 'hide';
 
         return array(
-            'price' => $should_show,
+            'name' => $this->shipping_method->method_title,
+            'status' => $should_show,
+            'price' => 'Grátis',
             'days' => '-'
         );
     }

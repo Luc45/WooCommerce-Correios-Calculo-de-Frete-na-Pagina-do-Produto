@@ -8,14 +8,6 @@ class WC_Correios_Shipping_SEDEX_Shipping_Method extends ShippingMethodsAbstract
     use WC_Correios_Shipping_Method_Trait;
 
     /**
-    *   Returns the Display name for this Shipping Method
-    */
-    public function getName()
-    {
-        return 'SEDEX';
-    }
-
-    /**
     *   Receives a Request and calculates the shipping
     */
     public function calculate(array $request)
@@ -25,7 +17,12 @@ class WC_Correios_Shipping_SEDEX_Shipping_Method extends ShippingMethodsAbstract
         if (empty($errors)) {
            return $this->calculateCorreiosCosts($this->shipping_method, $request);
         } else {
-            return false;
+            $errors = implode(', ', $errors);
+            return array(
+                        'name' => $this->shipping_method->method_title,
+                        'status' => 'debug',
+                        'debug' => $errors
+                    );
         }
     }
 

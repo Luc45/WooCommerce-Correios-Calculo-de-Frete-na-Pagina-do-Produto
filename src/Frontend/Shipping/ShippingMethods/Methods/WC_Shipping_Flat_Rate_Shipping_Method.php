@@ -5,14 +5,6 @@ use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsAbstract;
 class WC_Shipping_Flat_Rate_Shipping_Method extends ShippingMethodsAbstract {
 
     /**
-    *   Returns the Display name for this Shipping Method
-    */
-    public function getName()
-    {
-        return 'Frete Único';
-    }
-
-    /**
     *   Receives a Request and calculates the shipping
     */
     public function calculate(array $request)
@@ -49,11 +41,20 @@ class WC_Shipping_Flat_Rate_Shipping_Method extends ShippingMethodsAbstract {
             $sum =  is_numeric($sum) ? $sum : false;
         }
 
-        return array(
-            'price' => $sum,
-            'days' => '-'
-        );
-
+        if (is_numeric($sum)) {
+            return array(
+                'name' => $this->shipping_method->method_title,
+                'status' => 'show',
+                'price' => 'R$ ' . number_format($sum, 2, ',', '.'),
+                'days' => '-'
+            );
+        } else {
+            return array(
+                'name' => $this->shipping_method->method_title,
+                'status' => 'debug',
+                'debug' => $sum
+            );
+        }
     }
 
 

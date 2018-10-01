@@ -77,31 +77,14 @@
 						resetarTabela();
 		 			}
 		 			var row = '';
-		 			// Tem Retirar no local?
-		 			if (result.retirar_no_local == 'sim') {
-	 					row += '<tr>\
-		                            <td>Retirar no local</td>\
-		                            <td>Grátis</td>\
-		                            <td>-</td>\
-	                        	</tr>';
-                    }
-
-		 			// Tem Frete Grátis?
-		 			if (result.frete_gratis == 'sim') {
-	 					row += '<tr>\
-		                            <td>Frete Grátis</td>\
-		                            <td>Grátis</td>\
-		                            <td>-</td>\
-	                        	</tr>';
-                    }
-
 		 			// Outros métodos de envio
-		 			if (result.shipping_methods) {
-		 				$(result.shipping_methods).each(function(i, v) {
-		 					row += '<tr>\
-			                            <td>'+v.Nome+'</td>\
-			                            <td>R$ '+v.Valor+'</td>\
-			                            <td>Em até '+v.PrazoEntrega+' dias</td>\
+		 			if (result.data) {
+		 				console.log(result.data);
+		 				$(result.data).each(function(i, v) {
+		 					row += '<tr class="'+v.class+' cfpp-shipping-mode-'+v.status+'"">\
+			                            <td>'+v.name+'</td>\
+			                            <td>'+v.price+'</td>\
+			                            <td>'+v.days+'</td>\
 		                        	</tr>';
 		 				});
 		 			}
