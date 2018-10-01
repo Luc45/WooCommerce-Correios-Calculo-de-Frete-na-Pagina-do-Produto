@@ -29,7 +29,9 @@ class Shipping {
 
         // Gets Shipping Costs for each Shipping Method
         $shipping_methods = new ShippingMethods;
-        $cfpp_shipping_costs = $shipping_methods->calculateShippingOptions($shipping_zone['shipping_methods'], $request);
+
+        $shipping_methods_array = empty($shipping_zone['shipping_methods']) ? $shipping_zone->get_shipping_methods() : $shipping_zone['shipping_methods'];
+        $cfpp_shipping_costs = $shipping_methods->calculateShippingOptions($shipping_methods_array, $request);
 
         wp_send_json_success( $cfpp_shipping_costs );
     }
