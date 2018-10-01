@@ -31,7 +31,7 @@ class Helpers {
                 throw new \Exception("Unable to recognize woocommerce_weight_unit: ".$measurement.'. Supported units are: kg, g, lbs and oz.', 1);
         }
 
-        return number_format($weight / $factor, 2, '.', ',');
+        return $weight / $factor;
     }
 
     /**
