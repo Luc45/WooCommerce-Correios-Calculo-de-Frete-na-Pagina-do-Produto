@@ -200,11 +200,12 @@ trait WC_Correios_Shipping_Method_Trait {
      */
     private function checkPrice($price)
     {
+        $maximum_price = $this->shipping_method->id == 'correios-pac' ? 3000 : 10000;
         $errors = array();
             if (!is_numeric($price)) {
                 $errors[] = 'Preço inválido ou não preenchido. ('.$price.')';
-            } elseif (is_numeric($price) && $price > 10000) {
-                $errors[] = 'Preço (R$ '.$price.') ultrapassa o máximo permitido pelos correios (R$ 10.000,00).';
+            } elseif (is_numeric($price) && $price > $maximum_price) {
+                $errors[] = 'Preço (R$ '.$price.') ultrapassa o máximo permitido para esta modalidade de envio (R$ '.$maximum_price.').';
             }
         return $errors;
     }
