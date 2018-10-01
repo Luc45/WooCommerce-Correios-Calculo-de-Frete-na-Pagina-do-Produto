@@ -46,7 +46,7 @@ class WC_Shipping_Flat_Rate_Shipping_Method extends ShippingMethodsAbstract {
                 'name' => $this->shipping_method->method_title,
                 'status' => 'show',
                 'price' => 'R$ ' . number_format($sum, 2, ',', '.'),
-                'days' => '-'
+                'days' => apply_filters( 'cfpp_flat_rate_days', 'Consulte-nos' )
             );
         } else {
             return array(

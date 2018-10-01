@@ -21,7 +21,7 @@ class WC_Shipping_Local_Pickup_Shipping_Method extends ShippingMethodsAbstract {
             'name' => $this->shipping_method->method_title,
             'status' => 'show',
             'price' => (string) $cost,
-            'days' => '-'
+            'days' => apply_filters( 'cfpp_local_pickup_days', 'Consulte-nos' )
         );
     }
 
