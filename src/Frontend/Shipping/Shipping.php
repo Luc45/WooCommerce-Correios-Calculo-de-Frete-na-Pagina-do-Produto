@@ -6,7 +6,6 @@ use CFPP\Common\Sanitize;
 use CFPP\Common\Validate;
 use CFPP\Frontend\Shipping\ShippingZones;
 use CFPP\Frontend\Shipping\ShippingMethods;
-use CFPP\Frontend\ShippingMethods\WooCommerceCorreios;
 
 class Shipping
 {
