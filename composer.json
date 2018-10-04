@@ -3,9 +3,5 @@
         "psr-4": {
             "CFPP\\": "src"
         }
-    },
-    "require-dev": {
-        "lucatume/wp-browser": "^2.1",
-        "phpcompatibility/php-compatibility": "^8.2"
     }
 }
