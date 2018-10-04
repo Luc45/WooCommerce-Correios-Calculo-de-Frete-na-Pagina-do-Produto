@@ -16,28 +16,37 @@ class RequirementsTest extends \Codeception\TestCase\WPTestCase
         parent::tearDown();
     }
 
-    // tests
+    public function test_php_version_check_works()
+    {
+        $requirements = new Requirements;
+        if (version_compare(phpversion(), '5.4.0', '<')) {
+            $this->assertFalse($requirements->phpVersionSupported());
+        } else {
+            $this->assertTrue($requirements->phpVersionSupported());
+        }
+    }
+
     public function test_woocommerce_installed()
     {
         $requirements = new Requirements;
         $this->assertTrue($requirements->wooCommerceInstalled());
     }
 
-    // tests
     public function test_woocommerce_installed_fails_if_not_installed()
     {
-        $this->markTestSkipped('Can\'t make this work');
+        #$this->markTestSkipped('Can\'t make this work');
 
         $requirements = new Requirements;
 
-        $active_plugins = get_option( 'active_plugins' );
-        $active_plugins = array_diff($active_plugins, ['woocommerce/woocommerce.php']);
-        update_option( 'active_plugins', $active_plugins );
+        $active_plugins = get_option('active_plugins');
+
+        add_filter( 'pre_option_active_plugins', function() use ($active_plugins) {
+            return array_diff($active_plugins, ['woocommerce/woocommerce.php']);
+        }, 100);
 
         $this->assertFalse($requirements->wooCommerceInstalled());
     }
 
-    // tests
     public function test_woocommerce_version_without_cfpp_cep()
     {
         global $woocommerce;
@@ -51,21 +60,21 @@ class RequirementsTest extends \Codeception\TestCase\WPTestCase
         $this->assertFalse($requirements->wooCommerceVersionSupported());
     }
 
-    // tests
     public function test_woocommerce_correios_installed_fails_if_not_installed()
     {
-        $this->markTestSkipped('Can\'t make this work');
+        #$this->markTestSkipped('Can\'t make this work');
 
         $requirements = new Requirements;
 
-        $active_plugins = get_option( 'active_plugins' );
-        $active_plugins = array_diff($active_plugins, ['woocommerce-correios/woocommerce-correios.php']);
-        update_option( 'active_plugins', $active_plugins );
+        $active_plugins = get_option('active_plugins');
+
+        add_filter( 'pre_option_active_plugins', function() use ($active_plugins) {
+            return array_diff($active_plugins, ['woocommerce-correios/woocommerce-correios.php']);
+        }, 100);
 
         $this->assertFalse($requirements->wooCommerceCorreiosInstalled());
     }
 
-    // tests
     public function test_valid_origin_cep()
     {
         $requirements = new Requirements;
@@ -83,7 +92,6 @@ class RequirementsTest extends \Codeception\TestCase\WPTestCase
 
     }
 
-    // tests
     public function test_woocommerce_version_with_cfpp_cep_returns_true_even_in_versions_below_minimum()
     {
         global $woocommerce;
