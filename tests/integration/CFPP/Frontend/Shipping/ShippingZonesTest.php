@@ -159,4 +159,66 @@ class ShippingZonesTest extends \Codeception\TestCase\WPTestCase
         }
     }
 
+    /**
+     * Test scenario for a country comparison
+     */
+    public function test_country_brazil()
+    {
+        // Deletes all Shipping Zones
+        $WC_Shipping_Zones = \WC_Shipping_Zones::get_zones();
+        foreach ($WC_Shipping_Zones as $shipping_zone) {
+            \WC_Shipping_Zones::delete_zone($shipping_zone->id);
+        }
+
+        // Create a new Shipping Zone for the test scenario
+        $WC_Shipping_Zone = new \WC_Shipping_Zone( null );
+        $WC_Shipping_Zone->set_zone_name('Country Test');
+        $WC_Shipping_Zone->set_zone_order(1);
+
+        $locations = [];
+        $locations[] = [
+            'type' => 'country',
+            'code' => 'BR'
+        ];
+
+        $WC_Shipping_Zone->set_locations($locations);
+        $WC_Shipping_Zone->save();
+
+        $ShippingZones = new ShippingZones;
+
+        $response = $ShippingZones->getFirstMatchingShippingZone('30360-230');
+        $this->assertEquals('Country Test', $response->get_zone_name());
+    }
+
+    /**
+     * Test scenario for a country comparison that should not match
+     */
+    public function test_country_not_brazil()
+    {
+        // Deletes all Shipping Zones
+        $WC_Shipping_Zones = \WC_Shipping_Zones::get_zones();
+        foreach ($WC_Shipping_Zones as $shipping_zone) {
+            \WC_Shipping_Zones::delete_zone($shipping_zone->id);
+        }
+
+        // Create a new Shipping Zone for the test scenario
+        $WC_Shipping_Zone = new \WC_Shipping_Zone( null );
+        $WC_Shipping_Zone->set_zone_name('Country Test');
+        $WC_Shipping_Zone->set_zone_order(1);
+
+        $locations = [];
+        $locations[] = [
+            'type' => 'country',
+            'code' => 'US'
+        ];
+
+        $WC_Shipping_Zone->set_locations($locations);
+        $WC_Shipping_Zone->save();
+
+        $ShippingZones = new ShippingZones;
+
+        $response = $ShippingZones->getFirstMatchingShippingZone('30360-230');
+        $this->assertNotEquals('Country Test', $response->get_zone_name());
+    }
+
 }
