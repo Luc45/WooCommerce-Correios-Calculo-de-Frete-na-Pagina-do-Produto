@@ -84,7 +84,7 @@ class ShippingZones
                 }
             }
             // Is it a literal comparison?
-            if ($cep_destinatario == $zone_location->code) {
+            if ($cep_destinatario == str_replace('-', '', $zone_location->code)) {
                 return true;
             }
         }
