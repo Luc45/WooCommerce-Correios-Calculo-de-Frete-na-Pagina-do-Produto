@@ -8,7 +8,7 @@ class ShippingMethodsFactory
     /**
     *   Returns a Shipping Method class
     */
-    public function getClass($shipping_method)
+    public function getInstance($shipping_method)
     {
         // String type-hinting for older versions of PHP
         if (gettype($shipping_method) != 'string') return false;

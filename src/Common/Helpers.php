@@ -79,4 +79,15 @@ class Helpers
                 return false;
         }
     }
+
+    /**
+    *   Receives a CEP string and returns it with numbers only
+    */
+    public function clearCep($cep) {
+        // String type-hinting for older versions of PHP
+        if (gettype($cep) != 'string')
+            throw new InvalidArgumentException("CEP deve ser string.", 1);
+
+        return preg_replace('/[^0-9]/', '', $cep);
+    }
 }

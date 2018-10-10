@@ -24,19 +24,19 @@ class ShippingZones
                 switch ($zone_location->type) {
                     case 'country':
                         if ($this->checkZoneLocationByCountry($zone_location)) {
-                            return $shipping_zone;
+                            return \WC_Shipping_Zones::get_zone($shipping_zone['id']);
                         }
                         break;
 
                     case 'postcode':
                         if ($this->checkZoneLocationByPostCode($zone_location, $destination_cep)) {
-                            return $shipping_zone;
+                            return \WC_Shipping_Zones::get_zone($shipping_zone['id']);
                         }
                         break;
 
                     case 'state':
                         if ($this->checkZoneLocationByState($zone_location, $destination_cep)) {
-                            return $shipping_zone;
+                            return \WC_Shipping_Zones::get_zone($shipping_zone['id']);
                         }
                         break;
                 }
@@ -61,30 +61,31 @@ class ShippingZones
      */
     private function checkZoneLocationByPostCode($zone_location, $cep_destinatario)
     {
+        $cep_destinatario = Helpers::clearCep($cep_destinatario);
         // CEPs separated by line. Can contain wildcards or ranges.
         // We need to proccess each line separately.
-        $ceps = explode(PHP_EOL, $zone_location->code);
-        foreach ($ceps as $key => $value) {
+        $ceps_zone = explode(PHP_EOL, $zone_location->code);
+        foreach ($ceps_zone as $cep_zone) {
             // Is it a range?
-            if (strpos($zone_location->code, '...') !== false) {
-                $ranges = explode('...', $value);
+            if (strpos($cep_zone, '...') !== false) {
+                $ranges = explode('...', $cep_zone);
                 if (count($ranges) == 2 && is_numeric($ranges[0]) && is_numeric($ranges[1])) {
-                    if ($cep_destinatario > (int) $ranges[0] && $cep_destinatario < (int) $ranges[1]) {
+                    if ($cep_destinatario >= (int) $ranges[0] && $cep_destinatario <= (int) $ranges[1]) {
                         return true;
                     }
                 }
                 continue;
             }
             // Is it a wildcard?
-            if (strpos($zone_location->code, '*') !== false) {
-                $before_wildcard = strtok($zone_location->code, '*');
+            if (strpos($cep_zone, '*') !== false) {
+                $before_wildcard = str_replace('-', '', strtok($cep_zone, '*'));
                 $tamanho_string = strlen($before_wildcard);
                 if (substr($cep_destinatario, 0, $tamanho_string) == $before_wildcard) {
                     return true;
                 }
             }
             // Is it a literal comparison?
-            if ($cep_destinatario == $zone_location->code) {
+            if ($cep_destinatario == Helpers::clearCep($cep_zone)) {
                 return true;
             }
         }
