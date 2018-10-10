@@ -14,9 +14,6 @@ class WC_Correios_Shipping_SEDEX_Shipping_Method extends ShippingMethodsAbstract
     */
     public function calculate(array $request)
     {
-        // Takes into account how many items we are requesting shipping for
-        $request = $this->multiplyMeasurementsByQuantity($request);
-
         $errors = $this->validate($request);
 
         if (empty($errors)) {

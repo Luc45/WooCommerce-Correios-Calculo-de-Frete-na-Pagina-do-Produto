@@ -13,7 +13,13 @@ class ShippingMethods {
     {
         $shipping_costs = array();
 
+        // Takes into account how many items we are requesting shipping for
+        $request = $this->multiplyMeasurementsByQuantity($request);
+
+        // Get only enabled shipping methods
         $shipping_methods = $this->filterByEnabledShippingMethods($shipping_methods);
+
+        // Get only shipping classes that matches the one from the product
         $shipping_methods = $this->filterByShippingClass($shipping_methods, $request);
 
         $factory = new ShippingMethodsFactory;
@@ -25,6 +31,7 @@ class ShippingMethods {
 
                 // If we don't support this Shipping Method, it will return false.
                 if ($shipping_method_instance === false) {
+                    dd($shipping_method);
                     $shipping_costs[] = array(
                         'name' => $shipping_method->method_title,
                         'status' => 'show',
@@ -47,7 +54,7 @@ class ShippingMethods {
                     $response['class'] = '';
                 }
 
-                if ($response['status'] != 'hide') {
+                if (empty($response['status']) || $response['status'] != 'hide') {
                     $shipping_costs[] = $response;
                 }
         }
@@ -84,5 +91,18 @@ class ShippingMethods {
             }
         }
         return $shipping_methods;
+    }
+
+    /**
+     * Multiplies the product measurements by the quantity requested
+     */
+    private function multiplyMeasurementsByQuantity($request)
+    {
+        foreach ($request as $medida => &$valor) {
+            if (in_array($medida, array('produto_altura', 'produto_largura', 'produto_comprimento', 'produto_peso', 'produto_preco'))) {
+                $valor = $valor * $request['quantidade'];
+            }
+        }
+        return $request;
     }
 }
