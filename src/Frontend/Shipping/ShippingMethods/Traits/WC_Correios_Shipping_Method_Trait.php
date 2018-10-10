@@ -6,81 +6,6 @@ use CFPP\Common\Cep;
 
 trait WC_Correios_Shipping_Method_Trait
 {
-
-    /**
-    *   Calculates Correios Costs
-    */
-    public function calculateCorreiosCosts($shipping_method, $request)
-    {
-        $correiosWebService = new \WC_Correios_Webservice;
-
-        $correiosWebService->set_height($request['produto_altura']);
-        $correiosWebService->set_width($request['produto_largura']);
-        $correiosWebService->set_length($request['produto_comprimento']);
-        $correiosWebService->set_weight($request['produto_peso']);
-        $correiosWebService->set_destination_postcode($request['cep_destinatario']);
-        $correiosWebService->set_origin_postcode(Cep::getOriginCep());
-        $correiosWebService->set_service($shipping_method->get_code());
-
-        // Agora vamos setar os condicionais...
-
-        // Valor declarado
-        if ($shipping_method->declare_value == 'yes' && $request['produto_preco'] > 18.50) {
-            $correiosWebService->set_declared_value($request['produto_preco']);
-        }
-
-        // Mão Propria
-        if ($shipping_method->own_hands == 'yes') {
-            $correiosWebService->set_own_hands = 'S';
-        }
-
-        // Peso extra
-        if (!empty($shipping_method->extra_weight)) {
-            $correiosWebService->set_extra_weight($shipping_method->extra_weight);
-        }
-
-        // Aviso de recebimento
-        if ($shipping_method->receipt_notice == 'yes') {
-            $correiosWebService->set_receipt_notice('S');
-        }
-
-        $entrega = $correiosWebService->get_shipping();
-
-        // Normalize Shipping Price
-        $price = $entrega->Valor;
-        $price = (string) $price;
-        $price = floatval(str_replace(',', '.', str_replace('.', '', $price)));
-
-        // Dias adicionais
-        if (!empty($shipping_method->additional_time) && $shipping_method->show_delivery_time == 'yes') {
-            $entrega->PrazoEntrega = $entrega->PrazoEntrega + $shipping_method->additional_time;
-            $entrega->DiasAdicionais = $shipping_method->additional_time;
-        }
-
-        // Custo adicional
-        if (!empty($shipping_method->fee)) {
-            if (substr($shipping_method->fee, -1) == '%') {
-                $porcentagem = preg_replace('/[^0-9]/', '', $shipping_method->fee);
-                $price = ($price/100)*(100+$porcentagem);
-                $entrega->Fee = $porcentagem.'%';
-            } else {
-                $price = $price + $shipping_method->fee;
-                $entrega->Fee = $shipping_method->fee;
-            }
-        }
-
-        $return = array();
-
-        $dia_ou_dias = (int) $entrega->PrazoEntrega > 1 ? 'dias' : 'dia';
-
-        $return['name'] = $shipping_method->method_title;
-        $return['price'] = 'R$ ' . number_format($price, 2, ',', '.');
-        $return['days'] = 'Em até ' . (int) $entrega->PrazoEntrega . ' ' . $dia_ou_dias;
-        $return['debug'] = $entrega;
-
-        return $return;
-    }
-
     /**
     *   Validates a product according to WooCommerce Correios requirements
     */
@@ -94,25 +19,13 @@ trait WC_Correios_Shipping_Method_Trait
         $errors[] = $this->checkLength($request['produto_comprimento']);
         $errors[] = $this->checkWeight($request['produto_peso']);
         $errors[] = $this->checkPrice($request['produto_preco']);
+        $errors[] = $this->checkSumHeightWidthLength($request['produto_altura'], $request['produto_largura'], $request['produto_comprimento']);
 
         // Flattens array
         $errors = call_user_func_array('array_merge', $errors);
 
         // Do we have any error?
         return $errors;
-    }
-
-    /**
-     * Multiplies the product measurements by the quantity requested
-     */
-    private function multiplyMeasurementsByQuantity($request)
-    {
-        foreach ($request as $k => &$v) {
-            if (in_array($k, array('produto_altura', 'produto_largura', 'produto_comprimento', 'produto_peso', 'produto_preco'))) {
-                $v = $v * $request['quantidade'];
-            }
-        }
-        return $request;
     }
 
     /**
@@ -175,7 +88,7 @@ trait WC_Correios_Shipping_Method_Trait
         $errors = array();
         if (is_numeric($height) && is_numeric($width) && is_numeric($length)) {
             if ($height + $width + $length > 200) {
-                $errors[] = 'Soma da Altura, Largura e Comprimento ('.$height + $width + $length.') ultrapassa o máximo permitido pelos correios (200cm).';
+                $errors[] = "Soma da Altura, Largura e Comprimento (".$height + $width + $length.") ultrapassa o máximo permitido pelos correios (200cm).";
             }
         }
         return $errors;
@@ -187,11 +100,17 @@ trait WC_Correios_Shipping_Method_Trait
      */
     private function checkWeight($weight)
     {
+        $extra_weight = !empty($this->shipping_method->extra_weight) ? $this->shipping_method->extra_weight: 0;
+
         $errors = array();
         if (!is_numeric($weight)) {
             $errors[] = 'Peso inválido ou não preenchido.';
-        } elseif (is_numeric($weight) && $weight > 30) {
-            $errors[] = 'Peso ('.$weight.'kg) ultrapassa o máximo permitido pelos correios (30kg).';
+        } elseif (is_numeric($weight) && ($weight + $extra_weight) > 30) {
+            if ($extra_weight > 0) {
+                $errors[] = 'Peso ('.$weight.'kg) ultrapassa o máximo permitido pelos correios (30kg). Considerando peso extra configurado do método de entrega, que é de '.$extra_weight.'kg';
+            } else {
+                $errors[] = 'Peso ('.$weight.'kg) ultrapassa o máximo permitido pelos correios (30kg).';
+            }
         }
         return $errors;
     }
@@ -202,7 +121,17 @@ trait WC_Correios_Shipping_Method_Trait
      */
     private function checkPrice($price)
     {
-        $maximum_price = $this->shipping_method->id == 'correios-pac' ? 3000 : 10000;
+        switch ($this->shipping_method->id) {
+            case 'correios-pac':
+                $maximum_price = 3000;
+                break;
+            case 'correios-sedex':
+                $maximum_price = 10000;
+                break;
+            default:
+                $maximum_price = PHP_INT_MAX;
+                break;
+        }
         $errors = array();
         if (!is_numeric($price)) {
             $errors[] = 'Preço inválido ou não preenchido. ('.$price.')';
