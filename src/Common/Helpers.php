@@ -83,7 +83,7 @@ class Helpers
     /**
     *   Receives a CEP string and returns it with numbers only
     */
-    public function clearCep($cep) {
+    public static function clearCep($cep) {
         // String type-hinting for older versions of PHP
         if (gettype($cep) != 'string')
             throw new InvalidArgumentException("CEP deve ser string.", 1);

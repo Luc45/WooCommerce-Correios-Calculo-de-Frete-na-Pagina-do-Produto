@@ -14,6 +14,7 @@ class ShippingMethods {
         $shipping_costs = array();
 
         $shipping_methods = $this->filterByEnabledShippingMethods($shipping_methods);
+        $shipping_methods = $this->filterByShippingClass($shipping_methods, $request);
 
         $factory = new ShippingMethodsFactory;
 
@@ -66,5 +67,22 @@ class ShippingMethods {
             }
         }
         return $enabled_shipping_methods;
+    }
+
+    /**
+     * Determines which shipping methods should show, according to shipping class
+     * and requested product
+     */
+    private function filterByShippingClass($shipping_methods, $request)
+    {
+        foreach ($shipping_methods as $key => $shipping_method) {
+            if (property_exists($shipping_method, 'shipping_class') && $shipping_method->shipping_class != '') {
+                $product = wc_get_product($request['id_produto']);
+                if ($product->get_shipping_class() != $shipping_method->shipping_class) {
+                    unset($shipping_methods[$key]);
+                }
+            }
+        }
+        return $shipping_methods;
     }
 }

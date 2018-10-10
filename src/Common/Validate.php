@@ -24,6 +24,7 @@ class Validate
         $product['length'] = $request['produto_comprimento'];
         $product['weight'] = $request['produto_peso'];
         $product['price'] = $request['produto_preco'];
+        $product['id'] = $request['id_produto'];
         $product['quantity'] = $request['quantidade'];
 
         return self::product($product);
@@ -42,6 +43,7 @@ class Validate
         $errors[] = self::productLength($product['length']);
         $errors[] = self::productWeight($product['weight']);
         $errors[] = self::productPrice($product['price']);
+        $errors[] = self::productId($product['id']);
 
         // Flattens array
         $errors = call_user_func_array('array_merge', $errors);
@@ -124,6 +126,19 @@ class Validate
         $errors = array();
         if (!is_numeric($price)) {
             $errors[] = 'Preço inválido ou não preenchido. ('.$price.')';
+        }
+        return $errors;
+    }
+
+    /**
+     * Validates a product ID
+     * @return array
+     */
+    private static function productId($id)
+    {
+        $errors = array();
+        if (!is_numeric($id)) {
+            $errors[] = 'Erro interno: ID do produto inválido. ('.$id.')';
         }
         return $errors;
     }
