@@ -18,21 +18,13 @@ class Shipping
         $request = $this->sanitizeAndValidateRequest($_POST);
 
         // WooCommerce matches the first Shipping Zone from top to bottom as the shipping zone used for calculations.
+        // Fallback to "Locations not covered by your other zones" if can't find a shipping zone
         $shipping_zone = new ShippingZones;
         $shipping_zone = $shipping_zone->getFirstMatchingShippingZone($request['cep_destinatario']);
 
-        if ($shipping_zone === false) {
-            wp_send_json_error('Não há Áreas de Entrega disponíveis para o CEP informado. Verifique suas Áreas de entrega. Leia: https://docs.woocommerce.com/document/setting-up-shipping-zones/');
-        }
-
-
-        $cfpp_shipping_costs = array();
-
         // Gets Shipping Costs for each Shipping Method
         $shipping_methods = new ShippingMethods;
-
-        $shipping_methods_array = empty($shipping_zone['shipping_methods']) ? $shipping_zone->get_shipping_methods() : $shipping_zone['shipping_methods'];
-        $cfpp_shipping_costs = $shipping_methods->calculateShippingOptions($shipping_methods_array, $request);
+        $cfpp_shipping_costs = $shipping_methods->calculateShippingOptions($shipping_zone->get_shipping_methods(), $request);
 
         wp_send_json_success($cfpp_shipping_costs);
     }
