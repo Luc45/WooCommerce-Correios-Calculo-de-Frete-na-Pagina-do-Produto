@@ -4,8 +4,7 @@ namespace CFPP\Frontend\Shipping;
 
 use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsFactory;
 
-class ShippingMethods
-{
+class ShippingMethods {
 
     /**
     *   Calculates the shipping costs from the shipping zones provided
@@ -14,17 +13,19 @@ class ShippingMethods
     {
         $shipping_costs = array();
 
+        $shipping_methods = $this->filterByEnabledShippingMethods($shipping_methods);
+
         $factory = new ShippingMethodsFactory;
 
         foreach ($shipping_methods as $shipping_method) {
-            if ($shipping_method->enabled == 'yes') {
-                // Gets the Shipping_Method Class
-                $cfpp_shipping_method = $factory->getClass(get_class($shipping_method));
 
-                // Makes sure CFPP have Method created for this
-                if ($cfpp_shipping_method === false) {
+                // Get CFPP instance of Shipping Method
+                $shipping_method_instance = $factory->getInstance(get_class($shipping_method));
+
+                // If we don't support this Shipping Method, it will return false.
+                if ($shipping_method_instance === false) {
                     $shipping_costs[] = array(
-                        'name' => $cfpp_shipping_method->method_title,
+                        'name' => $shipping_method->method_title,
                         'status' => 'show',
                         'price' => 'Prossiga com a compra normalmente para ver o preço deste método de entrega.',
                         'days' => '-',
@@ -35,10 +36,10 @@ class ShippingMethods
                 }
 
                 // Pass the Shipping Method class to the CFPP Shipping Method
-                $cfpp_shipping_method->setup($shipping_method);
+                $shipping_method_instance->setup($shipping_method);
 
                 // Go to specific shipping method class to calculate
-                $response = $cfpp_shipping_method->calculate($request);
+                $response = $shipping_method_instance->calculate($request);
 
                 // Normalize output
                 if (empty($response['class'])) {
@@ -48,9 +49,22 @@ class ShippingMethods
                 if ($response['status'] != 'hide') {
                     $shipping_costs[] = $response;
                 }
-            }
         }
 
         return $shipping_costs;
+    }
+
+    /**
+     * Receives an array of Shipping Methods instances,
+     */
+    private function filterByEnabledShippingMethods($shipping_methods)
+    {
+        $enabled_shipping_methods = array();
+        foreach ($shipping_methods as $shipping_method) {
+            if (property_exists($shipping_method, 'enabled') && $shipping_method->enabled == 'yes') {
+                $enabled_shipping_methods[] = $shipping_method;
+            }
+        }
+        return $enabled_shipping_methods;
     }
 }
