@@ -1,0 +1,8 @@
+composer.lock
+codeception.dist.yml
+.env.example
+.env
+test
+/vendor/**
+!/vendor/autoload*
+!/vendor/composer/**
