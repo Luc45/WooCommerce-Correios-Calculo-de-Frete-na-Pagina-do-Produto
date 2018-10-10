@@ -6,81 +6,6 @@ use CFPP\Common\Cep;
 
 trait WC_Correios_Shipping_Method_Trait
 {
-
-    /**
-    *   Calculates Correios Costs
-    */
-    public function calculateCorreiosCosts($shipping_method, $request)
-    {
-        $correiosWebService = new \WC_Correios_Webservice;
-
-        $correiosWebService->set_height($request['produto_altura']);
-        $correiosWebService->set_width($request['produto_largura']);
-        $correiosWebService->set_length($request['produto_comprimento']);
-        $correiosWebService->set_weight($request['produto_peso']);
-        $correiosWebService->set_destination_postcode($request['cep_destinatario']);
-        $correiosWebService->set_origin_postcode(Cep::getOriginCep());
-        $correiosWebService->set_service($shipping_method->get_code());
-
-        // Agora vamos setar os condicionais...
-
-        // Valor declarado
-        if ($shipping_method->declare_value == 'yes' && $request['produto_preco'] > 18.50) {
-            $correiosWebService->set_declared_value($request['produto_preco']);
-        }
-
-        // Mão Propria
-        if ($shipping_method->own_hands == 'yes') {
-            $correiosWebService->set_own_hands = 'S';
-        }
-
-        // Peso extra
-        if (!empty($shipping_method->extra_weight)) {
-            $correiosWebService->set_extra_weight($shipping_method->extra_weight);
-        }
-
-        // Aviso de recebimento
-        if ($shipping_method->receipt_notice == 'yes') {
-            $correiosWebService->set_receipt_notice('S');
-        }
-
-        $entrega = $correiosWebService->get_shipping();
-
-        // Normalize Shipping Price
-        $price = $entrega->Valor;
-        $price = (string) $price;
-        $price = floatval(str_replace(',', '.', str_replace('.', '', $price)));
-
-        // Dias adicionais
-        if (!empty($shipping_method->additional_time) && $shipping_method->show_delivery_time == 'yes') {
-            $entrega->PrazoEntrega = $entrega->PrazoEntrega + $shipping_method->additional_time;
-            $entrega->DiasAdicionais = $shipping_method->additional_time;
-        }
-
-        // Custo adicional
-        if (!empty($shipping_method->fee)) {
-            if (substr($shipping_method->fee, -1) == '%') {
-                $porcentagem = preg_replace('/[^0-9]/', '', $shipping_method->fee);
-                $price = ($price/100)*(100+$porcentagem);
-                $entrega->Fee = $porcentagem.'%';
-            } else {
-                $price = $price + $shipping_method->fee;
-                $entrega->Fee = $shipping_method->fee;
-            }
-        }
-
-        $return = array();
-
-        $dia_ou_dias = (int) $entrega->PrazoEntrega > 1 ? 'dias' : 'dia';
-
-        $return['name'] = $shipping_method->method_title;
-        $return['price'] = 'R$ ' . number_format($price, 2, ',', '.');
-        $return['days'] = 'Em até ' . (int) $entrega->PrazoEntrega . ' ' . $dia_ou_dias;
-        $return['debug'] = $entrega;
-
-        return $return;
-    }
-
     /**
     *   Validates a product according to WooCommerce Correios requirements
     */
@@ -100,19 +25,6 @@ trait WC_Correios_Shipping_Method_Trait
 
         // Do we have any error?
         return $errors;
-    }
-
-    /**
-     * Multiplies the product measurements by the quantity requested
-     */
-    private function multiplyMeasurementsByQuantity($request)
-    {
-        foreach ($request as $k => &$v) {
-            if (in_array($k, array('produto_altura', 'produto_largura', 'produto_comprimento', 'produto_peso', 'produto_preco'))) {
-                $v = $v * $request['quantidade'];
-            }
-        }
-        return $request;
     }
 
     /**
