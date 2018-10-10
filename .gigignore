@@ -2,7 +2,7 @@ composer.lock
 codeception.dist.yml
 .env.example
 .env
-test
+/tests/**
 /vendor/**
 !/vendor/autoload*
 !/vendor/composer/**
