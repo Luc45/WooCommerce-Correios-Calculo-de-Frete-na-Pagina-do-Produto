@@ -40,6 +40,7 @@ class ValidateTest extends \Codeception\TestCase\WPTestCase
             'length' => 15,
             'weight' => 15,
             'price' => 15,
+            'id' => 15
         ];
 
         $response = Validate::product($product);
@@ -55,6 +56,7 @@ class ValidateTest extends \Codeception\TestCase\WPTestCase
             'length' => 15,
             'weight' => 15,
             'price' => 15,
+            'id' => 15
         ];
 
         $response = Validate::product($product);

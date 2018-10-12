@@ -64,13 +64,6 @@ class ShippingZonesTest extends \Codeception\TestCase\WPTestCase
         $WC_Shipping_Zone->set_locations($locations);
         $WC_Shipping_Zone->save();
 
-        /*
-        $WC_Shipping_Zones = \WC_Shipping_Zones::get_zones();
-        foreach ($WC_Shipping_Zones as $shipping_zone) {
-            var_dump($shipping_zone['zone_locations']);exit;
-        }
-        */
-
         $ShippingZones = new ShippingZones;
         $response = $ShippingZones->getFirstMatchingShippingZone('30360-230');
 
@@ -78,9 +71,27 @@ class ShippingZonesTest extends \Codeception\TestCase\WPTestCase
     }
 
     /**
+    *   Provides data to test_wildcard_postcode
+    */
+    public function dataprovider_wildcard_postcode()
+    {
+        return [
+            ['success', '30360-230'],
+            ['success', '30360-231'],
+            ['success', '30360-000'],
+            ['success', '30360-999'],
+            ['fail', '30361-230'],
+            ['fail', '12345-231'],
+            ['fail', '30361-000'],
+            ['fail', '30361-999'],
+        ];
+    }
+
+    /**
+     * @dataProvider dataprovider_wildcard_postcode
      * Test scenario for a wildcard postcode comparison
      */
-    public function test_wildcard_postcode()
+    public function test_wildcard_postcode($success_or_fail, $cep_to_test)
     {
         // Deletes all Shipping Zones
         $WC_Shipping_Zones = \WC_Shipping_Zones::get_zones();
@@ -104,24 +115,40 @@ class ShippingZonesTest extends \Codeception\TestCase\WPTestCase
 
         $ShippingZones = new ShippingZones;
 
-        $ceps_must_succeed = ['30360-230', '30360-231', '30360-000', '30360-999'];
-        $ceps_must_fail = ['30361-230', '12345-231', '30361-000', '30361-999'];
+        $response = $ShippingZones->getFirstMatchingShippingZone($cep_to_test);
 
-        foreach ($ceps_must_succeed as $cep) {
-            $response = $ShippingZones->getFirstMatchingShippingZone($cep);
+        if ($success_or_fail == 'success') {
             $this->assertEquals('Wildcard Postcode Test', $response->get_zone_name());
-        }
-
-        foreach ($ceps_must_fail as $cep) {
-            $response = $ShippingZones->getFirstMatchingShippingZone($cep);
+        } else {
             $this->assertNotEquals('Wildcard Postcode Test', $response->get_zone_name());
         }
     }
 
     /**
+    *   Provides data to test_range_postcode
+    */
+    public function dataprovider_range_postcode()
+    {
+        return [
+            ['success', '30360-001'],
+            ['success', '30360-000'],
+            ['success', '30360-231'],
+            ['success', '30360-000'],
+            ['success', '30360-999'],
+            ['success', '55555-555'],
+            ['success', '92383-823'],
+            ['success', '99999999'],
+
+            ['fail', '30359-999'],
+            ['fail', '12345-231'],
+        ];
+    }
+
+    /**
+     * @dataProvider dataprovider_range_postcode
      * Test scenario for a range postcode comparison
      */
-    public function test_range_postcode()
+    public function test_range_postcode($success_or_fail, $cep_to_test)
     {
         // Deletes all Shipping Zones
         $WC_Shipping_Zones = \WC_Shipping_Zones::get_zones();
@@ -145,16 +172,11 @@ class ShippingZonesTest extends \Codeception\TestCase\WPTestCase
 
         $ShippingZones = new ShippingZones;
 
-        $ceps_must_succeed = ['30360-001', '30360-000', '30360-231', '30360-000', '30360-999', '55555-555', '92383-823', '99999999'];
-        $ceps_must_fail = ['30359-999', '12345-231'];
+        $response = $ShippingZones->getFirstMatchingShippingZone($cep_to_test);
 
-        foreach ($ceps_must_succeed as $cep) {
-            $response = $ShippingZones->getFirstMatchingShippingZone($cep);
+        if ($success_or_fail == 'success') {
             $this->assertEquals('Range Postcode Test', $response->get_zone_name());
-        }
-
-        foreach ($ceps_must_fail as $cep) {
-            $response = $ShippingZones->getFirstMatchingShippingZone($cep);
+        } else {
             $this->assertNotEquals('Range Postcode Test', $response->get_zone_name());
         }
     }

@@ -31,7 +31,6 @@ class ShippingMethods {
 
                 // If we don't support this Shipping Method, it will return false.
                 if ($shipping_method_instance === false) {
-                    dd($shipping_method);
                     $shipping_costs[] = array(
                         'name' => $shipping_method->method_title,
                         'status' => 'show',
