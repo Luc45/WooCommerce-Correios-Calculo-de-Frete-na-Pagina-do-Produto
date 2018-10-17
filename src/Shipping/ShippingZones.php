@@ -1,6 +1,6 @@
 <?php
 
-namespace CFPP\Frontend\Shipping;
+namespace CFPP\Shipping;
 
 use CFPP\Common\Helpers;
 

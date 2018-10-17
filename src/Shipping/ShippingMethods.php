@@ -1,8 +1,8 @@
 <?php
 
-namespace CFPP\Frontend\Shipping;
+namespace CFPP\Shipping;
 
-use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsFactory;
+use CFPP\Shipping\ShippingMethods\ShippingMethodsFactory;
 
 class ShippingMethods {
 
@@ -14,7 +14,7 @@ class ShippingMethods {
         $shipping_costs = array();
 
         // Takes into account how many items we are requesting shipping for
-        $request = $this->multiplyMeasurementsByQuantity($request);
+        // $request = $this->multiplyMeasurementsByQuantity($request);
 
         // Get only enabled shipping methods
         $shipping_methods = $this->filterByEnabledShippingMethods($shipping_methods);
@@ -83,7 +83,7 @@ class ShippingMethods {
     {
         foreach ($shipping_methods as $key => $shipping_method) {
             if (property_exists($shipping_method, 'shipping_class') && $shipping_method->shipping_class != '') {
-                $product = wc_get_product($request['id_produto']);
+                $product = wc_get_product($request['id']);
                 if ($product->get_shipping_class() != $shipping_method->shipping_class) {
                     unset($shipping_methods[$key]);
                 }
@@ -98,7 +98,7 @@ class ShippingMethods {
     private function multiplyMeasurementsByQuantity($request)
     {
         foreach ($request as $medida => &$valor) {
-            if (in_array($medida, array('produto_altura', 'produto_largura', 'produto_comprimento', 'produto_peso', 'produto_preco'))) {
+            if (in_array($medida, array('height', 'width', 'length', 'weight', 'price'))) {
                 $valor = $valor * $request['quantidade'];
             }
         }

@@ -1,11 +1,11 @@
 <?php
 
-namespace CFPP\Frontend\Shipping;
+namespace CFPP\Shipping;
 
 use CFPP\Common\Sanitize;
 use CFPP\Common\Validate;
-use CFPP\Frontend\Shipping\ShippingZones;
-use CFPP\Frontend\Shipping\ShippingMethods;
+use CFPP\Shipping\ShippingZones;
+use CFPP\Shipping\ShippingMethods;
 
 class Shipping
 {
@@ -20,7 +20,7 @@ class Shipping
         // WooCommerce matches the first Shipping Zone from top to bottom as the shipping zone used for calculations.
         // Fallback to "Locations not covered by your other zones" if can't find a shipping zone
         $shipping_zone = new ShippingZones;
-        $shipping_zone = $shipping_zone->getFirstMatchingShippingZone($request['cep_destinatario']);
+        $shipping_zone = $shipping_zone->getFirstMatchingShippingZone($request['destination_postcode']);
 
         // Gets Shipping Costs for each Shipping Method
         $shipping_methods = new ShippingMethods;
@@ -40,8 +40,8 @@ class Shipping
         }
 
         // Normalize quantity if not available
-        if (empty($post['quantidade'])) {
-            $post['quantidade'] = 1;
+        if (empty($post['quantity'])) {
+            $post['quantity'] = 1;
         }
 
         // Sanitize input

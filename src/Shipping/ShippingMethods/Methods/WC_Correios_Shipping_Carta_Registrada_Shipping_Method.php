@@ -1,30 +1,50 @@
 <?php
 
-use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsAbstract;
-use CFPP\Frontend\Shipping\ShippingMethods\Traits\WC_Correios_Shipping_Method_Trait;
+use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
+use CFPP\Shipping\ShippingMethods\Traits\ValidateDimensions;
 
 class WC_Correios_Shipping_Carta_Registrada_Shipping_Method extends ShippingMethodsAbstract
 {
-    use WC_Correios_Shipping_Method_Trait;
+    use ValidateDimensions;
 
     /**
     *   Receives a Request and calculates the shipping
     */
     public function calculate(array $request)
     {
-        $cost = $this->getPriceFromWooCommerceCorreios($request);
+        $request = $this->setupQuantity($request);
 
-        if (is_numeric($cost)) {
-            $cost = wc_price($cost);
+        $errors = $this->validate(array(
+            'maxWeight' => 0.5
+        ), $request);
+
+        if (empty($errors)) {
+            $cost = $this->getPriceFromWooCommerceCorreios($request);
+
+            if (is_numeric($cost)) {
+                $cost = wc_price($cost);
+            }
+
+            $days = $this->getEstimatedDeliveryDate();
+
+            return array(
+                'name' => $this->shipping_method->method_title,
+                'price' => $cost,
+                'days' => $days,
+            );
+        } else {
+            $errors = implode(', ', $errors);
+            return array(
+                        'name' => $this->shipping_method->method_title,
+                        'status' => 'debug',
+                        'debug' => $errors
+                    );
         }
+    }
 
-        $days = $this->getEstimatedDeliveryDate();
-
-        return array(
-            'name' => $this->shipping_method->method_title,
-            'price' => $cost,
-            'days' => $days,
-        );
+    public function setupQuantity(array $request) {
+        $request['weight'] = $request['weight'] * $request['quantity'];
+        return $request;
     }
 
     /**
@@ -37,12 +57,12 @@ class WC_Correios_Shipping_Carta_Registrada_Shipping_Method extends ShippingMeth
         $request = array(
             'destination' => array (
                 'country' => 'BR',
-                'postcode' => $request['cep_destinatario']
+                'postcode' => $request['destination_postcode']
             ),
             'contents' => array(
                 array(
-                    'data' => wc_get_product($request['id_produto']),
-                    'quantity' => $request['quantidade']
+                    'data' => wc_get_product($request['id']),
+                    'quantity' => $request['quantity']
                 )
             )
         );

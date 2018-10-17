@@ -1,6 +1,6 @@
 <?php
 
-use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsAbstract;
+use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
 
 class WC_Shipping_Flat_Rate_Shipping_Method extends ShippingMethodsAbstract
 {
@@ -10,6 +10,8 @@ class WC_Shipping_Flat_Rate_Shipping_Method extends ShippingMethodsAbstract
     */
     public function calculate(array $request)
     {
+        $request = $this->setupQuantity($request);
+
         // Includes WooCommerce Math Class
         $wc_eval_math_file = WP_PLUGIN_DIR.'/woocommerce/includes/libraries/class-wc-eval-math.php';
         if (file_exists($wc_eval_math_file)) {
@@ -24,7 +26,7 @@ class WC_Shipping_Flat_Rate_Shipping_Method extends ShippingMethodsAbstract
         $decimals = array( wc_get_price_decimal_separator(), $locale['decimal_point'], $locale['mon_decimal_point'], ',' );
 
         // Costs per quantity
-        $sum = str_replace('[qty]', $request['quantidade'], $cost);
+        $sum = str_replace('[qty]', $request['quantity'], $cost);
 
         // Remove whitespace from string.
         $sum = preg_replace('/\s+/', '', $sum);
@@ -57,5 +59,9 @@ class WC_Shipping_Flat_Rate_Shipping_Method extends ShippingMethodsAbstract
                 'debug' => $sum
             );
         }
+    }
+
+    public function setupQuantity(array $request) {
+        return $request;
     }
 }

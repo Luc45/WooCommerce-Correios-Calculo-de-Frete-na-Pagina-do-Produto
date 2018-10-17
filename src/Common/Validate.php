@@ -11,39 +11,30 @@ class Validate
     public static function cfppShippingCostAjaxRequest(array $request)
     {
         // Since we're receiving this from the front-end, let's not trust it.
-        if (!self::cep($request['cep_destinatario'])) {
+        if (!self::cep($request['destination_postcode'])) {
             return array(
                 'success' => false,
                 'message' => 'CEP destinatário inválido.'
             );
         }
 
-        $product = array();
-        $product['height'] = $request['produto_altura'];
-        $product['width'] = $request['produto_largura'];
-        $product['length'] = $request['produto_comprimento'];
-        $product['weight'] = $request['produto_peso'];
-        $product['price'] = $request['produto_preco'];
-        $product['id'] = $request['id_produto'];
-        $product['quantity'] = $request['quantidade'];
-
-        return self::product($product);
+        return self::product($request);
     }
 
     /**
     *   Validates a Shipping Cost Ajax Request from CFPP
     *   Product must have all values required by Correios
     */
-    public static function product(array $product)
+    public static function product(array $request)
     {
         $errors = array();
 
-        $errors[] = self::productHeight($product['height']);
-        $errors[] = self::productWidth($product['width']);
-        $errors[] = self::productLength($product['length']);
-        $errors[] = self::productWeight($product['weight']);
-        $errors[] = self::productPrice($product['price']);
-        $errors[] = self::productId($product['id']);
+        $errors[] = self::productHeight($request['height']);
+        $errors[] = self::productWidth($request['width']);
+        $errors[] = self::productLength($request['length']);
+        $errors[] = self::productWeight($request['weight']);
+        $errors[] = self::productPrice($request['price']);
+        $errors[] = self::productId($request['id']);
 
         // Flattens array
         $errors = call_user_func_array('array_merge', $errors);

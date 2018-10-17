@@ -1,20 +1,21 @@
 <?php
 
-use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsAbstract;
-use CFPP\Frontend\Shipping\ShippingMethods\Traits\WC_Correios_Webservice_Trait;
-use CFPP\Frontend\Shipping\ShippingMethods\Traits\WC_Correios_Shipping_Method_Trait;
+use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
+use CFPP\Shipping\ShippingMethods\Traits\ValidateDimensions;
+use CFPP\Shipping\ShippingMethods\Traits\WC_Correios_Webservice_Trait;
 
 class WC_Correios_Shipping_PAC_Shipping_Method extends ShippingMethodsAbstract
 {
+    use ValidateDimensions;
     use WC_Correios_Webservice_Trait;
-    use WC_Correios_Shipping_Method_Trait;
 
     /**
     *   Receives a Request and calculates the shipping
     */
     public function calculate(array $request)
     {
-        $errors = $this->validate($request);
+
+        $errors = $this->validate(array(), $request);
 
         if (empty($errors)) {
             return $this->correiosWebService($request);

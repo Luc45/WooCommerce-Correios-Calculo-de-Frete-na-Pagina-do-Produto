@@ -2,7 +2,7 @@
 
 namespace CFPP\Common;
 
-use CFPP\Frontend\Shipping\Shipping;
+use CFPP\Shipping\Shipping;
 
 class Ajax
 {
