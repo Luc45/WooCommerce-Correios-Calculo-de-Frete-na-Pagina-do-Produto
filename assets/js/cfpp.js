@@ -34,14 +34,14 @@
 		 		data: {
 		 			'action' : 'cfpp_request_shipping_costs',
 		 			'data' : {
-			 			'cep_destinatario': cep,
-			 			'produto_altura': altura,
-			 			'produto_largura': largura,
-			 			'produto_comprimento': comprimento,
-			 			'produto_peso': peso,
-			 			'produto_preco': preco,
-			 			'id_produto': id_produto,
-			 			'quantidade': quantidade,
+			 			'destination_postcode': cep,
+			 			'height': altura,
+			 			'width': largura,
+			 			'length': comprimento,
+			 			'weight': peso,
+			 			'price': preco,
+			 			'id': id_produto,
+			 			'quantity': quantidade,
 			 			'cfpp_nonce': cfpp_nonce
 		 			}
 		 		},

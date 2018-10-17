@@ -1,6 +1,6 @@
 <?php
 
-namespace CFPP\Frontend\Shipping\ShippingMethods\Traits;
+namespace CFPP\Shipping\ShippingMethods\Traits;
 
 use CFPP\Common\Cep;
 

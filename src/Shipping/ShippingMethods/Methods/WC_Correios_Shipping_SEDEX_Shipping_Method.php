@@ -1,8 +1,8 @@
 <?php
 
-use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsAbstract;
-use CFPP\Frontend\Shipping\ShippingMethods\Traits\WC_Correios_Webservice_Trait;
-use CFPP\Frontend\Shipping\ShippingMethods\Traits\WC_Correios_Shipping_Method_Trait;
+use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
+use CFPP\Shipping\ShippingMethods\Traits\WC_Correios_Webservice_Trait;
+use CFPP\Shipping\ShippingMethods\Traits\WC_Correios_Shipping_Method_Trait;
 
 class WC_Correios_Shipping_SEDEX_Shipping_Method extends ShippingMethodsAbstract
 {

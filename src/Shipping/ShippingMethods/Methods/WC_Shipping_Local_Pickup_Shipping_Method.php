@@ -1,6 +1,6 @@
 <?php
 
-use CFPP\Frontend\Shipping\ShippingMethods\ShippingMethodsAbstract;
+use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
 
 class WC_Shipping_Local_Pickup_Shipping_Method extends ShippingMethodsAbstract
 {

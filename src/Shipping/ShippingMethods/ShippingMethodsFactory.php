@@ -1,6 +1,6 @@
 <?php
 
-namespace CFPP\Frontend\Shipping\ShippingMethods;
+namespace CFPP\Shipping\ShippingMethods;
 
 class ShippingMethodsFactory
 {
