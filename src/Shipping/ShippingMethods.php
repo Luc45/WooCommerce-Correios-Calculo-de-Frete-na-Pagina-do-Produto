@@ -5,7 +5,8 @@ namespace CFPP\Shipping;
 use CFPP\Shipping\ShippingMethods\ShippingMethodsFactory;
 use CFPP\Shipping\ShippingMethods\ShippingMethodResponse as Response;
 
-class ShippingMethods {
+class ShippingMethods
+{
 
     /**
     *   Calculates the shipping costs from the shipping zones provided

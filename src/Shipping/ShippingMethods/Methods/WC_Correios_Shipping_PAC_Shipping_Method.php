@@ -53,7 +53,8 @@ class WC_Correios_Shipping_PAC_Shipping_Method extends ShippingMethodsAbstract
         }
     }
 
-    public function setupQuantity(array $request) {
+    public function setupQuantity(array $request)
+    {
         $package = array();
         $package['contents'] = array(
             $request['id'] = array(

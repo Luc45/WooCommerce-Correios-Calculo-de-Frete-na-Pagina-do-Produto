@@ -10,7 +10,7 @@ trait ValidateDimensionsTrait
     *   @param $rules array Validation rules
     *   @param $request array Product info sent through AJAX
     */
-    public function validate(array $rules,  array $request)
+    public function validate(array $rules, array $request)
     {
         $errors = array();
 
@@ -37,7 +37,8 @@ trait ValidateDimensionsTrait
     *   Normalizes a set of rules. Since we do numeric comparison, we either add
     *   0 for minimum values or PHP_INT_MAX for max values, if those are empty.
     */
-    protected function normalizeValidationRules(array $rules) {
+    protected function normalizeValidationRules(array $rules)
+    {
         return array(
             'height' => array(
                 'max' => !empty($rules['height']['max']) ? $rules['height']['max'] : PHP_INT_MAX,

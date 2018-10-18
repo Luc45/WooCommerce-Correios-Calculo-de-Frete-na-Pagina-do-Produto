@@ -11,7 +11,9 @@ class ShippingMethodsFactory
     public function getInstance($shipping_method)
     {
         // String type-hinting for older versions of PHP
-        if (gettype($shipping_method) != 'string') return false;
+        if (gettype($shipping_method) != 'string') {
+            return false;
+        }
 
         $class = $shipping_method.'_Shipping_Method';
         $file = __DIR__.'/Methods/'.$class.'.php';

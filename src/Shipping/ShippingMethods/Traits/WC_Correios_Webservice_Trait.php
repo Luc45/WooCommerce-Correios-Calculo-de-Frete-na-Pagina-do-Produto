@@ -130,8 +130,7 @@ trait WC_Correios_Webservice_Trait
     private function prepareEstimatedDeliveryDate($entrega)
     {
         $dias_adicionais = 0;
-        if (
-            property_exists($this->shipping_method, 'additional_time') &&
+        if (property_exists($this->shipping_method, 'additional_time') &&
             is_numeric($this->shipping_method->additional_time)
         ) {
             $dias_adicionais = $this->shipping_method->additional_time;

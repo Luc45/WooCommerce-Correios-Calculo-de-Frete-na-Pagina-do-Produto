@@ -32,7 +32,9 @@ class Notifications
     public function fatal($message)
     {
         // String type-hinting for older versions of PHP
-        if (gettype($message) != 'string') return;
+        if (gettype($message) != 'string') {
+            return;
+        }
 
         $this->fatal = $message;
         add_action('admin_notices', array($this, 'display_fatal'), 10);
@@ -44,7 +46,9 @@ class Notifications
     public function warning($message)
     {
         // String type-hinting for older versions of PHP
-        if (gettype($message) != 'string') return;
+        if (gettype($message) != 'string') {
+            return;
+        }
 
         $this->warning = $message;
         add_action('admin_notices', array($this, 'display_warning'), 10);

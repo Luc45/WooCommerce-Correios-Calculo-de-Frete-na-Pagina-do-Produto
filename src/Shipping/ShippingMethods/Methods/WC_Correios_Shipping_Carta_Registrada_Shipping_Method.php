@@ -28,7 +28,8 @@ class WC_Correios_Shipping_Carta_Registrada_Shipping_Method extends ShippingMeth
         }
     }
 
-    public function setupQuantity(array $request) {
+    public function setupQuantity(array $request)
+    {
         $request['weight'] = $request['weight'] * $request['quantity'];
         return $request;
     }
@@ -71,8 +72,7 @@ class WC_Correios_Shipping_Carta_Registrada_Shipping_Method extends ShippingMeth
     private function getEstimatedDeliveryDate()
     {
         $days = '-';
-        if (
-            property_exists($this->shipping_method, 'show_delivery_time') &&
+        if (property_exists($this->shipping_method, 'show_delivery_time') &&
             $this->shipping_method->show_delivery_time == 'yes' &&
             property_exists($this->shipping_method, 'additional_time') &&
             is_numeric($this->shipping_method->additional_time)
