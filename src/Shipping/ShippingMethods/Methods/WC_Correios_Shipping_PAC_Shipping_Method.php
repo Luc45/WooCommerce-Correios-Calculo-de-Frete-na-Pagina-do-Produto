@@ -1,11 +1,13 @@
 <?php
 
 use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
+use CFPP\Shipping\ShippingMethods\Traits\CFPPPackageTrait;
 use CFPP\Shipping\ShippingMethods\Traits\ValidateDimensionsTrait;
 use CFPP\Shipping\ShippingMethods\Traits\WC_Correios_Webservice_Trait;
 
 class WC_Correios_Shipping_PAC_Shipping_Method extends ShippingMethodsAbstract
 {
+    use CFPPPackageTrait;
     use ValidateDimensionsTrait;
     use WC_Correios_Webservice_Trait;
 
@@ -62,8 +64,8 @@ class WC_Correios_Shipping_PAC_Shipping_Method extends ShippingMethodsAbstract
                 'quantity' => $request['quantity']
             )
         );
-        $wc_correios_package = new \WC_Correios_Package($package);
-        $data = $wc_correios_package->get_data();
+        $this->set_package($package);
+        $data = $this->get_data();
         $request['height'] = $data['height'];
         $request['width'] = $data['width'];
         $request['length'] = $data['length'];
