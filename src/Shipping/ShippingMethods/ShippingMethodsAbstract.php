@@ -2,6 +2,8 @@
 
 namespace CFPP\Shipping\ShippingMethods;
 
+use CFPP\Shipping\ShippingMethods\ShippingMethodResponse as Response;
+
 abstract class ShippingMethodsAbstract
 {
     /**
@@ -15,11 +17,17 @@ abstract class ShippingMethodsAbstract
     protected $shipping_method;
 
     /**
+     * Instance of ShippingMethodResponse
+     */
+    protected $response;
+
+    /**
      * Stores a copy of the original shipping method class, so we can get costs, etc
      */
     public function setup($shipping_method)
     {
         $this->shipping_method = $shipping_method;
+        $this->response = new Response($shipping_method);
     }
 
     /**
@@ -30,5 +38,8 @@ abstract class ShippingMethodsAbstract
     /**
      * Calculates cubage of request per quantity
      */
-    abstract public function setupQuantity(array $request);
+    public function setupQuantity(array $request)
+    {
+        return $request;
+    }
 }

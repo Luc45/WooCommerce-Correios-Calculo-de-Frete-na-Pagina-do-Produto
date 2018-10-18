@@ -75,3 +75,7 @@ a#cfpp_credits {
 .cfpp-shipping-mode-debug {
     display: none !important;
 }
+tr.cfpp-has-error td {
+    background-color: #ffc7c7 !important;
+    color: #c50000;
+}

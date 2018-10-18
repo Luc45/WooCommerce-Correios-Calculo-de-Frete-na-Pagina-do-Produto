@@ -2,7 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods\Traits;
 
-trait ValidateDimensions
+trait ValidateDimensionsTrait
 {
     /**
     *   Validates a product according to WooCommerce Correios requirements
@@ -67,9 +67,9 @@ trait ValidateDimensions
         if (!is_numeric($height)) {
             $errors[] = 'Altura inválida ou não preenchida.';
         } elseif (is_numeric($height) && $height > $max) {
-            $errors[] = 'Altura ('.$height.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
+            $errors[] = 'Altura ('.$height.'cm) ultrapassa o máximo permitido pelo método de entrega ('.$max.'cm).';
         } elseif (is_numeric($height) && $height < $min) {
-            $errors[] = 'Altura ('.$height.'cm) é menor do que o mínimo permitido pelos correios (2cm).';
+            $errors[] = 'Altura ('.$height.'cm) é menor do que o mínimo permitido pelo método de entrega ('.$min.'cm).';
         }
         return $errors;
     }
@@ -84,9 +84,9 @@ trait ValidateDimensions
         if (!is_numeric($width)) {
             $errors[] = 'Largura inválida ou não preenchida.';
         } elseif (is_numeric($width) && $width > $max) {
-            $errors[] = 'Largura ('.$width.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
+            $errors[] = 'Largura ('.$width.'cm) ultrapassa o máximo permitido pelo método de entrega ('.$max.'cm).';
         } elseif (is_numeric($width) && $width < $min) {
-            $errors[] = 'Largura ('.$width.'cm) é menor do que o mínimo permitido pelos correios (11cm).';
+            $errors[] = 'Largura ('.$width.'cm) é menor do que o mínimo permitido pelo método de entrega ('.$min.'cm).';
         }
         return $errors;
     }
@@ -101,9 +101,9 @@ trait ValidateDimensions
         if (!is_numeric($length)) {
             $errors[] = 'Comprimento inválido ou não preenchido.';
         } elseif (is_numeric($length) && $length > $max) {
-            $errors[] = 'Comprimento ('.$length.'cm) ultrapassa o máximo permitido pelos correios (105cm).';
+            $errors[] = 'Comprimento ('.$length.'cm) ultrapassa o máximo permitido pelo método de entrega ('.$max.'cm).';
         } elseif (is_numeric($length) && $length < $min) {
-            $errors[] = 'Comprimento ('.$length.'cm) é menor do que o mínimo permitido pelos correios (16cm).';
+            $errors[] = 'Comprimento ('.$length.'cm) é menor do que o mínimo permitido pelo método de entrega ('.$min.'cm).';
         }
         return $errors;
     }
@@ -121,9 +121,9 @@ trait ValidateDimensions
             $errors[] = 'Peso inválido ou não preenchido.';
         } elseif (is_numeric($weight) && ($weight + $extra_weight) > $max) {
             if ($extra_weight > 0) {
-                $errors[] = 'Peso ('.$weight.'kg) ultrapassa o máximo permitido deste método de entrega ('.$max.'kg). Considerando peso extra configurado do método de entrega, que é de '.$extra_weight.'kg';
+                $errors[] = 'Peso ('.$weight.'kg) ultrapassa o máximo permitido do método de entrega ('.$max.'kg). Considerando peso extra configurado do método de entrega, que é de '.$extra_weight.'kg';
             } else {
-                $errors[] = 'Peso ('.$weight.'kg) ultrapassa o máximo permitido deste método de entrega ('.$max.'kg).';
+                $errors[] = 'Peso ('.$weight.'kg) ultrapassa o máximo permitido do método de entrega ('.$max.'kg).';
             }
         }
         return $errors;
@@ -139,7 +139,7 @@ trait ValidateDimensions
         if (!is_numeric($price)) {
             $errors[] = 'Preço inválido ou não preenchido. ('.$price.')';
         } elseif (is_numeric($price) && $price > $max) {
-            $errors[] = 'Preço (R$ '.$price.') ultrapassa o máximo permitido para esta modalidade de envio (R$ '.$max.').';
+            $errors[] = 'Preço (R$ '.$price.') ultrapassa o máximo permitido do método de entrega (R$ '.$max.').';
         }
         return $errors;
     }
@@ -153,7 +153,7 @@ trait ValidateDimensions
         $errors = array();
         if (is_numeric($height) && is_numeric($width) && is_numeric($length)) {
             if ($height + $width + $length > $max) {
-                $errors[] = "Soma da Altura, Largura e Comprimento (".$height + $width + $length.") ultrapassa o máximo permitido pelos correios (".$max."cm).";
+                $errors[] = "Soma da Altura, Largura e Comprimento (".$height + $width + $length.") ultrapassa o máximo permitido pelo método de entrega (".$max."cm).";
             }
         }
         return $errors;

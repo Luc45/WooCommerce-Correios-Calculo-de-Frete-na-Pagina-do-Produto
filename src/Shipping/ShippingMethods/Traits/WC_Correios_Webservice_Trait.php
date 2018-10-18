@@ -13,16 +13,16 @@ trait WC_Correios_Webservice_Trait
     {
         $correiosWebService = new \WC_Correios_Webservice;
 
-        $correiosWebService->set_height($request['produto_altura']);
-        $correiosWebService->set_width($request['produto_largura']);
-        $correiosWebService->set_length($request['produto_comprimento']);
-        $correiosWebService->set_weight($request['produto_peso']);
-        $correiosWebService->set_destination_postcode($request['cep_destinatario']);
+        $correiosWebService->set_height($request['height']);
+        $correiosWebService->set_width($request['width']);
+        $correiosWebService->set_length($request['length']);
+        $correiosWebService->set_weight($request['weight']);
+        $correiosWebService->set_destination_postcode($request['destination_postcode']);
         $correiosWebService->set_origin_postcode(Cep::getOriginCep());
         $correiosWebService->set_service($this->shipping_method->get_code());
 
         // Valor Declarado
-        $correiosWebService->set_declared_value($this->checkDeclaredValue($request['produto_preco']));
+        $correiosWebService->set_declared_value($this->checkDeclaredValue($request['price']));
 
         // Mão Própria
         $correiosWebService->set_own_hands = $this->checkOwnHands();
@@ -40,13 +40,8 @@ trait WC_Correios_Webservice_Trait
         $response = $this->checkIsValidWebServiceResponse($entrega);
         if ($response['success'] == false) {
             return array(
-                'name' => $this->shipping_method->method_title,
-                'status' => 'show',
-                'price' => 'Prossiga com a compra normalmente para ver o preço deste método de entrega.',
-                'days' => '-',
-                'debug' => $response['message'],
-                'additional_class' => 'cfpp_shipping_method_not_available',
-                'priceColSpan' => 2
+                'status' => 'error',
+                'debug' => $response['message']
             );
         }
 
@@ -63,16 +58,11 @@ trait WC_Correios_Webservice_Trait
         $price = $costs['price'];
         $entrega->Fee = $costs['fee'];
 
-        $return = array();
-
-        $dia_ou_dias = (int) $entrega->PrazoEntrega > 1 ? 'dias' : 'dia';
-
-        $return['name'] = $this->shipping_method->method_title;
-        $return['price'] = 'R$ ' . number_format($price, 2, ',', '.');
-        $return['days'] = 'Em até ' . (int) $entrega->PrazoEntrega . ' ' . $dia_ou_dias;
-        $return['debug'] = $entrega;
-
-        return $return;
+        return array(
+            'price' => $price,
+            'days' => (int) $entrega->PrazoEntrega,
+            'debug' => $entrega
+        );
     }
 
     /**

@@ -10,8 +10,6 @@ class WC_Shipping_Flat_Rate_Shipping_Method extends ShippingMethodsAbstract
     */
     public function calculate(array $request)
     {
-        $request = $this->setupQuantity($request);
-
         // Includes WooCommerce Math Class
         $wc_eval_math_file = WP_PLUGIN_DIR.'/woocommerce/includes/libraries/class-wc-eval-math.php';
         if (file_exists($wc_eval_math_file)) {
@@ -46,22 +44,9 @@ class WC_Shipping_Flat_Rate_Shipping_Method extends ShippingMethodsAbstract
         }
 
         if (is_numeric($sum)) {
-            return array(
-                'name' => $this->shipping_method->method_title,
-                'status' => 'show',
-                'price' => 'R$ ' . number_format($sum, 2, ',', '.'),
-                'days' => apply_filters('cfpp_flat_rate_days', 'Consulte-nos')
-            );
+            return $this->response->success($sum, apply_filters('cfpp_flat_rate_days', 'Consulte-nos'));
         } else {
-            return array(
-                'name' => $this->shipping_method->method_title,
-                'status' => 'debug',
-                'debug' => $sum
-            );
+            return $this->response->error($sum);
         }
-    }
-
-    public function setupQuantity(array $request) {
-        return $request;
     }
 }
