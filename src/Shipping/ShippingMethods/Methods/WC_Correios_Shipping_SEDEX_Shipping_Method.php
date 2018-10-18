@@ -54,6 +54,19 @@ class WC_Correios_Shipping_SEDEX_Shipping_Method extends ShippingMethodsAbstract
     }
 
     public function setupQuantity(array $request) {
+        $package = array();
+        $package['contents'] = array(
+            $request['id'] = array(
+                'data' => wc_get_product($request['id']),
+                'quantity' => $request['quantity']
+            )
+        );
+        $wc_correios_package = new \WC_Correios_Package($package);
+        $data = $wc_correios_package->get_data();
+        $request['height'] = $data['height'];
+        $request['width'] = $data['width'];
+        $request['length'] = $data['length'];
+        $request['weight'] = $data['weight'];
         return $request;
     }
 }

@@ -11,33 +11,50 @@ trait WC_Correios_Webservice_Trait
     */
     public function correiosWebService($request)
     {
-        $correiosWebService = new \WC_Correios_Webservice;
+        $correiosWebService = new \WC_Correios_Webservice($this->shipping_method->id, $this->shipping_method->instance_id);
+
+        $correiosWebService->set_debug = 'no';
+        $correiosWebService->set_service($this->shipping_method->get_code());
 
         $correiosWebService->set_height($request['height']);
         $correiosWebService->set_width($request['width']);
         $correiosWebService->set_length($request['length']);
         $correiosWebService->set_weight($request['weight']);
-        $correiosWebService->set_destination_postcode($request['destination_postcode']);
+
         $correiosWebService->set_origin_postcode(Cep::getOriginCep());
-        $correiosWebService->set_service($this->shipping_method->get_code());
+        $correiosWebService->set_destination_postcode($request['destination_postcode']);
 
         // Valor Declarado
-        $correiosWebService->set_declared_value($this->checkDeclaredValue($request['price']));
+        if ($this->checkDeclaredValue($request)) {
+            $correiosWebService->set_declared_value($request['price'] * $request['quantity']);
+        }
 
         // Mão Própria
-        $correiosWebService->set_own_hands = $this->checkOwnHands();
-
-        // Peso extra
-        $correiosWebService->set_extra_weight($this->checkExtraWeight());
+        $correiosWebService->set_own_hands($this->checkOwnHands());
 
         // Aviso de recebimento
         $correiosWebService->set_receipt_notice($this->checkReceiptNotice());
+
+        // Login e Senha para usuário corporativos
+        if ($this->checkLoginPassword()) {
+            $correiosWebService->set_login($this->shipping_method->login);
+            $correiosWebService->set_password($this->shipping_method->password);
+        }
+
+        // Dimensões mínimas
+        $correiosWebService->set_minimum_height($this->shipping_method->minimum_height);
+        $correiosWebService->set_minimum_width($this->shipping_method->minimum_width);
+        $correiosWebService->set_minimum_length($this->shipping_method->minimum_length);
+
+        // Peso extra
+        $correiosWebService->set_extra_weight($this->shipping_method->extra_weight);
 
         // Call the WebService
         $entrega = $correiosWebService->get_shipping();
 
         // Check if WebService response is valid
         $response = $this->checkIsValidWebServiceResponse($entrega);
+
         if ($response['success'] == false) {
             return array(
                 'status' => 'error',
@@ -45,18 +62,22 @@ trait WC_Correios_Webservice_Trait
             );
         }
 
-        // Normalize Shipping Price
-        $price = $this->normalizeShippingPrice($entrega->Valor);
 
+        // Normalize Shipping Price
+        $price = wc_correios_normalize_price(esc_attr((string) $entrega->Valor));
+
+        /*
         // Prepara o Prazo de Entrega, com dias adicionais, se houver configurado
         $prazo = $this->prepareEstimatedDeliveryDate($entrega);
         $entrega->PrazoEntrega = $prazo['PrazoEntrega'];
         $entrega->DiasAdicionais = $prazo['DiasAdicionais'];
 
         // Custo Adicional
-        $costs = $this->checkAdditionalCosts($price);
+        $original_price = $entrega->Valor;
+        $costs = $this->checkAdditionalCosts($original_price);
         $price = $costs['price'];
         $entrega->Fee = $costs['fee'];
+        */
 
         return array(
             'price' => $price,
@@ -68,16 +89,11 @@ trait WC_Correios_Webservice_Trait
     /**
      * Check if we should add a Declared Value
      */
-    private function checkDeclaredValue($preco)
+    private function checkDeclaredValue($request)
     {
-        if (
-            property_exists($this->shipping_method, 'declare_value') &&
-            $this->shipping_method->declare_value == 'yes' &&
-            $preco > 18.50
-        ) {
-            return $preco;
-        }
-        return 0;
+        return property_exists($this->shipping_method, 'declare_value') &&
+               $this->shipping_method->declare_value == 'yes' &&
+               ($request['price'] * $request['quantity']) >= 18.50;
     }
 
     /**
@@ -85,27 +101,9 @@ trait WC_Correios_Webservice_Trait
      */
     private function checkOwnHands()
     {
-        if (
-            property_exists($this->shipping_method, 'own_hands') &&
-            $this->shipping_method->own_hands == 'yes'
-        ) {
-            return 'S';
-        }
-        return 'N';
-    }
-
-    /**
-     * Check if we should add Extra Weight
-     */
-    private function checkExtraWeight()
-    {
-        if (
-            property_exists($this->shipping_method, 'extra_weight') &&
-            is_numeric($this->shipping_method->extra_weight)
-        ) {
-            return $this->shipping_method->extra_weight;
-        }
-        return 0;
+        return property_exists($this->shipping_method, 'own_hands') &&
+               $this->shipping_method->own_hands == 'yes'
+               ? 'S' : 'N';
     }
 
     /**
@@ -113,13 +111,9 @@ trait WC_Correios_Webservice_Trait
      */
     private function checkReceiptNotice()
     {
-        if (
-            property_exists($this->shipping_method, 'receipt_notice') &&
-            $this->shipping_method->receipt_notice == 'yes'
-        ) {
-            return 'S';
-        }
-        return 'N';
+        return property_exists($this->shipping_method, 'receipt_notice') &&
+               $this->shipping_method->receipt_notice == 'yes'
+               ? 'S' : 'N';
     }
 
     /**
@@ -186,5 +180,13 @@ trait WC_Correios_Webservice_Trait
                 'message' => $response->MsgErro
             );
         }
+    }
+
+    /**
+     * Check wether we have login and password for corporate users
+     */
+    private function checkLoginPassword()
+    {
+        return $this->shipping_method->service_type == 'corporate';
     }
 }

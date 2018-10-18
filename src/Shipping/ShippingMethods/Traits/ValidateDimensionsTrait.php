@@ -153,7 +153,7 @@ trait ValidateDimensionsTrait
         $errors = array();
         if (is_numeric($height) && is_numeric($width) && is_numeric($length)) {
             if ($height + $width + $length > $max) {
-                $errors[] = "Soma da Altura, Largura e Comprimento (".$height + $width + $length.") ultrapassa o máximo permitido pelo método de entrega (".$max."cm).";
+                $errors[] = "Soma da Altura, Largura e Comprimento (".($height + $width + $length)."cm) ultrapassa o máximo permitido pelo método de entrega (".$max."cm).";
             }
         }
         return $errors;
