@@ -11,83 +11,89 @@ trait WC_Correios_Webservice_Trait
     */
     public function correiosWebService($request)
     {
-        $correiosWebService = new \WC_Correios_Webservice;
+        $correiosWebService = new \WC_Correios_Webservice($this->shipping_method->id, $this->shipping_method->instance_id);
 
-        $correiosWebService->set_height($request['produto_altura']);
-        $correiosWebService->set_width($request['produto_largura']);
-        $correiosWebService->set_length($request['produto_comprimento']);
-        $correiosWebService->set_weight($request['produto_peso']);
-        $correiosWebService->set_destination_postcode($request['cep_destinatario']);
-        $correiosWebService->set_origin_postcode(Cep::getOriginCep());
+        $correiosWebService->set_debug = 'no';
         $correiosWebService->set_service($this->shipping_method->get_code());
 
+        $correiosWebService->set_height($request['height']);
+        $correiosWebService->set_width($request['width']);
+        $correiosWebService->set_length($request['length']);
+        $correiosWebService->set_weight($request['weight']);
+
+        $correiosWebService->set_origin_postcode(Cep::getOriginCep());
+        $correiosWebService->set_destination_postcode($request['destination_postcode']);
+
         // Valor Declarado
-        $correiosWebService->set_declared_value($this->checkDeclaredValue($request['produto_preco']));
+        if ($this->checkDeclaredValue($request)) {
+            $correiosWebService->set_declared_value($request['price'] * $request['quantity']);
+        }
 
         // Mão Própria
-        $correiosWebService->set_own_hands = $this->checkOwnHands();
-
-        // Peso extra
-        $correiosWebService->set_extra_weight($this->checkExtraWeight());
+        $correiosWebService->set_own_hands($this->checkOwnHands());
 
         // Aviso de recebimento
         $correiosWebService->set_receipt_notice($this->checkReceiptNotice());
+
+        // Login e Senha para usuário corporativos
+        if ($this->checkLoginPassword()) {
+            $correiosWebService->set_login($this->shipping_method->login);
+            $correiosWebService->set_password($this->shipping_method->password);
+        }
+
+        // Dimensões mínimas
+        $correiosWebService->set_minimum_height($this->shipping_method->minimum_height);
+        $correiosWebService->set_minimum_width($this->shipping_method->minimum_width);
+        $correiosWebService->set_minimum_length($this->shipping_method->minimum_length);
+
+        // Peso extra
+        $correiosWebService->set_extra_weight($this->shipping_method->extra_weight);
 
         // Call the WebService
         $entrega = $correiosWebService->get_shipping();
 
         // Check if WebService response is valid
         $response = $this->checkIsValidWebServiceResponse($entrega);
+
         if ($response['success'] == false) {
             return array(
-                'name' => $this->shipping_method->method_title,
-                'status' => 'show',
-                'price' => 'Prossiga com a compra normalmente para ver o preço deste método de entrega.',
-                'days' => '-',
-                'debug' => $response['message'],
-                'additional_class' => 'cfpp_shipping_method_not_available',
-                'priceColSpan' => 2
+                'status' => 'error',
+                'debug' => $response['message']
             );
         }
 
-        // Normalize Shipping Price
-        $price = $this->normalizeShippingPrice($entrega->Valor);
 
+        // Normalize Shipping Price
+        $price = wc_correios_normalize_price(esc_attr((string) $entrega->Valor));
+
+        /*
         // Prepara o Prazo de Entrega, com dias adicionais, se houver configurado
         $prazo = $this->prepareEstimatedDeliveryDate($entrega);
         $entrega->PrazoEntrega = $prazo['PrazoEntrega'];
         $entrega->DiasAdicionais = $prazo['DiasAdicionais'];
 
         // Custo Adicional
-        $costs = $this->checkAdditionalCosts($price);
+        $original_price = $entrega->Valor;
+        $costs = $this->checkAdditionalCosts($original_price);
         $price = $costs['price'];
         $entrega->Fee = $costs['fee'];
+        */
 
-        $return = array();
-
-        $dia_ou_dias = (int) $entrega->PrazoEntrega > 1 ? 'dias' : 'dia';
-
-        $return['name'] = $this->shipping_method->method_title;
-        $return['price'] = 'R$ ' . number_format($price, 2, ',', '.');
-        $return['days'] = 'Em até ' . (int) $entrega->PrazoEntrega . ' ' . $dia_ou_dias;
-        $return['debug'] = $entrega;
-
-        return $return;
+        return array(
+            'price' => $price,
+            'days' => (int) $entrega->PrazoEntrega,
+            'debug' => $entrega
+        );
     }
 
     /**
      * Check if we should add a Declared Value
      */
-    private function checkDeclaredValue($preco)
+    private function checkDeclaredValue($request)
     {
-        if (
-            property_exists($this->shipping_method, 'declare_value') &&
-            $this->shipping_method->declare_value == 'yes' &&
-            $preco > 18.50
-        ) {
-            return $preco;
-        }
-        return 0;
+        return property_exists($this->shipping_method, 'declare_value') &&
+               $this->shipping_method->declare_value == 'yes' &&
+               ($request['price'] * $request['quantity']) >= 18.50;
     }
 
     /**
@@ -95,27 +101,9 @@ trait WC_Correios_Webservice_Trait
      */
     private function checkOwnHands()
     {
-        if (
-            property_exists($this->shipping_method, 'own_hands') &&
-            $this->shipping_method->own_hands == 'yes'
-        ) {
-            return 'S';
-        }
-        return 'N';
-    }
-
-    /**
-     * Check if we should add Extra Weight
-     */
-    private function checkExtraWeight()
-    {
-        if (
-            property_exists($this->shipping_method, 'extra_weight') &&
-            is_numeric($this->shipping_method->extra_weight)
-        ) {
-            return $this->shipping_method->extra_weight;
-        }
-        return 0;
+        return property_exists($this->shipping_method, 'own_hands') &&
+               $this->shipping_method->own_hands == 'yes'
+               ? 'S' : 'N';
     }
 
     /**
@@ -123,13 +111,9 @@ trait WC_Correios_Webservice_Trait
      */
     private function checkReceiptNotice()
     {
-        if (
-            property_exists($this->shipping_method, 'receipt_notice') &&
-            $this->shipping_method->receipt_notice == 'yes'
-        ) {
-            return 'S';
-        }
-        return 'N';
+        return property_exists($this->shipping_method, 'receipt_notice') &&
+               $this->shipping_method->receipt_notice == 'yes'
+               ? 'S' : 'N';
     }
 
     /**
@@ -146,8 +130,7 @@ trait WC_Correios_Webservice_Trait
     private function prepareEstimatedDeliveryDate($entrega)
     {
         $dias_adicionais = 0;
-        if (
-            property_exists($this->shipping_method, 'additional_time') &&
+        if (property_exists($this->shipping_method, 'additional_time') &&
             is_numeric($this->shipping_method->additional_time)
         ) {
             $dias_adicionais = $this->shipping_method->additional_time;
@@ -196,5 +179,13 @@ trait WC_Correios_Webservice_Trait
                 'message' => $response->MsgErro
             );
         }
+    }
+
+    /**
+     * Check wether we have login and password for corporate users
+     */
+    private function checkLoginPassword()
+    {
+        return $this->shipping_method->service_type == 'corporate';
     }
 }

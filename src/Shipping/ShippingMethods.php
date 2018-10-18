@@ -3,8 +3,10 @@
 namespace CFPP\Shipping;
 
 use CFPP\Shipping\ShippingMethods\ShippingMethodsFactory;
+use CFPP\Shipping\ShippingMethods\ShippingMethodResponse as Response;
 
-class ShippingMethods {
+class ShippingMethods
+{
 
     /**
     *   Calculates the shipping costs from the shipping zones provided
@@ -25,38 +27,51 @@ class ShippingMethods {
         $factory = new ShippingMethodsFactory;
 
         foreach ($shipping_methods as $shipping_method) {
+            // Get CFPP instance of Shipping Method
+            $shipping_method_instance = $factory->getInstance(get_class($shipping_method));
 
-                // Get CFPP instance of Shipping Method
-                $shipping_method_instance = $factory->getInstance(get_class($shipping_method));
+            // If we don't support this Shipping Method, it will return false.
+            if ($shipping_method_instance === false) {
+                $shipping_costs[] = array(
+                    'name' => $shipping_method->method_title,
+                    'status' => 'error',
+                    'price' => 'Prossiga com a compra normalmente para ver o preço deste método de entrega.',
+                    'days' => '-',
+                    'additional_class' => 'cfpp_shipping_method_not_available',
+                    'priceColSpan' => 2
+                );
+                continue;
+            }
 
-                // If we don't support this Shipping Method, it will return false.
-                if ($shipping_method_instance === false) {
-                    $shipping_costs[] = array(
-                        'name' => $shipping_method->method_title,
-                        'status' => 'show',
-                        'price' => 'Prossiga com a compra normalmente para ver o preço deste método de entrega.',
-                        'days' => '-',
-                        'additional_class' => 'cfpp_shipping_method_not_available',
-                        'priceColSpan' => 2
-                    );
-                    continue;
-                }
+            // Pass the Shipping Method class to the CFPP Shipping Method
+            $shipping_method_instance->setup($shipping_method);
 
-                // Pass the Shipping Method class to the CFPP Shipping Method
-                $shipping_method_instance->setup($shipping_method);
+            // Go to specific shipping method class to calculate
+            $response = $shipping_method_instance->calculate($request);
 
-                // Go to specific shipping method class to calculate
-                $response = $shipping_method_instance->calculate($request);
+            if (!$response instanceof Response) {
+                throw new \Exception("Invalid CFPP Response.", 1);
+            }
 
-                // Normalize output
-                if (empty($response['class'])) {
-                    $response['class'] = '';
-                }
-
-                if (empty($response['status']) || $response['status'] != 'hide') {
-                    $shipping_costs[] = $response;
-                }
+            // We only show errors to admins
+            if ($response->should_display) {
+                $shipping_costs[] = array(
+                    'name' => $response->name,
+                    'status' => $response->status,
+                    'debug' => $response->debug,
+                    'price' => $response->price,
+                    'days' => $response->days,
+                    'class' => $response->class,
+                );
+            }
         }
+
+        // Success first, error last
+        $status = array();
+        foreach ($shipping_costs as $key => $row) {
+            $status[$key]  = $row['status'];
+        }
+        array_multisort($status, SORT_DESC, $shipping_costs);
 
         return $shipping_costs;
     }
@@ -99,7 +114,7 @@ class ShippingMethods {
     {
         foreach ($request as $medida => &$valor) {
             if (in_array($medida, array('height', 'width', 'length', 'weight', 'price'))) {
-                $valor = $valor * $request['quantidade'];
+                $valor = $valor * $request['quantity'];
             }
         }
         return $request;

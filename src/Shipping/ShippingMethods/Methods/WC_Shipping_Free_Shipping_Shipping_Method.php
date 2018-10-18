@@ -11,14 +11,13 @@ class WC_Shipping_Free_Shipping_Shipping_Method extends ShippingMethodsAbstract
     public function calculate(array $request)
     {
         // Check if this product is entitled for free shipping
-        $should_show = $this->meetsFreeShippingRequirements($request) ? 'show' : 'hide';
+        $should_show = $this->meetsFreeShippingRequirements($request) ? true : false;
 
-        return array(
-            'name' => $this->shipping_method->method_title,
-            'status' => $should_show,
-            'price' => 'Grátis',
-            'days' => apply_filters('cfpp_free_shipping_days', 'Consulte-nos')
-        );
+        if ($should_show) {
+            return $this->response->success('Grátis', apply_filters('cfpp_free_shipping_days', 'Consulte-nos'));
+        } else {
+            return $this->response->error('Não se encaixa nos requisitos de frete grátis.');
+        }
     }
 
     /**

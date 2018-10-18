@@ -1,11 +1,11 @@
 <?php
 
 use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
-use CFPP\Shipping\ShippingMethods\Traits\ValidateDimensions;
+use CFPP\Shipping\ShippingMethods\Traits\ValidateDimensionsTrait;
 
 class WC_Correios_Shipping_Carta_Registrada_Shipping_Method extends ShippingMethodsAbstract
 {
-    use ValidateDimensions;
+    use ValidateDimensionsTrait;
 
     /**
     *   Receives a Request and calculates the shipping
@@ -18,31 +18,18 @@ class WC_Correios_Shipping_Carta_Registrada_Shipping_Method extends ShippingMeth
             'maxWeight' => 0.5
         ), $request);
 
-        if (empty($errors)) {
-            $cost = $this->getPriceFromWooCommerceCorreios($request);
+        $price = $this->getPriceFromWooCommerceCorreios($request);
+        $days = $this->getEstimatedDeliveryDate();
 
-            if (is_numeric($cost)) {
-                $cost = wc_price($cost);
-            }
-
-            $days = $this->getEstimatedDeliveryDate();
-
-            return array(
-                'name' => $this->shipping_method->method_title,
-                'price' => $cost,
-                'days' => $days,
-            );
+        if (empty($errors) && is_numeric($price)) {
+            return $this->response->success($price, $days);
         } else {
-            $errors = implode(', ', $errors);
-            return array(
-                        'name' => $this->shipping_method->method_title,
-                        'status' => 'debug',
-                        'debug' => $errors
-                    );
+            return $this->response->error(implode(', ', $errors));
         }
     }
 
-    public function setupQuantity(array $request) {
+    public function setupQuantity(array $request)
+    {
         $request['weight'] = $request['weight'] * $request['quantity'];
         return $request;
     }
@@ -85,8 +72,7 @@ class WC_Correios_Shipping_Carta_Registrada_Shipping_Method extends ShippingMeth
     private function getEstimatedDeliveryDate()
     {
         $days = '-';
-        if (
-            property_exists($this->shipping_method, 'show_delivery_time') &&
+        if (property_exists($this->shipping_method, 'show_delivery_time') &&
             $this->shipping_method->show_delivery_time == 'yes' &&
             property_exists($this->shipping_method, 'additional_time') &&
             is_numeric($this->shipping_method->additional_time)

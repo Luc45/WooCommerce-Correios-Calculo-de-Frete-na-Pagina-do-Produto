@@ -76,21 +76,43 @@
 						esconderTabela();
 						resetarTabela();
 		 			}
+		 			var comErro = [];
 		 			var row = '';
 		 			// Outros métodos de envio
 		 			if (result.data) {
 		 				console.log(result.data);
 		 				$(result.data).each(function(i, v) {
+		 					if (v.status == 'error') {
+		 					comErro.push(v);
 		 					row += '<tr class="'+v.class+' cfpp-shipping-mode-'+v.status+'"">\
 			                            <td>'+v.name+'</td>\
-			                            <td>'+v.price+'</td>\
-			                            <td>'+v.days+'</td>\
+			                            <td colspan="2">'+v.debug+'</td>\
 		                        	</tr>';
+		 					} else {
+			 					row += '<tr class="'+v.class+' cfpp-shipping-mode-'+v.status+'"">\
+				                            <td>'+v.name+'</td>\
+				                            <td>'+v.price+'</td>\
+				                            <td>'+v.days+'</td>\
+			                        	</tr>';
+		 					}
 		 				});
 		 			}
 
 		 			if (row == '') {
 		 				row = '<tr><td colspan="3">Desculpe, o cálculo de frete para este produto só está disponível no Carrinho, por favor, prossiga com a compra normalmente.</td></tr>';
+		 			}
+
+		 			if (comErro.length) {
+		 				let stringErro = '';
+		 				$(comErro).each(function(i, v) {
+		 					stringErro += '\n';
+		 					stringErro += '• ';
+		 					stringErro += v.name;
+		 					stringErro += ': ';
+		 					stringErro += v.debug;
+		 				});
+		 				console.error('CFPP: Métodos de entrega não exibidos: ' + stringErro);
+		 				row += '<tr class="cfpp-has-error"><td colspan="3">Um ou mais métodos de entrega não foram exibidos aqui. Somente o administrador pode ver esta mensagem e os métodos não exibidos.</td></tr>';
 		 			}
 
 		 			$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete table tbody').append(row);

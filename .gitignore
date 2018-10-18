@@ -6,3 +6,5 @@ tests/**
 vendor/**
 !vendor/autoload*
 !vendor/composer/**
+
+\.idea/
