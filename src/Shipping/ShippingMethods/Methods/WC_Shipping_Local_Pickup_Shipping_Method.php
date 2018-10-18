@@ -10,7 +10,6 @@ class WC_Shipping_Local_Pickup_Shipping_Method extends ShippingMethodsAbstract
     */
     public function calculate(array $request)
     {
-
         // Additional cost for local pickup?
         $cost = is_numeric($this->shipping_method->cost) ? $this->shipping_method->cost : 'Grátis';
 

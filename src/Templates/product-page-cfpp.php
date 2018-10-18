@@ -1,19 +1,19 @@
-<div id="woocommerce-correios-calculo-de-frete-na-pagina-do-produto">
+<div id="cfpp">
     <style>
-        div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto div.calculo-de-frete div#calcular-frete svg {fill:<?php echo $options['cor_do_texto']?>;}
-        div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto div.calculo-de-frete div#calcular-frete {color:<?php echo $options['cor_do_texto']?>;}
-        div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto div.calculo-de-frete div#calcular-frete {background-color:<?php echo $options['cor_do_botao']?>;}
+        div#cfpp div.calculo-de-frete div#calcular-frete svg {fill:<?php echo $options['cor_do_texto']?>;}
+        div#cfpp div.calculo-de-frete div#calcular-frete {color:<?php echo $options['cor_do_texto']?>;}
+        div#cfpp div.calculo-de-frete div#calcular-frete {background-color:<?php echo $options['cor_do_botao']?>;}
     </style>
 
     <?php wp_nonce_field('cfpp_nonce', 'cfpp_nonce'); ?>
 
-    <input type="hidden" id="calculo_frete_endpoint_url" value="<?php echo admin_url('admin-ajax.php'); ?>">
-    <input type="hidden" id="calculo_frete_produto_altura" value="<?php echo $product['height'];?>">
-    <input type="hidden" id="calculo_frete_produto_largura" value="<?php echo $product['width'];?>">
-    <input type="hidden" id="calculo_frete_produto_comprimento" value="<?php echo $product['length'];?>">
-    <input type="hidden" id="calculo_frete_produto_peso" value="<?php echo $product['weight'];?>">
-    <input type="hidden" id="calculo_frete_produto_preco" value="<?php echo $product['price'];?>">
-    <input type="hidden" id="id_produto" value="<?php echo $product['id'];?>">
+    <input type="hidden" id="cfpp_endpoint_url" value="<?php echo admin_url('admin-ajax.php'); ?>">
+    <input type="hidden" id="cfpp_height" value="<?php echo $product['height'];?>">
+    <input type="hidden" id="cfpp_width" value="<?php echo $product['width'];?>">
+    <input type="hidden" id="cfpp_length" value="<?php echo $product['length'];?>">
+    <input type="hidden" id="cfpp_weight" value="<?php echo $product['weight'];?>">
+    <input type="hidden" id="cfpp_price" value="<?php echo $product['price'];?>">
+    <input type="hidden" id="cfpp_id" value="<?php echo $product['id'];?>">
 
     <div class="calculo-de-frete">
 
