@@ -35,22 +35,22 @@ class WC_Correios_Shipping_PAC_Shipping_Method extends ShippingMethodsAbstract
         ), $request);
 
         // Quick bail if validation fails
-        if (empty($errors)) {
-            $correiosWebServiceResponse = $this->correiosWebService($request);
-
-            // If error after Webservice request
-            if ($correiosWebServiceResponse['status'] == 'error') {
-                return $this->response->error($correiosWebServiceResponse['debug']);
-            }
-
-            return $this->response->success(
-                $correiosWebServiceResponse['price'],
-                $correiosWebServiceResponse['days'],
-                $correiosWebServiceResponse['debug']
-            );
-        } else {
+        if (!empty($errors)) {
             return $this->response->error(implode(', ', $errors));
         }
+
+        $correiosWebServiceResponse = $this->correiosWebService($request);
+
+        // If error after Webservice request
+        if ($correiosWebServiceResponse['status'] == 'error') {
+            return $this->response->error($correiosWebServiceResponse['debug']);
+        }
+
+        return $this->response->success(
+            $correiosWebServiceResponse['price'],
+            $correiosWebServiceResponse['days'],
+            $correiosWebServiceResponse['debug']
+        );
     }
 
     public function setupQuantity(array $request)
