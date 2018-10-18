@@ -6,24 +6,27 @@
 		 /**
 		 *	Roda quando clica para calcular o Frete
 		 */
-		 $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .calculo-de-frete div').on('click', function(e, l) {
+		 $('#cfpp .calculo-de-frete div').on('click', function(e, l) {
 		 	if ($(e.target).is('a#cfpp_credits')) {
 		 		return;
 		 	}
-		 	var url = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_endpoint_url').val();
-		 	var cep = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .calculo-de-frete input').val().replace(/\D+/g, '');
-			var altura = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_altura').val();
-			var largura = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_largura').val();
-			var comprimento = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_comprimento').val();
-			var peso = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_peso').val();
-			var preco = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_preco').val();
-			var id_produto = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #id_produto').val();
-			var quantidade = $('input.qty').val();
-			var cfpp_nonce = $('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #cfpp_nonce').val();
+
+		 	var url =    $('#cfpp_endpoint_url').val();
+		 	var cep =    $('#cfpp .calculo-de-frete input').val().replace(/\D+/g, '');
+			var height = $('#cfpp_height').val();
+			var width =  $('#cfpp_width').val();
+			var length = $('#cfpp_length').val();
+			var weight = $('#cfpp_weight').val();
+			var price =  $('#cfpp_price').val();
+			var id = $('#cfpp_id').val();
+			var quantity = $('input.qty').val();
+			var cfpp_nonce = $('#cfpp #cfpp_nonce').val();
+
 		 	if (cep.length != 8) {
 		 		alert('Por favor, verifique se o CEP informado é válido.');
 		 		return false;
 		 	}
+
 		 	// CEP Válido. Vamos ver quanto fica...
 		 	exibirLoader();
 		 	esconderTabela();
@@ -35,13 +38,13 @@
 		 			'action' : 'cfpp_request_shipping_costs',
 		 			'data' : {
 			 			'destination_postcode': cep,
-			 			'height': altura,
-			 			'width': largura,
-			 			'length': comprimento,
-			 			'weight': peso,
-			 			'price': preco,
-			 			'id': id_produto,
-			 			'quantity': quantidade,
+			 			'height': height,
+			 			'width': width,
+			 			'length': length,
+			 			'weight': weight,
+			 			'price': price,
+			 			'id': id,
+			 			'quantity': quantity,
 			 			'cfpp_nonce': cfpp_nonce
 		 			}
 		 		},
@@ -115,7 +118,7 @@
 		 				row += '<tr class="cfpp-has-error"><td colspan="3">Um ou mais métodos de entrega não foram exibidos aqui. Somente o administrador pode ver esta mensagem e os métodos não exibidos.</td></tr>';
 		 			}
 
-		 			$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete table tbody').append(row);
+		 			$('#cfpp .resultado-frete table tbody').append(row);
 		 			esconderLoader();
 		 			exibirTabela();
 		 		}
@@ -124,36 +127,36 @@
 
 		 // Exibe o loader
 		 function exibirLoader() {
-		 	$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calcular-frete').css('display', 'none');
-		 	$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calcular-frete-loader').css('display', 'inline-block');
+		 	$('#cfpp #calcular-frete').css('display', 'none');
+		 	$('#cfpp #calcular-frete-loader').css('display', 'inline-block');
 		 }
 
 		 // Esconder o loader
 		 function esconderLoader() {
-		 	$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calcular-frete').css('display', 'inline-block');
-		 	$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calcular-frete-loader').css('display', 'none');
+		 	$('#cfpp #calcular-frete').css('display', 'inline-block');
+		 	$('#cfpp #calcular-frete-loader').css('display', 'none');
 		 }
 
 		 // Exibe a tabela
 		 function exibirTabela() {
-		 	$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete').show();
+		 	$('#cfpp .resultado-frete').show();
 		 }
 
 		 // Esconde a tabela
 		 function esconderTabela() {
-		 	$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete').hide();
+		 	$('#cfpp .resultado-frete').hide();
 		 }
 
 		 // Reseta a tabela
 		 function resetarTabela() {
-		 	$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete table tbody').html('');
+		 	$('#cfpp .resultado-frete table tbody').html('');
 		 }
 
 		// Altera o preço do produto caso uma nova variação seja selecionada
 		$( ".single_variation_wrap" ).on( "show_variation", function ( event, variation ) {
 			resetarTabela();
 			esconderTabela();
-			$('#woocommerce-correios-calculo-de-frete-na-pagina-do-produto #calculo_frete_produto_preco').val(variation.display_price.toFixed(2));
+			$('#cfpp #calculo_frete_produto_preco').val(variation.display_price.toFixed(2));
 		} );
 
 	});

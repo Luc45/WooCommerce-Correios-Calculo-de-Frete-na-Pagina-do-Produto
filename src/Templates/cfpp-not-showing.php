@@ -1,4 +1,4 @@
-<div id="woocommerce-correios-calculo-de-frete-na-pagina-do-produto-incompleto">
+<div id="cfpp-incompleto">
     <p><strong>Atenção</strong></p>
     <p>O Cálculo de Frete na Página do Produto não está sendo exibido aqui, pois:</p>
     <p><ul><?php echo $error ?></ul></p>

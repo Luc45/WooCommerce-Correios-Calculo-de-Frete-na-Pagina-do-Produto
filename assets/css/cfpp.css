@@ -1,14 +1,14 @@
-div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto {
+div#cfpp {
     margin: 30px 0;
 }
-div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto svg {
+div#cfpp svg {
     fill:#FFF;
     height: 30px;
     position: absolute;
     left: 10px;
     top: 8px;
 }
-div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .calculo-de-frete div#calcular-frete {
+div#cfpp .calculo-de-frete div#calcular-frete {
     background: #03A9F4;
     color: #FFF;
     display: inline-block;
@@ -19,27 +19,27 @@ div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .calculo-de-frete
     cursor: pointer;
     margin-bottom: 15px;
 }
-div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .calculo-de-frete div#calcular-frete:hover {
+div#cfpp .calculo-de-frete div#calcular-frete:hover {
     opacity:0.8;
 }
-div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .calculo-de-frete input {
+div#cfpp .calculo-de-frete input {
     height: 52px;
     padding: 5px 10px;
     font-size: 20px;
     width: 150px;
     text-align: center;
 }
-div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto .resultado-frete {
+div#cfpp .resultado-frete {
     display: none;
     margin:30px 0;
 }
-div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto table {
+div#cfpp table {
     border-width: 1px;
 }
-div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto td {
+div#cfpp td {
     padding: 5px 10px;
 }
-div#woocommerce-correios-calculo-de-frete-na-pagina-do-produto-incompleto {
+div#cfpp-incompleto {
     background: #ffc4c4;
     color: #771c1c;
     padding: 25px;
