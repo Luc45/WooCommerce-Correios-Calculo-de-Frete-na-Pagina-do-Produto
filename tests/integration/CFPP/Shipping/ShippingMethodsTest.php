@@ -1,5 +1,5 @@
 <?php
-namespace CFPP\Frontend\Shipping;
+namespace CFPP\Shipping;
 
 class ShippingMethodsTest extends \Codeception\TestCase\WPTestCase
 {
