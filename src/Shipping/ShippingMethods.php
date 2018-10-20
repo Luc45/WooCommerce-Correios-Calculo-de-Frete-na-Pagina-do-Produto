@@ -67,11 +67,7 @@ class ShippingMethods
         }
 
         // Success first, error last
-        $status = array();
-        foreach ($shipping_costs as $key => $row) {
-            $status[$key]  = $row['status'];
-        }
-        array_multisort($status, SORT_DESC, $shipping_costs);
+        $shipping_costs = $this->orderShippingCosts($shipping_costs);
 
         return $shipping_costs;
     }
@@ -118,5 +114,19 @@ class ShippingMethods
             }
         }
         return $request;
+    }
+
+    /**
+     * @param $shipping_costs
+     * @return array
+     */
+    private function orderShippingCosts($shipping_costs)
+    {
+        $successes = array();
+        $errors = array();
+        foreach ($shipping_costs as $shipping_cost) {
+            $shipping_cost['status'] == 'success' ? $successes[] = $shipping_cost : $errors = $shipping_cost;
+        }
+        return array_merge($successes, $errors);
     }
 }
