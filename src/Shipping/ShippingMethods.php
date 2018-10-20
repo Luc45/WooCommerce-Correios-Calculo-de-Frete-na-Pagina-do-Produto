@@ -31,7 +31,29 @@ class ShippingMethods
             $shipping_method_instance = $factory->getInstance(get_class($shipping_method));
 
             // If we don't support this Shipping Method, it will return false.
-            if ($shipping_method_instance === false) {
+            if (!$shipping_method_instance === false) {
+                // Pass the Shipping Method class to the CFPP Shipping Method
+                $shipping_method_instance->setup($shipping_method);
+
+                // Go to specific shipping method class to calculate
+                $response = $shipping_method_instance->calculate($request);
+
+                if (!$response instanceof Response) {
+                    throw new \Exception("Invalid CFPP Response.", 1);
+                }
+
+                // We only show errors to admins
+                if ($response->should_display) {
+                    $shipping_costs[] = array(
+                        'name' => $response->name,
+                        'status' => $response->status,
+                        'debug' => $response->debug,
+                        'price' => $response->price,
+                        'days' => $response->days,
+                        'class' => $response->class,
+                    );
+                }
+            } else {
                 $shipping_costs[] = array(
                     'name' => $shipping_method->method_title,
                     'status' => 'error',
@@ -39,29 +61,6 @@ class ShippingMethods
                     'days' => '-',
                     'additional_class' => 'cfpp_shipping_method_not_available',
                     'priceColSpan' => 2
-                );
-                continue;
-            }
-
-            // Pass the Shipping Method class to the CFPP Shipping Method
-            $shipping_method_instance->setup($shipping_method);
-
-            // Go to specific shipping method class to calculate
-            $response = $shipping_method_instance->calculate($request);
-
-            if (!$response instanceof Response) {
-                throw new \Exception("Invalid CFPP Response.", 1);
-            }
-
-            // We only show errors to admins
-            if ($response->should_display) {
-                $shipping_costs[] = array(
-                    'name' => $response->name,
-                    'status' => $response->status,
-                    'debug' => $response->debug,
-                    'price' => $response->price,
-                    'days' => $response->days,
-                    'class' => $response->class,
                 );
             }
         }
@@ -122,6 +121,10 @@ class ShippingMethods
      */
     private function orderShippingCosts($shipping_costs)
     {
+        if (count($shipping_costs) == 1) {
+            return $shipping_costs;
+        }
+
         $successes = array();
         $errors = array();
         foreach ($shipping_costs as $shipping_cost) {
