@@ -65,6 +65,10 @@ class Validate
         $errors = array();
         if (!is_numeric($height)) {
             $errors[] = 'Altura inválida ou não preenchida.';
+        } else {
+            if ($height <= 0) {
+                $errors[] = 'Altura deve ser maior que zero.';
+            }
         }
         return $errors;
     }
@@ -78,6 +82,10 @@ class Validate
         $errors = array();
         if (!is_numeric($width)) {
             $errors[] = 'Largura inválida ou não preenchida.';
+        } else {
+            if ($width <= 0) {
+                $errors[] = 'Largura deve ser maior que zero.';
+            }
         }
         return $errors;
     }
@@ -91,6 +99,10 @@ class Validate
         $errors = array();
         if (!is_numeric($length)) {
             $errors[] = 'Comprimento inválido ou não preenchido.';
+        } else {
+            if ($length <= 0) {
+                $errors[] = 'Comprimento deve ser maior que zero.';
+            }
         }
         return $errors;
     }
@@ -104,6 +116,10 @@ class Validate
         $errors = array();
         if (!is_numeric($weight)) {
             $errors[] = 'Peso inválido ou não preenchido.';
+        } else {
+            if ($weight <= 0) {
+                $errors[] = 'Peso deve ser maior que zero.';
+            }
         }
         return $errors;
     }
