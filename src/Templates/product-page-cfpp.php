@@ -3,6 +3,11 @@
         div#cfpp div.calculo-de-frete div#calcular-frete svg {fill:<?php echo $options['cor_do_texto']?>;}
         div#cfpp div.calculo-de-frete div#calcular-frete {color:<?php echo $options['cor_do_texto']?>;}
         div#cfpp div.calculo-de-frete div#calcular-frete {background-color:<?php echo $options['cor_do_botao']?>;}
+        <?php
+            if ( ! current_user_can('manage_options')) {
+                echo '.cfpp-has-error {display:none !important;}';
+            }
+        ?>
     </style>
 
     <?php wp_nonce_field('cfpp_nonce', 'cfpp_nonce'); ?>

@@ -38,7 +38,7 @@ abstract class ShippingMethodsAbstract
     /**
      * Calculates cubage of request per quantity
      */
-    public function setupQuantity(array $request)
+    public function calculateCubageByQuantity(array $request)
     {
         return $request;
     }

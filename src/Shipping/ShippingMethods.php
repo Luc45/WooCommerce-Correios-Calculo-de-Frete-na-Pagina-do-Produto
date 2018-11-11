@@ -27,11 +27,13 @@ class ShippingMethods
         $factory = new ShippingMethodsFactory;
 
         foreach ($shipping_methods as $shipping_method) {
+            $slug = sanitize_title(get_class($shipping_method));
+
             // Get CFPP instance of Shipping Method
             $shipping_method_instance = $factory->getInstance(get_class($shipping_method));
 
             // If we don't support this Shipping Method, it will return false.
-            if (!$shipping_method_instance === false) {
+            if ($shipping_method_instance !== false) {
                 // Pass the Shipping Method class to the CFPP Shipping Method
                 $shipping_method_instance->setup($shipping_method);
 
@@ -42,25 +44,24 @@ class ShippingMethods
                     throw new \Exception("Invalid CFPP Response.", 1);
                 }
 
-                // We only show errors to admins
-                if ($response->should_display) {
-                    $shipping_costs[] = array(
-                        'name' => $response->name,
-                        'status' => $response->status,
-                        'debug' => $response->debug,
-                        'price' => $response->price,
-                        'days' => $response->days,
-                        'class' => $response->class,
-                    );
-                }
+                $shipping_costs[$slug] = array(
+                    'name' => $response->name,
+                    'status' => $response->status,
+                    'debug' => $response->debug,
+                    'price' => $response->price,
+                    'days' => $response->days,
+                    'class' => $response->class,
+                    'should_display' => $response->should_display,
+                );
             } else {
-                $shipping_costs[] = array(
+                $shipping_costs[$slug] = array(
                     'name' => $shipping_method->method_title,
                     'status' => 'error',
+                    'debug' => 'Método não suportado pelo CFPP.',
                     'price' => 'Prossiga com a compra normalmente para ver o preço deste método de entrega.',
                     'days' => '-',
-                    'additional_class' => 'cfpp_shipping_method_not_available',
-                    'priceColSpan' => 2
+                    'class' => 'cfpp_shipping_method_not_available',
+                    'should_display' => 'no'
                 );
             }
         }
@@ -128,7 +129,7 @@ class ShippingMethods
         $successes = array();
         $errors = array();
         foreach ($shipping_costs as $shipping_cost) {
-            $shipping_cost['status'] == 'success' ? $successes[] = $shipping_cost : $errors = $shipping_cost;
+            $shipping_cost['status'] == 'success' ? $successes[] = $shipping_cost : $errors[] = $shipping_cost;
         }
         return array_merge($successes, $errors);
     }

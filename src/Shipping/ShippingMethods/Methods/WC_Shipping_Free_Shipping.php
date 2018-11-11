@@ -1,8 +1,10 @@
 <?php
 
+namespace CFPP\Shipping\ShippingMethods\Methods;
+
 use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
 
-class WC_Shipping_Free_Shipping_Shipping_Method extends ShippingMethodsAbstract
+class WC_Shipping_Free_Shipping extends ShippingMethodsAbstract
 {
 
     /**
