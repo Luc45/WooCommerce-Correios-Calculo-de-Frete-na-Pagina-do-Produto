@@ -11,17 +11,19 @@ modules:
         # - WPFilesystem
         - Asserts
         - \Helper\Functional
+        - REST:
+              depends: WPBrowser
     config:
         WPDb:
             dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
             user: '%DB_USER%'
             password: '%DB_PASSWORD%'
             dump: 'tests/_data/dump.sql'
-            populate: true
-            cleanup: true
+            populate: false
+            cleanup: false
             waitlock: 0
             url: '%WP_URL%'
-            urlReplacement: true
+            urlReplacement: false
             tablePrefix: '%TABLE_PREFIX%'
         WPBrowser:
             url: '%WP_URL%'

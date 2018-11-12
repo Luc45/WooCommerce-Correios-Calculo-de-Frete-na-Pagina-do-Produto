@@ -1,5 +1,6 @@
 <?php
-namespace CFPP\Shipping;
+
+use function Helper\clearAndCreateShippingZone;
 
 class ShippingMethodsTest extends \Codeception\TestCase\WPTestCase
 {
@@ -18,34 +19,6 @@ class ShippingMethodsTest extends \Codeception\TestCase\WPTestCase
 
         // then
         parent::tearDown();
-    }
-
-    /**
-    *   Prepares a Shipping Zone for our tests
-    */
-    public function prepareShippingZone()
-    {
-        // Deletes all Shipping Zones
-        $WC_Shipping_Zones = \WC_Shipping_Zones::get_zones();
-        foreach ($WC_Shipping_Zones as $shipping_zone) {
-            \WC_Shipping_Zones::delete_zone($shipping_zone->id);
-        }
-
-        // Create a new Shipping Zone for the test scenario
-        $WC_Shipping_Zone = new \WC_Shipping_Zone( null );
-        $WC_Shipping_Zone->set_zone_name('Shipping Methods Test');
-        $WC_Shipping_Zone->set_zone_order(1);
-
-        $locations = [];
-        $locations[] = [
-            'type' => 'country',
-            'code' => 'BR'
-        ];
-
-        $WC_Shipping_Zone->set_locations($locations);
-        $WC_Shipping_Zone->save();
-
-        return $WC_Shipping_Zone;
     }
 
     /**
@@ -69,12 +42,12 @@ class ShippingMethodsTest extends \Codeception\TestCase\WPTestCase
      */
     public function test_unsupported_shipping_method()
     {
-        $shipping_zone = $this->prepareShippingZone();
+        $shipping_zone = clearAndCreateShippingZone();
         $shipping_zone->add_shipping_method( 'correios-leve-internacional' );
 
         $request = $this->prepareRequest();
 
-        $cfpp_shipping_methods = new ShippingMethods;
+        $cfpp_shipping_methods = new CFPP\Shipping\ShippingMethods;
         $cfpp_shipping_costs = $cfpp_shipping_methods->calculateShippingOptions($shipping_zone->get_shipping_methods(), $request);
 
         $this->assertEquals(1, count($cfpp_shipping_costs));
