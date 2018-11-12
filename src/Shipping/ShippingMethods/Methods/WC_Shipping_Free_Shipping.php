@@ -31,7 +31,7 @@ class WC_Shipping_Free_Shipping extends ShippingMethodsAbstract
             return true;
         } elseif ($this->shipping_method->requires == 'min_amount' || $this->shipping_method->requires == 'either') {
             if (is_numeric($this->shipping_method->min_amount)) {
-                if (($request['price'] * $request['quantity']) > $this->shipping_method->min_amount) {
+                if (($request['product']->get_price() * $request['quantity']) >= $this->shipping_method->min_amount) {
                     return true;
                 }
             }

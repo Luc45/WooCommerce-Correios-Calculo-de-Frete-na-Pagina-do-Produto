@@ -18,7 +18,7 @@ class WC_Correios_Shipping_Carta_Registrada extends ShippingMethodsAbstract
 
         $errors = $this->validate(array(
             'maxWeight' => 0.5
-        ), $request);
+        ), $request['product']);
 
         $price = $this->getPriceFromWooCommerceCorreios($request);
         $days = $this->getEstimatedDeliveryDate();
@@ -32,7 +32,7 @@ class WC_Correios_Shipping_Carta_Registrada extends ShippingMethodsAbstract
 
     public function calculateCubageByQuantity(array $request)
     {
-        $request['weight'] = $request['weight'] * $request['quantity'];
+        $request['weight'] = $request['product']->get_weight() * $request['quantity'];
         return $request;
     }
 
@@ -41,8 +41,6 @@ class WC_Correios_Shipping_Carta_Registrada extends ShippingMethodsAbstract
      */
     private function getPriceFromWooCommerceCorreios($request)
     {
-        $carta = new \WC_Correios_Shipping_Carta_Registrada($this->shipping_method->instance_id);
-
         $request = array(
             'destination' => array (
                 'country' => 'BR',
@@ -50,7 +48,7 @@ class WC_Correios_Shipping_Carta_Registrada extends ShippingMethodsAbstract
             ),
             'contents' => array(
                 array(
-                    'data' => wc_get_product($request['id']),
+                    'data' => $request['product'],
                     'quantity' => $request['quantity']
                 )
             )

@@ -10,20 +10,20 @@ trait ValidateDimensionsTrait
     *   @param $rules array Validation rules
     *   @param $request array Product info sent through AJAX
     */
-    public function validate(array $rules, array $request)
+    public function validate(array $rules, \WC_Product $product)
     {
         $errors = array();
 
         $rules = $this->normalizeValidationRules($rules);
 
         // Each of these methods returns an array.
-        $errors[] = $this->checkHeight($request['height'], $rules['height']['max'], $rules['height']['min']);
-        $errors[] = $this->checkWidth($request['width'], $rules['width']['max'], $rules['width']['min']);
-        $errors[] = $this->checkLength($request['length'], $rules['length']['max'], $rules['length']['min']);
-        $errors[] = $this->checkWeight($request['weight'], $rules['maxWeight']);
-        $errors[] = $this->checkPrice($request['price'], $rules['maxPrice']);
+        $errors[] = $this->checkHeight($product->get_height(), $rules['height']['max'], $rules['height']['min']);
+        $errors[] = $this->checkWidth($product->get_width(), $rules['width']['max'], $rules['width']['min']);
+        $errors[] = $this->checkLength($product->get_length(), $rules['length']['max'], $rules['length']['min']);
+        $errors[] = $this->checkWeight($product->get_weight(), $rules['maxWeight']);
+        $errors[] = $this->checkPrice($product->get_price(), $rules['maxPrice']);
         if ($rules['checkSumHeightWidthLength'] !== false) {
-            $errors[] = $this->checkSumHeightWidthLength($request['height'], $request['width'], $request['length'], $rules['checkSumHeightWidthLength']);
+            $errors[] = $this->checkSumHeightWidthLength($product->get_height(), $product->get_width(), $product->get_length(), $rules['checkSumHeightWidthLength']);
         }
 
         // Flattens array
