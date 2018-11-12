@@ -35,8 +35,7 @@ class ShippingMethodsFactory
             'WC_Correios_Shipping_Impresso_Normal' => 'WC_Correios_Shipping_Impresso_Normal',
         );
 
-        if (
-            array_key_exists($shipping_method, $classes_map) &&
+        if (array_key_exists($shipping_method, $classes_map) &&
             file_exists(__DIR__ . '/Methods/' . $classes_map[$shipping_method] .'.php')
         ) {
             $class = "\\CFPP\\Shipping\\ShippingMethods\\Methods\\" . $classes_map[$shipping_method];
