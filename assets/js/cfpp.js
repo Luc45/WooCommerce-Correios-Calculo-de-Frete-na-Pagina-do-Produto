@@ -13,11 +13,6 @@
 
 		 	var url =    $('#cfpp_endpoint_url').val();
 		 	var cep =    $('#cfpp .calculo-de-frete input').val().replace(/\D+/g, '');
-			var height = $('#cfpp_height').val();
-			var width =  $('#cfpp_width').val();
-			var length = $('#cfpp_length').val();
-			var weight = $('#cfpp_weight').val();
-			var price =  $('#cfpp_price').val();
 			var id = $('#cfpp_id').val();
 			var quantity = $('input.qty').val();
 			var cfpp_nonce = $('#cfpp #cfpp_nonce').val();
@@ -34,12 +29,15 @@
 		 	$.ajax({
 		 		url: url,
 		 		type:"POST",
+				dataType: "json",
 		 		data: {
 		 			'action' : 'cfpp_request_shipping_costs',
 		 			'data' : {
 			 			'destination_postcode': cep,
 			 			'id': id,
 			 			'quantity': quantity,
+			 			'variation_data': getVariationData(),
+			 			'selected_variation': getSelectedVariation(),
 			 			'cfpp_nonce': cfpp_nonce
 		 			}
 		 		},
@@ -154,6 +152,31 @@
 			$('#cfpp').show();
 			$('#cfpp_price').val(variation.display_price.toFixed(2));
 		} );
+
+		 // Gets variation name, if any
+		 function getVariationData()
+		 {
+		 	let var_form = $('.variations_form');
+		 	if (var_form.length) {
+		 		let attr = var_form.attr('data-product_variations');
+		 		if (typeof attr !== typeof undefined && attr !== false) {
+		 			return attr;
+				}
+			}
+		 }
+
+		 // Gets selected variation, if any
+		 function getSelectedVariation()
+		 {
+		 	let select = $('.variations_form select');
+		 	if (select.length) {
+		 		var select_json = [];
+		 		$.each(select, function() {
+		 			select_json.push($(this).val());
+				})
+		 		return JSON.stringify(select_json);
+			}
+		 }
 
 	});
 

@@ -4,8 +4,6 @@ namespace CFPP\Shipping;
 
 use CFPP\Common\Sanitize;
 use CFPP\Common\Validate;
-use CFPP\Shipping\ShippingZones;
-use CFPP\Shipping\ShippingMethods;
 
 class Shipping
 {
@@ -50,6 +48,13 @@ class Shipping
         // Get product
         $sanitized_request['product'] = wc_get_product($post['data']['id']);
 
+        // Set product variation, if any
+        if ($sanitized_request['product']->get_type() == 'variable') {
+            $sanitized_request = $this->getRealVariationProduct($sanitized_request);
+            unset($sanitized_request['selected_variation']);
+            unset($sanitized_request['variation_data']);
+        }
+
         // Validate input
         $validation_response = Validate::cfppShippingCostAjaxRequest($sanitized_request);
 
@@ -62,6 +67,22 @@ class Shipping
             wp_send_json_error(__('Unable to verify WP Nonce: "cfpp_nonce".'));
         }
 
+        return $sanitized_request;
+    }
+
+    private function getRealVariationProduct(array $sanitized_request)
+    {
+        if (! empty($sanitized_request['variation_data']) && ! empty($sanitized_request['selected_variation'])) {
+            foreach ($sanitized_request['variation_data'] as $variation) {
+                // This is a variation. Does it matches all the attributes?
+                $variation_attributes = implode(', ', (array) $variation->attributes);
+                $selected_variation_attributes = implode(', ', (array) $sanitized_request['selected_variation']);
+                if ($variation_attributes == $selected_variation_attributes) {
+                    $sanitized_request['product'] = wc_get_product($variation->variation_id);
+                    $sanitized_request['id'] = $variation->variation_id;
+                }
+            }
+        }
         return $sanitized_request;
     }
 }
