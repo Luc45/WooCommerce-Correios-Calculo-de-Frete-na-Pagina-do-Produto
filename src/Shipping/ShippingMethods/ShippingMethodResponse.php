@@ -74,6 +74,8 @@ class ShippingMethodResponse
      */
     private function formatPrice($price)
     {
+        $price = str_replace('.', ',', $price);
+        $price = wc_correios_normalize_price(esc_attr((string) $price));
         if (is_numeric($price)) {
             return wc_price($price);
         } elseif ($price === 'Grátis') {

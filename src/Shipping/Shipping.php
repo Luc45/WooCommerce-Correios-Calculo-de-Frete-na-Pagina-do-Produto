@@ -35,7 +35,7 @@ class Shipping
     private function sanitizeAndValidateRequest($post)
     {
         // Do we have the amount of parameters required?
-        if (!(is_array($post['data']))) {
+        if (empty($post['data']) || !(is_array($post['data']))) {
             wp_send_json_error(__('Error at "listen_cfpp_ajax", check what is coming at $_POST["data"]', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         }
 

@@ -26,6 +26,7 @@ class Product
         $productShippingInfo['length'] = $product->get_length();
         $productShippingInfo['weight'] = Helpers::normalizeProductWeight($product->get_weight());
         $productShippingInfo['price'] = $product->get_price();
+        $productShippingInfo['type'] = $product->get_type();
         $productShippingInfo['id'] = $product->get_id();
 
         return $productShippingInfo;
@@ -56,13 +57,16 @@ class Product
                     // Invalid product data. Show warning to administrator.
                     Notifications::getInstance()->adminOnly($validate_product['message']);
                 } else {
+                    $default_display = apply_filters('cfpp_default_display', 'block', $productShippingInfo);
+
                     $data = array(
-                        'product' => $productShippingInfo,
-                        'options' => array(
+                        'cfpp_product' => $productShippingInfo,
+                        'cfpp_default_display' => $default_display,
+                        'cfpp_options' => array(
                             'cor_do_texto' => '#FFF',
                             'cor_do_botao' => '#03A9F4'
                         ),
-                        'caminhao_svg' => Assets::getSvg('caminhao')
+                        'cfpp_caminhao_svg' => Assets::getSvg('caminhao')
                     );
 
                     Template::include('product-page-cfpp', $data);
