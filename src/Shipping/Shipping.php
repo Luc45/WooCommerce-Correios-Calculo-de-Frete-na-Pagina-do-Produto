@@ -47,6 +47,9 @@ class Shipping
         // Sanitize input
         $sanitized_request = Sanitize::cfppShippingCostAjaxRequest($post['data']);
 
+        // Get product
+        $sanitized_request['product'] = wc_get_product($post['data']['id']);
+
         // Validate input
         $validation_response = Validate::cfppShippingCostAjaxRequest($sanitized_request);
 

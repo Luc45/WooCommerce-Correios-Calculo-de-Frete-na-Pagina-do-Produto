@@ -18,23 +18,23 @@ class Validate
             );
         }
 
-        return self::product($request);
+        return self::product($request['product']);
     }
 
     /**
     *   Validates a Shipping Cost Ajax Request from CFPP
     *   Product must have all values required by Correios
     */
-    public static function product(array $request)
+    public static function product(\WC_Product $product)
     {
         $errors = array();
 
-        $errors[] = self::productHeight($request['height']);
-        $errors[] = self::productWidth($request['width']);
-        $errors[] = self::productLength($request['length']);
-        $errors[] = self::productWeight($request['weight']);
-        $errors[] = self::productPrice($request['price']);
-        $errors[] = self::productId($request['id']);
+        $errors[] = self::productHeight($product->get_height());
+        $errors[] = self::productWidth($product->get_width());
+        $errors[] = self::productLength($product->get_length());
+        $errors[] = self::productWeight($product->get_weight());
+        $errors[] = self::productPrice($product->get_price());
+        $errors[] = self::productId($product->get_id());
 
         // Flattens array
         $errors = call_user_func_array('array_merge', $errors);

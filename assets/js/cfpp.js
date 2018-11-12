@@ -38,11 +38,6 @@
 		 			'action' : 'cfpp_request_shipping_costs',
 		 			'data' : {
 			 			'destination_postcode': cep,
-			 			'height': height,
-			 			'width': width,
-			 			'length': length,
-			 			'weight': weight,
-			 			'price': price,
 			 			'id': id,
 			 			'quantity': quantity,
 			 			'cfpp_nonce': cfpp_nonce

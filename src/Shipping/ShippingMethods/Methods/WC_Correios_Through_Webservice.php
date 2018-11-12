@@ -35,7 +35,7 @@ class WC_Correios_Through_Webservice extends ShippingMethodsAbstract
 
     public function generatePackage(array $request)
     {
-        $total_cost = $request['price'] * $request['quantity'];
+        $total_cost = $request['product']->get_price() * $request['quantity'];
 
         $package = array();
         $package['destination'] = array();
@@ -43,7 +43,7 @@ class WC_Correios_Through_Webservice extends ShippingMethodsAbstract
         $package['contents_cost'] = $total_cost;
         $package['contents'] = array(
             $request['id'] => array(
-                'data' => wc_get_product($request['id']),
+                'data' => $request['product'],
                 'quantity' => $request['quantity']
             )
         );
