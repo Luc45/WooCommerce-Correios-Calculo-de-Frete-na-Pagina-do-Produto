@@ -44,7 +44,7 @@ class ShippingMethods
                     throw new \Exception("Invalid CFPP Response.", 1);
                 }
 
-                $shipping_costs[$slug] = array(
+                $shipping_costs[] = array(
                     'name' => $response->name,
                     'status' => $response->status,
                     'debug' => $response->debug,
@@ -54,7 +54,7 @@ class ShippingMethods
                     'should_display' => $response->should_display,
                 );
             } else {
-                $shipping_costs[$slug] = array(
+                $shipping_costs[] = array(
                     'name' => $shipping_method->method_title,
                     'status' => 'error',
                     'debug' => 'Método não suportado pelo CFPP.',

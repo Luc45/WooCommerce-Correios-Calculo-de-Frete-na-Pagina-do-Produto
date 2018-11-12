@@ -153,10 +153,11 @@
 		 }
 
 		// Altera o preço do produto caso uma nova variação seja selecionada
-		$( ".single_variation_wrap" ).on( "show_variation", function ( event, variation ) {
+		$("*").on("show_variation", function (event, variation) {
 			resetarTabela();
 			esconderTabela();
-			$('#cfpp #calculo_frete_produto_preco').val(variation.display_price.toFixed(2));
+			$('#cfpp').show();
+			$('#cfpp_price').val(variation.display_price.toFixed(2));
 		} );
 
 	});
