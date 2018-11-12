@@ -47,30 +47,20 @@ class Product
                     return;
                 }
 
-                // Extract shipping data from the product
-                $productShippingInfo = $this->generateProductShippingInfo($product);
+                $default_display = apply_filters('cfpp_default_display', 'block', $product);
+                $default_colors = apply_filters('cfpp_default_colors', array(
+                    'text' => '#FFF',
+                    'button' => '#03A9F4'
+                ));
 
-                // Validate that data
-                $validate_product = Validate::product($productShippingInfo);
+                $data = array(
+                    'cfpp_product_id' => $product->get_id(),
+                    'cfpp_default_display' => $default_display,
+                    'cfpp_options' => $default_colors,
+                    'cfpp_truck_svg' => Assets::getSvg('caminhao')
+                );
 
-                if ($validate_product['success'] !== true) {
-                    // Invalid product data. Show warning to administrator.
-                    Notifications::getInstance()->adminOnly($validate_product['message']);
-                } else {
-                    $default_display = apply_filters('cfpp_default_display', 'block', $productShippingInfo);
-
-                    $data = array(
-                        'cfpp_product' => $productShippingInfo,
-                        'cfpp_default_display' => $default_display,
-                        'cfpp_options' => array(
-                            'cor_do_texto' => '#FFF',
-                            'cor_do_botao' => '#03A9F4'
-                        ),
-                        'cfpp_caminhao_svg' => Assets::getSvg('caminhao')
-                    );
-
-                    Template::include('product-page-cfpp', $data);
-                }
+                Template::include('product-page-cfpp', $data);
             }
         }
     }
