@@ -36,7 +36,6 @@
 			 			'destination_postcode': cep,
 			 			'id': id,
 			 			'quantity': quantity,
-			 			'variation_data': getVariationData(),
 			 			'selected_variation': getSelectedVariation(),
 			 			'cfpp_nonce': cfpp_nonce
 		 			}
@@ -151,19 +150,14 @@
 			esconderTabela();
 			$('#cfpp').show();
 			$('#cfpp_price').val(variation.display_price.toFixed(2));
-		} );
+		});
 
-		 // Gets variation name, if any
-		 function getVariationData()
-		 {
-		 	let var_form = $('.variations_form');
-		 	if (var_form.length) {
-		 		let attr = var_form.attr('data-product_variations');
-		 		if (typeof attr !== typeof undefined && attr !== false) {
-		 			return attr;
-				}
-			}
-		 }
+		// Reseta a tabela caso clique no botão "Clear all" para limpar
+		// as variações selecionadas
+		$("*").on("reset_data", function () {
+			resetarTabela();
+			esconderTabela();
+		});
 
 		 // Gets selected variation, if any
 		 function getSelectedVariation()

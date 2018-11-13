@@ -72,14 +72,17 @@ class Shipping
 
     private function getRealVariationProduct(array $sanitized_request)
     {
-        if (! empty($sanitized_request['variation_data']) && ! empty($sanitized_request['selected_variation'])) {
-            foreach ($sanitized_request['variation_data'] as $variation) {
+        $variations = $sanitized_request['product']->get_children();
+        if (! empty($sanitized_request['selected_variation'])) {
+            foreach ($variations as $variationId) {
+                $variationObj = wc_get_product($variationId);
+                $attributes = $variationObj->get_attributes();
                 // This is a variation. Does it matches all the attributes?
-                $variation_attributes = implode(', ', (array) $variation->attributes);
+                $variation_attributes = implode(', ', (array) $attributes);
                 $selected_variation_attributes = implode(', ', (array) $sanitized_request['selected_variation']);
                 if ($variation_attributes == $selected_variation_attributes) {
-                    $sanitized_request['product'] = wc_get_product($variation->variation_id);
-                    $sanitized_request['id'] = $variation->variation_id;
+                    $sanitized_request['product'] = $variationObj;
+                    $sanitized_request['id'] = $variationObj->get_id();
                 }
             }
         }

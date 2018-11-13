@@ -24,13 +24,6 @@ class Sanitize
             }
         }
 
-        if (!empty($post['variation_data'])) {
-            $variation_data = json_decode(stripslashes($post['variation_data']));
-            if (json_last_error() === JSON_ERROR_NONE) {
-                $sanitized_post['variation_data'] = $variation_data;
-            }
-        }
-
         return $sanitized_post;
     }
 }
