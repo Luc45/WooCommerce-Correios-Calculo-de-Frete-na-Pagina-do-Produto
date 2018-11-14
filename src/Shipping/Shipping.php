@@ -7,7 +7,6 @@ use CFPP\Common\Validate;
 
 class Shipping
 {
-
     /**
      * Processes an AJAX request to calculate shipping costs
      */
@@ -47,6 +46,10 @@ class Shipping
 
         // Get product
         $sanitized_request['product'] = wc_get_product($post['data']['id']);
+
+        if ($sanitized_request['product'] instanceof \WC_Product === false) {
+            wp_send_json_error('ID de produto inválido.');
+        }
 
         // Set product variation, if any
         if ($sanitized_request['product']->get_type() == 'variable') {
