@@ -57,31 +57,35 @@ class FunctionalTester extends \Codeception\Actor
      * Prepares a Shipping Zone
      *
      * Usage:
-     * $shipping_zone = $this->clearAndCreateShippingZone();
+     * $shipping_zone = $this->generateShippingZone();
      * $shipping_zone->add_shipping_method( 'correios-leve-internacional' );
      */
-    public function prepareShippingZone()
+    public function generateShippingZone(array $shipping_zone_methods)
     {
-        // Deletes all Shipping Zones
-        $WC_Shipping_Zones = \WC_Shipping_Zones::get_zones();
-        foreach ($WC_Shipping_Zones as $shipping_zone) {
-            \WC_Shipping_Zones::delete_zone($shipping_zone->id);
-        }
+        // Generate Shipping Zone
+        $table_zones = $this->grabPrefixedTableNameFor('woocommerce_shipping_zones');
+        $zone_id = $this->haveInDatabase($table_zones, [
+           'zone_name' => 'Shipping Zone Test',
+            'zone_order' => -1
+        ]);
 
-        // Create a new Shipping Zone for the test scenario
-        $WC_Shipping_Zone = new \WC_Shipping_Zone( null );
-        $WC_Shipping_Zone->set_zone_name('Shipping Methods Test');
-        $WC_Shipping_Zone->set_zone_order(1);
+        // Generate Shipping Zone Locations
+        $table_zone_locations = $this->grabPrefixedTableNameFor('woocommerce_shipping_zone_locations');
+        $this->haveInDatabase($table_zone_locations, [
+            'zone_id' => $zone_id,
+            'location_code' => 'BR',
+            'location_type' => 'country'
+        ]);
 
-        $locations = [];
-        $locations[] = [
-            'type' => 'country',
-            'code' => 'BR'
-        ];
-
-        $WC_Shipping_Zone->set_locations($locations);
-        $WC_Shipping_Zone->save();
-
-        return $WC_Shipping_Zone;
+        // Generate Shipping Zone Methods
+        $table_zone_methods = $this->grabPrefixedTableNameFor('woocommerce_shipping_zone_methods');
+        foreach ($shipping_zone_methods as $index => $method) {
+            $this->haveInDatabase($table_zone_methods, [
+                'zone_id' => $zone_id,
+                'method_id' => $method,
+                'method_order' => $index,
+                'is_enabled' => 1
+            ]);
+        };
     }
 }
