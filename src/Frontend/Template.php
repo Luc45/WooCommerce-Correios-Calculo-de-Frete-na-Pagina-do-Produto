@@ -18,7 +18,7 @@ class Template
     /**
      *   Displays the HTML for the plugin in the product page
      */
-    public function showCFPPInProductPage()
+    public static function showCFPPInProductPage()
     {
         if (is_product()) {
             global $product;
@@ -43,7 +43,7 @@ class Template
                     'cfpp_truck_svg' => Assets::getSvg('caminhao')
                 );
 
-                $this->include('product-page-cfpp', $data);
+                self::include('product-page-cfpp', $data);
             }
         }
     }

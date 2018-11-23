@@ -62,7 +62,9 @@ class Requirements
      */
     public function validOriginCep()
     {
-        if (!Validate::cep(Helpers::getOriginCep())) {
+        $cep = Helpers::getOriginCep();
+        $cep = preg_replace('/[^0-9]/', '', $cep);
+        if (strlen($cep) !== 8) {
             if (defined('CFPP_CEP')) {
                 Notifications::getInstance()->fatal(__('A constante CFPP_CEP está num formato inválido, por favor preencha exatamente neste formato: XXXXX-XXX, substituindo os X pelo número do seu CEP.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
             } else {
