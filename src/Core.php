@@ -4,17 +4,10 @@ namespace CFPP;
 
 use CFPP\Admin\Requirements;
 use CFPP\Admin\Admin;
-use CFPP\Common\Ajax;
 use CFPP\Frontend\Frontend;
 
 class Core
 {
-
-    /**
-     * True if WordPress installation meets minimum requirements. False otherwise.
-     */
-    private $meetsRequirements = false;
-
     /**
     *   Bootstraps the plugin
     */
@@ -29,34 +22,31 @@ class Core
     public function checkRequirements()
     {
         $requirements = new Requirements;
-        $this->meetsRequirements = $requirements->phpVersionSupported() &&
-                                   $requirements->wooCommerceInstalled() &&
-                                   $requirements->wooCommerceVersionSupported() &&
-                                   $requirements->wooCommerceCorreiosInstalled() &&
-                                   $requirements->validOriginCep();
+        $meetsRequirements = $requirements->phpVersionSupported() &&
+                             $requirements->wooCommerceInstalled() &&
+                             $requirements->wooCommerceVersionSupported() &&
+                             $requirements->wooCommerceCorreiosInstalled() &&
+                             $requirements->validOriginCep();
 
-        $this->afterCheckRequirements();
+        $this->afterCheckRequirements($meetsRequirements);
     }
 
     /**
      * Runs after requirements have been checked
      */
-    private function afterCheckRequirements()
+    private function afterCheckRequirements(bool $meetsRequirements)
     {
-        if ($this->meetsRequirements) {
-            // Ajax specific actions
-            $ajax = new Ajax;
-            $ajax->listen();
-
+        if ($meetsRequirements) {
             if (is_admin()) {
-                // Admin specific actions
                 $admin = new Admin;
                 $admin->run();
             } else {
-                // Front-end specific actions
+                add_action('rest_api_init', [new Rest, 'registerRoutes']);
+
                 $frontend = new Frontend;
                 $frontend->run();
             }
         }
+        // If requirements fails, a message is shown in admin panel and nothing happens
     }
 }

@@ -8,20 +8,22 @@ class Admin
 {
 
     /**
-    *   Runs when in admin and CFPP is active
+    *   Runs in admin panel when CFPP is active
     */
     public function run()
     {
-        add_action('admin_enqueue_scripts', array($this, 'enqueueAssets'));
+        $this->enqueueAssets();
     }
 
     /**
     *   Enqueues Admin CSS and Javascript
     */
-    public function enqueueAssets()
+    private function enqueueAssets()
     {
-        $adminAssets =  new Assets;
-        $adminAssets->enqueueCss();
-        $adminAssets->enqueueJavaScript();
+        add_action('admin_enqueue_scripts', function() {
+            $adminAssets =  new Assets;
+            $adminAssets->enqueueCss();
+            $adminAssets->enqueueJavaScript();
+        });
     }
 }

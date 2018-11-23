@@ -10,9 +10,7 @@
         ?>
     </style>
 
-    <?php wp_nonce_field('cfpp_nonce', 'cfpp_nonce'); ?>
-
-    <input type="hidden" id="cfpp_endpoint_url" value="<?php echo admin_url('admin-ajax.php'); ?>">
+    <input type="hidden" id="cfpp_endpoint_url" value="<?php echo get_rest_url(null, '/cfpp/v1/calculate/'); ?>">
     <input type="hidden" id="cfpp_id" value="<?php echo $cfpp_product_id;?>">
 
     <div class="calculo-de-frete">

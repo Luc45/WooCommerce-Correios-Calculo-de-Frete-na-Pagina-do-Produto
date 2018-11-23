@@ -10,7 +10,7 @@ trait ValidateDimensionsTrait
     *   @param $rules array Validation rules
     *   @param $request array Product info sent through AJAX
     */
-    public function validate(array $rules, \WC_Product $product)
+    public function validate(array $rules, \WC_Product $product, $quantity = 1)
     {
         $errors = array();
 
@@ -20,7 +20,7 @@ trait ValidateDimensionsTrait
         $errors[] = $this->checkHeight($product->get_height(), $rules['height']['max'], $rules['height']['min']);
         $errors[] = $this->checkWidth($product->get_width(), $rules['width']['max'], $rules['width']['min']);
         $errors[] = $this->checkLength($product->get_length(), $rules['length']['max'], $rules['length']['min']);
-        $errors[] = $this->checkWeight($product->get_weight(), $rules['maxWeight']);
+        $errors[] = $this->checkWeight($product->get_weight(), $rules['maxWeight'], $quantity);
         $errors[] = $this->checkPrice($product->get_price(), $rules['maxPrice']);
         if ($rules['checkSumHeightWidthLength'] !== false) {
             $errors[] = $this->checkSumHeightWidthLength($product->get_height(), $product->get_width(), $product->get_length(), $rules['checkSumHeightWidthLength']);
@@ -113,8 +113,10 @@ trait ValidateDimensionsTrait
      * Validates a product weight
      * @return array
      */
-    private function checkWeight($weight, $max)
+    private function checkWeight($weight, $max, $quantity)
     {
+        $weight = $weight * $quantity;
+
         $extra_weight = !empty($this->shipping_method->extra_weight) ? $this->shipping_method->extra_weight: 0;
 
         $errors = array();

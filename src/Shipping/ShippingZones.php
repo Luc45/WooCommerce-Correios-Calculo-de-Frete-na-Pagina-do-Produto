@@ -6,14 +6,11 @@ use CFPP\Common\Helpers;
 
 class ShippingZones
 {
-
     /**
     *   Returns first matching Shipping Zone for destination CEP.
     */
     public function getFirstMatchingShippingZone($destination_cep)
     {
-        $available_shipping_zones = array();
-
         $shipping_zones = \WC_Shipping_Zones::get_zones();
 
         // Loops each Shipping Zone
@@ -61,7 +58,6 @@ class ShippingZones
      */
     private function checkZoneLocationByPostCode($zone_location, $cep_destinatario)
     {
-        $cep_destinatario = Helpers::clearCep($cep_destinatario);
         // CEPs separated by line. Can contain wildcards or ranges.
         // We need to proccess each line separately.
         $ceps_zone = explode(PHP_EOL, $zone_location->code);

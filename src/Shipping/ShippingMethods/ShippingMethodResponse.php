@@ -2,22 +2,18 @@
 
 namespace CFPP\Shipping\ShippingMethods;
 
-use InvalidCfppResponseException;
-
 class ShippingMethodResponse
 {
-    //Wether the calculation was succesful or not
-    public $status;
-    // Additional HTML classes for the output
-    public $class;
-    // Costs for shipping
-    public $price;
-    // Estimated delivery days
-    public $days;
-    // Debug info
-    public $debug;
-    // Wether the method should display or not
-    public $should_display;
+    /**
+     * @var string $name
+     * @var string $status
+     * @var string $class
+     * @var        $price
+     * @var        $days
+     * @var mixed  $debug
+     * @var bool   $should_display
+     */
+    public $name, $status, $class, $price, $days, $debug, $should_display;
 
     public function __construct($shipping_method)
     {
@@ -97,5 +93,22 @@ class ShippingMethodResponse
         } else {
             return $days;
         }
+    }
+
+    /**
+     * Generates a Response object for Not Supported Shipping Method notice
+     *
+     * @return $this
+     */
+    public function generateNotSupportedShippingMethodResponse()
+    {
+        $this->status = 'error';
+        $this->debug = 'Método não suportado pelo CFPP.';
+        $this->price = 'Prossiga com a compra normalmente para ver o preço deste método de entrega.';
+        $this->days = '-';
+        $this->class = 'cfpp_shipping_method_not_available';
+        $this->should_display = false;
+
+        return $this;
     }
 }

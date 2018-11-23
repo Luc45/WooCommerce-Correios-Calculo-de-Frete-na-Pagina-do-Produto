@@ -42,7 +42,7 @@ class Helpers
     public static function isCepFromState($cep, $estado)
     {
         $cep = substr($cep, 0, 5); // 5 primeiros dígitos
-        $cep = (int)$cep;
+        $cep = (int) $cep;
 
         switch ($estado) {
             // phpcs:disable
@@ -51,7 +51,6 @@ class Helpers
             case ('AP'): if ($cep >= 68900 && $cep <= 68999) return true; break;
             case ('AM'): if ($cep >= 69400 && $cep <= 69899) return true; break;
             case ('BA'): if ($cep >= 40000 && $cep <= 48999) return true; break;
-            case ('CE'): if ($cep >= 60000 && $cep <= 63999) return true; break;
             case ('CE'): if ($cep >= 60000 && $cep <= 63999) return true; break;
             case ('DF'): if ($cep >= 70000 && $cep <= 73699) return true; break;
             case ('ES'): if ($cep >= 29000 && $cep <= 29999) return true; break;
@@ -75,21 +74,29 @@ class Helpers
             case ('SE'): if ($cep >= 49000 && $cep <= 49999) return true; break;
             case ('TO'): if ($cep >= 77000 && $cep <= 77995) return true; break;
             // phpcs:enable
-            default:
-                return false;
         }
+        return false;
     }
 
     /**
-    *   Receives a CEP string and returns it with numbers only
-    */
+     *   Receives a CEP string and returns it with numbers only
+     */
     public static function clearCep($cep)
     {
         // String type-hinting for older versions of PHP
         if (gettype($cep) != 'string') {
-            throw new InvalidArgumentException("CEP deve ser string.", 1);
+            throw new \InvalidArgumentException("CEP deve ser string.", 1);
         }
 
         return preg_replace('/[^0-9]/', '', $cep);
+    }
+
+    /**
+     * Returns Origin CEP
+     */
+    public static function getOriginCep()
+    {
+        // Preference for the CEP defined in the constant
+        return defined('CFPP_CEP') ? CFPP_CEP : get_option('woocommerce_store_postcode');
     }
 }

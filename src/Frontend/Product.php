@@ -31,37 +31,4 @@ class Product
 
         return $productShippingInfo;
     }
-
-    /**
-    *   Displays the HTML for the plugin in the product page
-    */
-    public function displayCFPPInProductPage()
-    {
-        if (is_product()) {
-            global $product;
-
-            if (is_subclass_of($product, 'WC_Product')) {
-                // Displays notification for admin if product is virtual
-                if ($product->is_virtual()) {
-                    Notifications::getInstance()->adminOnly('Este produto é do tipo "Virtual".');
-                    return;
-                }
-
-                $default_display = apply_filters('cfpp_default_display', 'block', $product);
-                $default_colors = apply_filters('cfpp_default_colors', array(
-                    'text' => '#FFF',
-                    'button' => '#03A9F4'
-                ));
-
-                $data = array(
-                    'cfpp_product_id' => $product->get_id(),
-                    'cfpp_default_display' => $default_display,
-                    'cfpp_options' => $default_colors,
-                    'cfpp_truck_svg' => Assets::getSvg('caminhao')
-                );
-
-                Template::include('product-page-cfpp', $data);
-            }
-        }
-    }
 }

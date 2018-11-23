@@ -2,6 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods;
 
+use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\ShippingMethodResponse as Response;
 
 abstract class ShippingMethodsAbstract
@@ -33,13 +34,5 @@ abstract class ShippingMethodsAbstract
     /**
      * Calculate shipping costs for Request based on Shipping Method
      */
-    abstract public function calculate(array $request);
-
-    /**
-     * Calculates cubage of request per quantity
-     */
-    public function calculateCubageByQuantity(array $request)
-    {
-        return $request;
-    }
+    abstract public function calculate(Payload $payload);
 }

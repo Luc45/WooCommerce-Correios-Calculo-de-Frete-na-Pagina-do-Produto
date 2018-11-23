@@ -2,6 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods\Methods;
 
+use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
 
 class WC_Shipping_Flat_Rate extends ShippingMethodsAbstract
@@ -10,7 +11,7 @@ class WC_Shipping_Flat_Rate extends ShippingMethodsAbstract
     /**
     *   Receives a Request and calculates the shipping
     */
-    public function calculate(array $request)
+    public function calculate(Payload $payload)
     {
         // Includes WooCommerce Math Class
         $wc_eval_math_file = WP_PLUGIN_DIR.'/woocommerce/includes/libraries/class-wc-eval-math.php';
@@ -26,7 +27,7 @@ class WC_Shipping_Flat_Rate extends ShippingMethodsAbstract
         $decimals = array( wc_get_price_decimal_separator(), $locale['decimal_point'], $locale['mon_decimal_point'], ',' );
 
         // Costs per quantity
-        $sum = str_replace('[qty]', $request['quantity'], $cost);
+        $sum = str_replace('[qty]', $payload->getQuantity(), $cost);
 
         // Remove whitespace from string.
         $sum = preg_replace('/\s+/', '', $sum);

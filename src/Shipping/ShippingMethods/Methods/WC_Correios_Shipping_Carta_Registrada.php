@@ -2,6 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods\Methods;
 
+use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
 use CFPP\Shipping\ShippingMethods\Traits\ValidateDimensionsTrait;
 
@@ -12,15 +13,13 @@ class WC_Correios_Shipping_Carta_Registrada extends ShippingMethodsAbstract
     /**
      *   Receives a Request and calculates the shipping
      */
-    public function calculate(array $request)
+    public function calculate(Payload $payload)
     {
-        $request = $this->calculateCubageByQuantity($request);
-
         $errors = $this->validate(array(
-            'maxWeight' => 0.5
-        ), $request['product']);
+                      'maxWeight' => 0.5
+                  ), $payload->getProduct());
 
-        $price = $this->getPriceFromWooCommerceCorreios($request);
+        $price = $this->getPriceFromWooCommerceCorreios($payload);
         $days = $this->getEstimatedDeliveryDate();
 
         if (empty($errors) && is_numeric($price)) {
@@ -30,26 +29,20 @@ class WC_Correios_Shipping_Carta_Registrada extends ShippingMethodsAbstract
         }
     }
 
-    public function calculateCubageByQuantity(array $request)
-    {
-        $request['weight'] = $request['product']->get_weight() * $request['quantity'];
-        return $request;
-    }
-
     /**
      * Uses WooCommerce Correios Classes to get the cost
      */
-    private function getPriceFromWooCommerceCorreios($request)
+    private function getPriceFromWooCommerceCorreios(Payload $payload)
     {
         $request = array(
             'destination' => array (
                 'country' => 'BR',
-                'postcode' => $request['destination_postcode']
+                'postcode' => $payload->getPostcode()
             ),
             'contents' => array(
                 array(
-                    'data' => $request['product'],
-                    'quantity' => $request['quantity']
+                    'data' => $payload->getProduct(),
+                    'quantity' => $payload->getQuantity()
                 )
             )
         );
@@ -59,7 +52,7 @@ class WC_Correios_Shipping_Carta_Registrada extends ShippingMethodsAbstract
             $r = new \ReflectionMethod('WC_Correios_Shipping_Carta_Registrada', 'get_shipping_cost');
             $r->setAccessible(true);
             $cost = $r->invoke(new \WC_Correios_Shipping_Carta_Registrada($this->shipping_method->instance_id), $request);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $cost = 'Prossiga com a compra normalmente para ver o preço deste método de entrega.';
         }
 

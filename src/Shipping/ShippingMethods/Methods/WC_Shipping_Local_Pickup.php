@@ -2,6 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods\Methods;
 
+use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
 
 class WC_Shipping_Local_Pickup extends ShippingMethodsAbstract
@@ -10,7 +11,7 @@ class WC_Shipping_Local_Pickup extends ShippingMethodsAbstract
     /**
     *   Receives a Request and calculates the shipping
     */
-    public function calculate(array $request)
+    public function calculate(Payload $payload)
     {
         // Additional cost for local pickup?
         $cost = is_numeric($this->shipping_method->cost) ? $this->shipping_method->cost : 'Grátis';

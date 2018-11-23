@@ -2,9 +2,9 @@
 
 namespace CFPP\Admin;
 
-use CFPP\Admin\Notifications;
 use CFPP\Common\Cep;
 use CFPP\Common\Validate;
+use CFPP\Common\Helpers;
 
 class Requirements
 {
@@ -66,7 +66,7 @@ class Requirements
      */
     public function validOriginCep()
     {
-        if (!Validate::cep(Cep::getOriginCep())) {
+        if (!Validate::cep(Helpers::getOriginCep())) {
             if (defined('CFPP_CEP')) {
                 Notifications::getInstance()->fatal(__('A constante CFPP_CEP está num formato inválido, por favor preencha exatamente neste formato: XXXXX-XXX, substituindo os X pelo número do seu CEP.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
             } else {
@@ -74,7 +74,6 @@ class Requirements
             }
             return false;
         }
-
         return true;
     }
 }
