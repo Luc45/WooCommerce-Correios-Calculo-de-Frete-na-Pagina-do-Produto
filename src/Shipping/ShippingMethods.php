@@ -3,7 +3,7 @@
 namespace CFPP\Shipping;
 
 use CFPP\Shipping\ShippingMethods\Factory;
-use CFPP\Shipping\ShippingMethods\Response as Response;
+use CFPP\Shipping\ShippingMethods\Response;
 
 class ShippingMethods
 {
@@ -57,7 +57,7 @@ class ShippingMethods
                 $shipping_costs[] = (array) $response;
 
             } else {
-                $response = new Response;
+                $response = new Response($shipping_method);
                 $shipping_costs[] = (array) $response->generateNotSupportedShippingMethodResponse();
             }
         }
