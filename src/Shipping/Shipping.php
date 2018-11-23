@@ -22,9 +22,6 @@ class Shipping
 
         $cfpp_shipping_costs = $cfpp_shipping_methods->getCostPerShippingMethod($shipping_methods, $payload);
 
-
-        $cfpp_shipping_costs = $shipping_methods_class->calculateShippingOptions($shipping_zone->get_shipping_methods(), $payload);
-
         return $cfpp_shipping_costs;
     }
 }

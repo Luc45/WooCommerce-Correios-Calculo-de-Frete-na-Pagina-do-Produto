@@ -18,7 +18,7 @@ class ShippingMethods
     /**
     *   Calculates the shipping costs from the shipping zones provided
     */
-    public function calculateShippingOptions(array $shipping_methods, Payload $payload)
+    public function getCostPerShippingMethod(array $shipping_methods, Payload $payload)
     {
         $shipping_costs = array();
         $factory = new Factory;
