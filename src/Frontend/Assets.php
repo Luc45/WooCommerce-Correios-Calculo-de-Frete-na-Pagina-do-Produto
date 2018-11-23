@@ -18,8 +18,9 @@ class Assets
     */
     public function enqueueJavaScript()
     {
+        wp_enqueue_script('cfpp-sanitize-title', CFPP_BASE_URL . 'assets/js/wp-fe-sanitize-title.js', array(), filemtime(CFPP_BASE_PATH.'/assets/js/wp-fe-sanitize-title.js'), false);
         wp_enqueue_script('cfpp-vanilla-masker', CFPP_BASE_URL . 'assets/js/vanilla-masker.min.js', array(), filemtime(CFPP_BASE_PATH.'/assets/js/vanilla-masker.min.js'), false);
-        wp_enqueue_script('cfpp-js', CFPP_BASE_URL . 'assets/js/cfpp.js', array('jquery', 'cfpp-vanilla-masker'), filemtime(CFPP_BASE_PATH.'/assets/js/cfpp.js'), false);
+        wp_enqueue_script('cfpp-js', CFPP_BASE_URL . 'assets/js/cfpp.js', array('jquery', 'cfpp-vanilla-masker', 'cfpp-sanitize-title'), filemtime(CFPP_BASE_PATH.'/assets/js/cfpp.js'), false);
     }
 
     /**

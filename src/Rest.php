@@ -55,7 +55,8 @@ class Rest
             $shipping = new Shipping;
             $costs = $shipping->calculateShippingCosts($payload);
             wp_send_json_success($costs);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            /** @todo throw further errors through calculateShippingCosts method */
             wp_send_json_error($e->getMessage());
         }
 

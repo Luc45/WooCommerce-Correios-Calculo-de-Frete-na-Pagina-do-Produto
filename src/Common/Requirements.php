@@ -4,74 +4,66 @@ namespace CFPP\Common;
 
 class Requirements
 {
+    CONST MINIMUM_PHP_VERSION = '5.4.0';
+    CONST MINIMUM_WOOCOMMERCE_VERSION = '3.2.0';
+
+    public function checkMinimumRequirements()
+    {
+        if (!$this->phpVersionSupported()) {
+            throw new \Exception('Versão mínima do PHP necessária: ' . self::MINIMUM_PHP_VERSION);
+        }
+
+        if (!$this->wooCommerceInstalled()) {
+            throw new \Exception('O plugin WooCommerce deve estar ativo para usar este plugin.');
+        }
+
+        if (!$this->wooCommerceVersionSupported()) {
+            throw new \Exception('O plugin Cálculo de Frete na Página requer WooCommerce ' . self::MINIMUM_WOOCOMMERCE_VERSION . ' ou superior. Como você está usando uma versão inferior, é necessário adicionar este código no seu wp-config.php: <strong>define("CFPP_CEP", "XXXXX-XXX");</strong> (coloque logo abaixo do WP_DEBUG)');
+        }
+
+        if (!$this->validOriginCep()) {
+            if (defined('CFPP_CEP')) {
+                throw new \Exception('A constante CFPP_CEP está num formato inválido, por favor preencha exatamente neste formato: XXXXX-XXX, substituindo os X pelo número do seu CEP.');
+            } else {
+                throw new \Exception('Antes de usar este plugin, configure o CEP da sua loja em WooCommerce -> Configurações. Verifique também que o cep informado tenha 8 dígitos numéricos: XXXXXXXX ou XXXXX-XXX');
+            }
+        }
+
+        return true;
+    }
 
     /**
      * Checks if the current PHP version is supported
      */
-    public function phpVersionSupported()
+    private function phpVersionSupported()
     {
-        if (version_compare(phpversion(), '5.4.0', '<')) {
-            Notifications::getInstance()->fatal(__('Versão mínima do PHP necessária: 5.4.0', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
-            return false;
-        }
-        return true;
+        return version_compare(phpversion(), self::MINIMUM_PHP_VERSION, '>=');
     }
 
     /**
      * Checks if WooCommerce is installed
      */
-    public function wooCommerceInstalled()
+    private function wooCommerceInstalled()
     {
-        if (in_array('woocommerce/woocommerce.php', get_option('active_plugins'))) {
-            return true;
-        } else {
-            Notifications::getInstance()->fatal(__('O plugin WooCommerce deve estar ativo para usar este plugin.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
-            return false;
-        }
+        return in_array('woocommerce/woocommerce.php', get_option('active_plugins'));
     }
 
     /**
      *  Checks if WooCommerce version is supported
      */
-    public function wooCommerceVersionSupported()
+    private function wooCommerceVersionSupported()
     {
         global $woocommerce;
-        if (version_compare($woocommerce->version, '3.2.0', ">=") || defined('CFPP_CEP')) {
-            return true;
-        } else {
-            Notifications::getInstance()->fatal(__('O plugin Cálculo de Frete na Página requer WooCommerce 3.2.0 ou superior. Como você está usando uma versão inferior, é necessário adicionar este código no seu wp-config.php: <strong>define("CFPP_CEP", "XXXXX-XXX");</strong> (coloque logo abaixo do WP_DEBUG)', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
-            return false;
-        }
-    }
-
-    /**
-     * Checks if WooCommerce Correios is installed
-     */
-    public function wooCommerceCorreiosInstalled()
-    {
-        if (in_array('woocommerce-correios/woocommerce-correios.php', get_option('active_plugins'))) {
-            return true;
-        } else {
-            Notifications::getInstance()->fatal(__('O plugin WooCommerce Correios deve estar ativo para usar este plugin.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
-            return false;
-        }
+        return version_compare($woocommerce->version, self::MINIMUM_WOOCOMMERCE_VERSION, ">=") || defined('CFPP_CEP');
     }
 
     /**
      *  Checks if a valid origin CEP is present
      */
-    public function validOriginCep()
+    private function validOriginCep()
     {
         $cep = Helpers::getOriginCep();
         $cep = preg_replace('/[^0-9]/', '', $cep);
-        if (strlen($cep) !== 8) {
-            if (defined('CFPP_CEP')) {
-                Notifications::getInstance()->fatal(__('A constante CFPP_CEP está num formato inválido, por favor preencha exatamente neste formato: XXXXX-XXX, substituindo os X pelo número do seu CEP.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
-            } else {
-                Notifications::getInstance()->fatal(__('Antes de usar este plugin, configure o CEP da sua loja em WooCommerce -> Configurações. Verifique também que o cep informado tenha 8 dígitos numéricos: XXXXXXXX ou XXXXX-XXX', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
-            }
-            return false;
-        }
-        return true;
+        return strlen($cep) === 8;
     }
 }

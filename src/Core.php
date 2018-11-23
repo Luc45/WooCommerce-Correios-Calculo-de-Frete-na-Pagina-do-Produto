@@ -2,6 +2,7 @@
 
 namespace CFPP;
 
+use CFPP\Common\Notifications;
 use CFPP\Common\Requirements;
 use CFPP\Frontend\Frontend;
 
@@ -20,27 +21,17 @@ class Core
     */
     public function checkRequirements()
     {
-        $requirements = new Requirements;
-        $meetsRequirements = $requirements->phpVersionSupported() &&
-                             $requirements->wooCommerceInstalled() &&
-                             $requirements->wooCommerceVersionSupported() &&
-                             $requirements->wooCommerceCorreiosInstalled() &&
-                             $requirements->validOriginCep();
+        try {
+            $requirements = new Requirements;
+            $requirements->checkMinimumRequirements();
 
-        $this->afterCheckRequirements($meetsRequirements);
-    }
-
-    /**
-     * Runs after requirements have been checked
-     */
-    private function afterCheckRequirements(bool $meetsRequirements)
-    {
-        if ($meetsRequirements) {
             add_action('rest_api_init', [new Rest, 'registerRoutes']);
 
             $frontend = new Frontend;
             $frontend->run();
+
+        } catch (\Exception $e) {
+            Notifications::getInstance()->fatal(__($e->getMessage(), 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         }
-        // If requirements fails, a message is shown in admin panel and nothing happens
     }
 }
