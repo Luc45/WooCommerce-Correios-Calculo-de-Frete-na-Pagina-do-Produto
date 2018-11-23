@@ -7,6 +7,16 @@ use CFPP\Shipping\ShippingMethods\Response as Response;
 
 class ShippingMethods
 {
+    /**
+     * Receives an array of shipping methods and returns a filtered array of shipping methods
+     *
+     * Filters Enabled Shipping Methods
+     * Filters Shipping Method by Product Shipping Class
+     *
+     * @param \WC_Shipping_Zone $shipping_zone
+     * @param Payload $payload
+     * @return array
+     */
     public function getShippingMethods(\WC_Shipping_Zone $shipping_zone, Payload $payload)
     {
         $shipping_methods = $shipping_zone->get_shipping_methods();
@@ -16,8 +26,13 @@ class ShippingMethods
     }
 
     /**
-    *   Calculates the shipping costs from the shipping zones provided
-    */
+     * Calculates shipping costs for an array of shipping methods
+     *
+     * @param array $shipping_methods
+     * @param Payload $payload
+     * @return array
+     * @throws \Exception
+     */
     public function getCostPerShippingMethod(array $shipping_methods, Payload $payload)
     {
         $shipping_costs = array();
@@ -54,7 +69,10 @@ class ShippingMethods
     }
 
     /**
-     * Receives an array of Shipping Methods instances,
+     * Returns only enabled shipping methods
+     *
+     * @param array $shipping_methods
+     * @return array
      */
     private function filterByEnabledShippingMethods(array $shipping_methods)
     {
@@ -69,7 +87,11 @@ class ShippingMethods
 
     /**
      * Determines which shipping methods should show, according to shipping class
-     * and requested product
+    *  and requested product
+     *
+     * @param array $shipping_methods
+     * @param Payload $payload
+     * @return array
      */
     private function filterByShippingClass(array $shipping_methods, Payload $payload)
     {
