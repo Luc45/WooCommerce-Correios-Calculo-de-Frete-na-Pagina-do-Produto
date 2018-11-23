@@ -2,8 +2,8 @@
 
 namespace CFPP\Shipping;
 
-use CFPP\Shipping\ShippingMethods\ShippingMethodsFactory;
-use CFPP\Shipping\ShippingMethods\ShippingMethodResponse as Response;
+use CFPP\Shipping\ShippingMethods\Factory;
+use CFPP\Shipping\ShippingMethods\Response as Response;
 
 class ShippingMethods
 {
@@ -21,7 +21,7 @@ class ShippingMethods
         // Get only shipping classes that matches the one from the product
         $shipping_methods = $this->filterByShippingClass($shipping_methods, $payload);
 
-        $factory = new ShippingMethodsFactory;
+        $factory = new Factory;
 
         foreach ($shipping_methods as $shipping_method) {
             // Get CFPP instance of Shipping Method

@@ -2,7 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods;
 
-class ShippingMethodsFactory
+class Factory
 {
     /**
     *   Returns a Shipping Method class

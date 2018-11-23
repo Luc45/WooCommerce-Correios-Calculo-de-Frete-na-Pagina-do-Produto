@@ -1,15 +1,16 @@
 <?php
 
-namespace CFPP\Admin;
+namespace CFPP\Common;
+
+use CFPP\Frontend\Template;
 
 class Notifications
 {
 
+    private $fatal, $warning;
+
     // Singleton instance
     public static $instance;
-
-    private $fatal;
-    private $warning;
 
     // Implements Singleton pattern
     public function __construct()
@@ -27,15 +28,20 @@ class Notifications
     }
 
     /**
+    *   Hooks a notification in product page for admins only
+    */
+    public function productPageNotice($message)
+    {
+        if (current_user_can('manage_options')) {
+            Template::include('cfpp-not-showing', array('error' => $message));
+        }
+    }
+
+    /**
      * Hooks a fatal error notification display
      */
     public function fatal($message)
     {
-        // String type-hinting for older versions of PHP
-        if (gettype($message) != 'string') {
-            return;
-        }
-
         $this->fatal = $message;
         add_action('admin_notices', array($this, 'display_fatal'), 10);
     }
@@ -45,11 +51,6 @@ class Notifications
      */
     public function warning($message)
     {
-        // String type-hinting for older versions of PHP
-        if (gettype($message) != 'string') {
-            return;
-        }
-
         $this->warning = $message;
         add_action('admin_notices', array($this, 'display_warning'), 10);
     }
@@ -60,10 +61,10 @@ class Notifications
     public function display_fatal()
     {
         ?>
-            <div class="error notice">
-                <p style="font-weight: bold;">Cálculo de Frete na Página do Produto</p>
-                <p>O plugin encontrou um problema: <strong><?php echo $this->fatal ?></strong></p>
-            </div>
+        <div class="error notice">
+            <p style="font-weight: bold;">Cálculo de Frete na Página do Produto</p>
+            <p>O plugin encontrou um problema: <strong><?php echo $this->fatal ?></strong></p>
+        </div>
         <?php
     }
 
@@ -73,10 +74,10 @@ class Notifications
     public function display_warning()
     {
         ?>
-            <div class="notice-warning notice">
-                <p style="font-weight: bold;">Cálculo de Frete na Página do Produto</p>
-                <p><?php echo $this->warning ?></p>
-            </div>
+        <div class="notice-warning notice">
+            <p style="font-weight: bold;">Cálculo de Frete na Página do Produto</p>
+            <p><?php echo $this->warning ?></p>
+        </div>
         <?php
     }
 }

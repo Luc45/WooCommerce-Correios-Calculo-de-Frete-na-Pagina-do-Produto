@@ -2,7 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods;
 
-class ShippingMethodResponse
+class Response
 {
     /**
      * @var string $name

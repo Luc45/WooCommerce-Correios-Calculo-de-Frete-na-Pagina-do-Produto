@@ -7,7 +7,6 @@ use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
 
 class WC_Shipping_Local_Pickup extends ShippingMethodsAbstract
 {
-
     /**
     *   Receives a Request and calculates the shipping
     */

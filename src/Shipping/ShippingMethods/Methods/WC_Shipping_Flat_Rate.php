@@ -7,7 +7,6 @@ use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
 
 class WC_Shipping_Flat_Rate extends ShippingMethodsAbstract
 {
-
     /**
     *   Receives a Request and calculates the shipping
     */

@@ -1,10 +1,6 @@
 <?php
 
-namespace CFPP\Admin;
-
-use CFPP\Common\Cep;
-use CFPP\Common\Validate;
-use CFPP\Common\Helpers;
+namespace CFPP\Common;
 
 class Requirements
 {

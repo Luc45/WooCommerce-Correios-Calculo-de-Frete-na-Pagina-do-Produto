@@ -2,8 +2,7 @@
 
 namespace CFPP;
 
-use CFPP\Admin\Requirements;
-use CFPP\Admin\Admin;
+use CFPP\Common\Requirements;
 use CFPP\Frontend\Frontend;
 
 class Core
@@ -37,15 +36,10 @@ class Core
     private function afterCheckRequirements(bool $meetsRequirements)
     {
         if ($meetsRequirements) {
-            if (is_admin()) {
-                $admin = new Admin;
-                $admin->run();
-            } else {
-                add_action('rest_api_init', [new Rest, 'registerRoutes']);
+            add_action('rest_api_init', [new Rest, 'registerRoutes']);
 
-                $frontend = new Frontend;
-                $frontend->run();
-            }
+            $frontend = new Frontend;
+            $frontend->run();
         }
         // If requirements fails, a message is shown in admin panel and nothing happens
     }

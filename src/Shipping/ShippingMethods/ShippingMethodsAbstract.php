@@ -3,7 +3,6 @@
 namespace CFPP\Shipping\ShippingMethods;
 
 use CFPP\Shipping\Payload;
-use CFPP\Shipping\ShippingMethods\ShippingMethodResponse as Response;
 
 abstract class ShippingMethodsAbstract
 {
@@ -18,7 +17,7 @@ abstract class ShippingMethodsAbstract
     protected $shipping_method;
 
     /**
-     * Instance of ShippingMethodResponse
+     * Instance of Response
      */
     protected $response;
 
