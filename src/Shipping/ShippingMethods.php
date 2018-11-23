@@ -7,20 +7,20 @@ use CFPP\Shipping\ShippingMethods\Response as Response;
 
 class ShippingMethods
 {
+    public function getShippingMethods(\WC_Shipping_Zone $shipping_zone, Payload $payload)
+    {
+        $shipping_methods = $shipping_zone->get_shipping_methods();
+        $shipping_methods = $this->filterByEnabledShippingMethods($shipping_methods);
+        $shipping_methods = $this->filterByShippingClass($shipping_methods, $payload);
+        return $shipping_methods;
+    }
 
     /**
     *   Calculates the shipping costs from the shipping zones provided
     */
-    public function calculateShippingOptions($shipping_methods, Payload $payload)
+    public function calculateShippingOptions(array $shipping_methods, Payload $payload)
     {
         $shipping_costs = array();
-
-        // Get only enabled shipping methods
-        $shipping_methods = $this->filterByEnabledShippingMethods($shipping_methods);
-
-        // Get only shipping classes that matches the one from the product
-        $shipping_methods = $this->filterByShippingClass($shipping_methods, $payload);
-
         $factory = new Factory;
 
         foreach ($shipping_methods as $shipping_method) {
@@ -56,7 +56,7 @@ class ShippingMethods
     /**
      * Receives an array of Shipping Methods instances,
      */
-    private function filterByEnabledShippingMethods($shipping_methods)
+    private function filterByEnabledShippingMethods(array $shipping_methods)
     {
         $enabled_shipping_methods = array();
         foreach ($shipping_methods as $shipping_method) {
@@ -71,7 +71,7 @@ class ShippingMethods
      * Determines which shipping methods should show, according to shipping class
      * and requested product
      */
-    private function filterByShippingClass($shipping_methods, Payload $payload)
+    private function filterByShippingClass(array $shipping_methods, Payload $payload)
     {
         foreach ($shipping_methods as $key => $shipping_method) {
             if (property_exists($shipping_method, 'shipping_class') && $shipping_method->shipping_class != '') {

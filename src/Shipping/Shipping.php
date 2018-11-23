@@ -12,14 +12,18 @@ class Shipping
      */
     public function calculateShippingCosts(Payload $payload)
     {
-        // WooCommerce matches the first Shipping Zone from top to bottom as the shipping zone used for calculations.
-        // Fallback to "Locations not covered by your other zones" if can't find a shipping zone
-        $shipping_zone = new ShippingZones;
-        $shipping_zone = $shipping_zone->getFirstMatchingShippingZone($payload->getPostcode());
+        // Get first matching shipping zone for destination postcode
+        $cfpp_shipping_zones = new ShippingZones;
+        $shipping_zone = $cfpp_shipping_zones->getFirstMatchingShippingZone($payload->getPostcode());
 
-        // Gets Shipping Costs for each Shipping Method
-        $shipping_methods = new ShippingMethods;
-        $cfpp_shipping_costs = $shipping_methods->calculateShippingOptions($shipping_zone->get_shipping_methods(), $payload);
+        // Get available shipping methods within this shipping zone
+        $cfpp_shipping_methods = new ShippingMethods;
+        $shipping_methods = $cfpp_shipping_methods->getShippingMethods($shipping_zone, $payload);
+
+        $cfpp_shipping_costs = $cfpp_shipping_methods->getCostPerShippingMethod($shipping_methods, $payload);
+
+
+        $cfpp_shipping_costs = $shipping_methods_class->calculateShippingOptions($shipping_zone->get_shipping_methods(), $payload);
 
         return $cfpp_shipping_costs;
     }

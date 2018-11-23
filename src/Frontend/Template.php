@@ -2,6 +2,8 @@
 
 namespace CFPP\Frontend;
 
+use CFPP\Common\Notifications;
+
 class Template
 {
     public function include($template, array $data = array())
