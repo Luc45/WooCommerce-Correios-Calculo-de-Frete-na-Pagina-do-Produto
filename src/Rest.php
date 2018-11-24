@@ -2,12 +2,8 @@
 
 namespace CFPP;
 
-use WP_REST_Server;
-use WP_REST_Request;
 use CFPP\Shipping\Costs;
 use CFPP\Shipping\Payload;
-use CFPP\Shipping\ShippingZones;
-use CFPP\Shipping\ShippingMethods;
 
 class Rest
 {
@@ -24,7 +20,7 @@ class Rest
          * @param4 string Selected Variation (optional, captures a-z, 0-9 and -)
          */
         register_rest_route('cfpp/v1', '/calculate/(?P<product_id>\d+)/(?P<destination_postcode>\d+)(?:/(?P<quantity>\d+))?(?:/(?P<selected_variation>[0-9a-z-]+))?', [
-            'methods' => WP_REST_Server::READABLE,
+            'methods' => \WP_REST_Server::READABLE,
             'callback' => array($this, 'calculate'),
             'args' => [
                 'product_id' => [
@@ -45,9 +41,9 @@ class Rest
      * Receives a REST Request, creates the payload object and pass it
      * to Costs to calculate it, then return it
      *
-     * @param WP_REST_Request $request
+     * @param \WP_REST_Request $request
      */
-    public function calculate(WP_REST_Request $request)
+    public function calculate(\WP_REST_Request $request)
     {
         $product = wc_get_product($request->get_param('product_id'));
         $destination_postcode = absint($request->get_param('destination_postcode'));
