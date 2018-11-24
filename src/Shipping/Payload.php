@@ -8,7 +8,6 @@ class Payload
     public $postcode;
     public $quantity;
 
-
     /**
      * Generate a Payload object based on input or throws Exception
      *
@@ -30,7 +29,7 @@ class Payload
             if ($product instanceof \WC_Product_Variable) {
                 $this->product = $this->getRealVariationProduct($product, $selected_variation);
             } else {
-                throw \Exception('Não foi possível calcular frete com variações para produto que não é variável.');
+                throw new \Exception('Não foi possível calcular frete com variações para produto que não é variável.');
             }
         }
 

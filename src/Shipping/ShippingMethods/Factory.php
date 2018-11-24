@@ -7,14 +7,19 @@ class Factory
     /**
     *   Returns a Shipping Method class
     */
-    public function getInstance($shipping_method)
+    public static function create($shipping_method)
     {
-        // String type-hinting for older versions of PHP
-        if (gettype($shipping_method) != 'string') {
-            return false;
+        // Object type-hinting for PHP < 7.2
+        if (!is_object($shipping_method)) {
+            throw new \Exception('Shipping method must be an object.');
         }
 
-        $classes_map = array(
+        $shipping_method_name = get_class($shipping_method);
+
+        /**
+         * Here we map a shipping method name to a class that will handle it's request
+         */
+        $shipping_methods_handlers = array(
             'WC_Correios_Shipping_SEDEX_Hoje' => 'WC_Correios_Through_Webservice',
             'WC_Correios_Shipping_SEDEX_12' => 'WC_Correios_Through_Webservice',
             'WC_Correios_Shipping_SEDEX_10_Pacote' => 'WC_Correios_Through_Webservice',
@@ -31,17 +36,17 @@ class Factory
             'WC_Shipping_Local_Pickup' => 'WC_Shipping_Local_Pickup',
 
             // todo
-            'WC_Correios_Shipping_Impresso_Urgente' => 'WC_Correios_Shipping_Impresso_Urgente',
-            'WC_Correios_Shipping_Impresso_Normal' => 'WC_Correios_Shipping_Impresso_Normal',
+            // 'WC_Correios_Shipping_Impresso_Urgente' => 'WC_Correios_Shipping_Impresso_Urgente',
+            // 'WC_Correios_Shipping_Impresso_Normal' => 'WC_Correios_Shipping_Impresso_Normal',
         );
 
-        if (array_key_exists($shipping_method, $classes_map) &&
-            file_exists(__DIR__ . '/Methods/' . $classes_map[$shipping_method] .'.php')
+        if (array_key_exists($shipping_method_name, $shipping_methods_handlers) &&
+            file_exists(__DIR__ . '/Methods/' . $shipping_methods_handlers[$shipping_method_name] .'.php')
         ) {
-            $class = "\\CFPP\\Shipping\\ShippingMethods\\Methods\\" . $classes_map[$shipping_method];
+            $class = "\\CFPP\\Shipping\\ShippingMethods\\Methods\\" . $shipping_methods_handlers[$shipping_method_name];
             return new $class;
         } else {
-            return false;
+            throw new \Exception('Method not supported or handler not found.');
         }
     }
 }

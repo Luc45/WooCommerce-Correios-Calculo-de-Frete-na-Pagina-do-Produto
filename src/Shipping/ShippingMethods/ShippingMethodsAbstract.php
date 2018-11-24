@@ -6,23 +6,16 @@ use CFPP\Shipping\Payload;
 
 abstract class ShippingMethodsAbstract
 {
-    /**
-     * Request received through AJAX, containing product info
-     */
-    #protected $request;
-
-    /**
-     * Instance of Current Shipping Method
-     */
+    /** @var Instance of current Shipping Method */
     protected $shipping_method;
 
-    /**
-     * Instance of Response
-     */
+    /** @var \CFPP\Shipping\Response */
     protected $response;
 
     /**
      * Stores a copy of the original shipping method class, so we can get costs, etc
+     *
+     * @param $shipping_method
      */
     public function setup($shipping_method)
     {
@@ -31,7 +24,10 @@ abstract class ShippingMethodsAbstract
     }
 
     /**
-     * Calculate shipping costs for Request based on Shipping Method
+     * Calculate cost for Shipping Method based on Payload
+     *
+     * @param Payload $payload
+     * @return mixed
      */
     abstract public function calculate(Payload $payload);
 }

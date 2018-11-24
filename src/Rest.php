@@ -3,11 +3,17 @@
 namespace CFPP;
 
 use WP_REST_Server;
+use WP_REST_Request;
+use CFPP\Shipping\Costs;
 use CFPP\Shipping\Payload;
-use CFPP\Shipping\Shipping;
+use CFPP\Shipping\ShippingZones;
+use CFPP\Shipping\ShippingMethods;
 
 class Rest
 {
+    /**
+     * Register REST routes in WordPress
+     */
     public static function registerRoutes()
     {
         /**
@@ -35,14 +41,19 @@ class Rest
         ]);
     }
 
-    public function calculate(\WP_REST_Request $request)
+    /**
+     * Receives a REST Request, creates the payload object and pass it
+     * to Costs to calculate it, then return it
+     *
+     * @param WP_REST_Request $request
+     */
+    public function calculate(WP_REST_Request $request)
     {
         $product = wc_get_product($request->get_param('product_id'));
         $destination_postcode = absint($request->get_param('destination_postcode'));
         $quantity = $request->offsetExists('quantity') ? absint($request->get_param('quantity')) : 1;
         $selected_variation = $request->offsetExists('selected_variation') ? $request->get_param('selected_variation') : null;
 
-        // Try to generate the Payload object
         try {
             $payload = new Payload;
             $payload = $payload->makeFrom($product, $destination_postcode, $quantity, $selected_variation);
@@ -50,15 +61,13 @@ class Rest
             wp_send_json_error($e->getMessage());
         }
 
-        // Try to calculate the Shipping
         try {
-            $shipping = new Shipping;
-            $costs = $shipping->calculateShippingCosts($payload);
-            wp_send_json_success($costs);
-        } catch (\Exception $e) {
-            /** @todo throw further errors through calculateShippingCosts method */
+            $costs = new Costs;
+            $response = $costs->calculate($payload);
+        } catch(\Exception $e) {
             wp_send_json_error($e->getMessage());
         }
 
+        wp_send_json_success($response);
     }
 }

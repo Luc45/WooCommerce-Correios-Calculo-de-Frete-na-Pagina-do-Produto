@@ -111,4 +111,23 @@ class Response
 
         return $this;
     }
+
+    /**
+     * Generates a Response object for an Unknown Error in the Response of the handler
+     *
+     * @return $this
+     */
+    public function generateUnknownErrorResponse()
+    {
+        $this->status = 'error';
+        $this->debug = 'Erro desconhecido na resposta da requisição.';
+        $this->price = 'Prossiga com a compra normalmente para ver o preço deste método de entrega.';
+        $this->days = '-';
+        $this->class = 'cfpp_shipping_method_unknown_error';
+        $this->should_display = false;
+
+        return $this;
+    }
+
+
 }

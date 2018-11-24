@@ -39,7 +39,7 @@ class Helpers
     /**
     *   Returns true if a CEP belongs to a certain state
     */
-    public static function isCepFromState($cep, $estado)
+    public static function isPostcodeFromState($cep, $estado)
     {
         $cep = substr($cep, 0, 5); // 5 primeiros dígitos
         $cep = (int) $cep;
@@ -81,7 +81,7 @@ class Helpers
     /**
      *   Receives a CEP string and returns it with numbers only
      */
-    public static function clearCep($cep)
+    public static function clearPostcode($cep)
     {
         // String type-hinting for older versions of PHP
         if (gettype($cep) != 'string') {

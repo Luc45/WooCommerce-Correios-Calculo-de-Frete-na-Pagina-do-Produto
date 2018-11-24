@@ -4,9 +4,10 @@ namespace CFPP;
 
 use CFPP\Common\Notifications;
 use CFPP\Common\Requirements;
+use CFPP\Common\MinimumRequirementNotMetException;
 use CFPP\Frontend\Frontend;
 
-class Core
+class Bootstrap
 {
     /**
     *   Bootstraps the plugin
@@ -17,7 +18,7 @@ class Core
     }
 
     /**
-    *   Checks if we meet the minimum requirements to run the plugin
+    *   Checks if we meet the minimum requirements and run the plugin
     */
     public function checkRequirements()
     {
@@ -29,8 +30,7 @@ class Core
 
             $frontend = new Frontend;
             $frontend->run();
-
-        } catch (\Exception $e) {
+        } catch (MinimumRequirementNotMetException $e) {
             Notifications::getInstance()->fatal(__($e->getMessage(), 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         }
     }
