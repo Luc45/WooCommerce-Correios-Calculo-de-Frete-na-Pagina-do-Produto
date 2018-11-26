@@ -1,17 +1,20 @@
 <?php
 
-namespace CFPP\Shipping\ShippingMethods\Methods;
+namespace CFPP\Shipping\ShippingMethods\Handlers;
 
 use CFPP\Shipping\Payload;
-use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
+use CFPP\Shipping\ShippingMethods\Handler;
 use CFPP\Shipping\ShippingMethods\Traits\ValidateDimensionsTrait;
 
-class WC_Correios_Shipping_Carta_Registrada extends ShippingMethodsAbstract
+class WC_Correios_Shipping_Carta_Registrada extends Handler
 {
     use ValidateDimensionsTrait;
 
     /**
-     *   Receives a Request and calculates the shipping
+     * Receives a Request and calculates the shipping
+     *
+     * @param Payload $payload
+     * @return \CFPP\Shipping\ShippingMethods\Response|mixed
      */
     public function calculate(Payload $payload)
     {
@@ -31,6 +34,9 @@ class WC_Correios_Shipping_Carta_Registrada extends ShippingMethodsAbstract
 
     /**
      * Uses WooCommerce Correios Classes to get the cost
+     *
+     * @param Payload $payload
+     * @return mixed|string
      */
     private function getPriceFromWooCommerceCorreios(Payload $payload)
     {
@@ -61,6 +67,8 @@ class WC_Correios_Shipping_Carta_Registrada extends ShippingMethodsAbstract
 
     /**
      * Get the estimated delivery date for this shipping method
+     *
+     * @return string
      */
     private function getEstimatedDeliveryDate()
     {

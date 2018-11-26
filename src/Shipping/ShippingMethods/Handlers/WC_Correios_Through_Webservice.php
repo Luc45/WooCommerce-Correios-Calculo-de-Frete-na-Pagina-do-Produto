@@ -1,11 +1,11 @@
 <?php
 
-namespace CFPP\Shipping\ShippingMethods\Methods;
+namespace CFPP\Shipping\ShippingMethods\Handlers;
 
 use CFPP\Shipping\Payload;
-use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
+use CFPP\Shipping\ShippingMethods\Handler;
 
-class WC_Correios_Through_Webservice extends ShippingMethodsAbstract
+class WC_Correios_Through_Webservice extends Handler
 {
     /**
      * Calculates shipping costs for a Payload object using reflection class on

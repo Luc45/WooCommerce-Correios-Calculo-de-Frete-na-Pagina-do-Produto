@@ -21,7 +21,7 @@ class Costs
         $shipping_zone = $cfpp_shipping_zones->getFirstMatchingShippingZone($payload->getPostcode());
 
         if ( ! $shipping_zone instanceof \WC_Shipping_Zone) {
-            throw new \Exception('Couldn\'t find a matching shipping zone for this postcode.');
+            throw new \Exception(__('Couldn\'t find a matching shipping zone for this postcode.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         }
 
         // Get available shipping methods within this shipping zone
@@ -32,7 +32,7 @@ class Costs
             // Get shipping cost for each shipping method
             return $this->getCostPerShippingMethod($shipping_methods, $payload);
         } else {
-            throw new \Exception('Couldn\'t find any shipping method for this postcode and product.');
+            throw new \Exception(__('Couldn\'t find any shipping method for this postcode and product.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         }
 
 
@@ -50,7 +50,7 @@ class Costs
         $shipping_costs = array();
 
         foreach ($shipping_methods as $shipping_method) {
-            // Get CFPP handler for Shipping Method
+            // Create CFPP handler for this Shipping Method
             try {
                 $cfpp_handler = Factory::create($shipping_method);
             } catch (\Exception $e) {
@@ -59,9 +59,7 @@ class Costs
                 continue;
             }
 
-            // Pass the Shipping Method class to the CFPP Shipping Method
-            $cfpp_handler->setup($shipping_method);
-
+            // Calculate the costs using Handler
             try {
                 $response = $cfpp_handler->calculate($payload);
                 $shipping_costs[] = (array) $response;

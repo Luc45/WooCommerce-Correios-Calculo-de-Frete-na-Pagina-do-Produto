@@ -1,15 +1,18 @@
 <?php
 
-namespace CFPP\Shipping\ShippingMethods\Methods;
+namespace CFPP\Shipping\ShippingMethods\Handlers;
 
 use CFPP\Shipping\Payload;
-use CFPP\Shipping\ShippingMethods\ShippingMethodsAbstract;
+use CFPP\Shipping\ShippingMethods\Handler;
 
-class WC_Shipping_Flat_Rate extends ShippingMethodsAbstract
+class WC_Shipping_Flat_Rate extends Handler
 {
     /**
-    *   Receives a Request and calculates the shipping
-    */
+     * Receives a Request and calculates the shipping
+     *
+     * @param Payload $payload
+     * @return \CFPP\Shipping\ShippingMethods\Response|mixed
+     */
     public function calculate(Payload $payload)
     {
         // Includes WooCommerce Math Class

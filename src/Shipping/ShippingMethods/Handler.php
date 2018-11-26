@@ -4,20 +4,19 @@ namespace CFPP\Shipping\ShippingMethods;
 
 use CFPP\Shipping\Payload;
 
-abstract class ShippingMethodsAbstract
+abstract class Handler
 {
-    /** @var Instance of current Shipping Method */
+    /** @var \WC_Shipping_Method */
     protected $shipping_method;
 
-    /** @var \CFPP\Shipping\Response */
+    /** @var \CFPP\Shipping\ShippingMethods\Response */
     protected $response;
 
     /**
-     * Stores a copy of the original shipping method class, so we can get costs, etc
-     *
-     * @param $shipping_method
+     * Handler constructor.
+     * @param \WC_Shipping_Method $shipping_method
      */
-    public function setup($shipping_method)
+    public function __construct(\WC_Shipping_Method $shipping_method)
     {
         $this->shipping_method = $shipping_method;
         $this->response = new Response($shipping_method);

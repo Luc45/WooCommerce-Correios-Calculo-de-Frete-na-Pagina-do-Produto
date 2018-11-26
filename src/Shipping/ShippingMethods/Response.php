@@ -15,12 +15,12 @@ class Response
      */
     public $name, $status, $class, $price, $days, $debug, $should_display;
 
-    public function __construct($shipping_method)
+    public function __construct(\WC_Shipping_Method $shipping_method)
     {
         $this->name = $shipping_method->method_title;
-        $this->price = 'Indefinido';
-        $this->days = 'Indefinido';
-        $this->status = 'Indefinido';
+        $this->price = 'Undefined';
+        $this->days = 'Undefined';
+        $this->status = 'Undefined';
         $this->debug = '';
     }
 
@@ -33,10 +33,14 @@ class Response
         $debug = '',
         $class = ''
     ) {
-        $price = $this->formatPrice($price);
-
-        if ($price === false) {
-            return $this->error('Tentou enviar uma resposta, porém preço foi inválido: ' . $price);
+        try {
+            $price = $this->formatPrice($price);
+        } catch (\Exception $e) {
+            $this->error(sprintf(
+                /* translators: %s Invalid price */
+                __('Tried to send a succesful response, but price was invalid: %s', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                $price
+            ));
         }
 
         $days = $this->formatDays($days);
@@ -70,15 +74,18 @@ class Response
      */
     private function formatPrice($price)
     {
-        $price = str_replace('.', ',', $price);
-        $price = wc_correios_normalize_price(esc_attr((string) $price));
-        if (is_numeric($price)) {
-            return wc_price($price);
-        } elseif ($price === 'Grátis') {
-            return $price;
+        if ($price === 0) {
+            $price = __('Free', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
         } else {
-            return false;
+            $price = wc_correios_normalize_price(esc_attr((string) $price));
+            if (is_numeric($price)) {
+                $price = wc_price($price);
+            } else {
+                throw new \Exception();
+            }
         }
+
+        return $price;
     }
 
     /**
@@ -87,9 +94,12 @@ class Response
     private function formatDays($days)
     {
         if (is_numeric($days)) {
-            $after_days = (int) $days > 1 ? ' dias' : ' dia';
-            $before_days = apply_filters('cfpp_days_nomenclature', 'Em até ');
-            return $before_days . $days . $after_days;
+            $days = (int) $days;
+            return sprintf(
+                /* translators: %d Estimated days for delivery */
+                esc_html(_n('Up to a day', 'Up to %d days', $days, 'woo-correios-calculo-de-frete-na-pagina-do-produto')),
+                $days
+            );
         } else {
             return $days;
         }
@@ -103,8 +113,8 @@ class Response
     public function generateNotSupportedShippingMethodResponse()
     {
         $this->status = 'error';
-        $this->debug = 'Método não suportado pelo CFPP.';
-        $this->price = 'Prossiga com a compra normalmente para ver o preço deste método de entrega.';
+        $this->debug = __('Shipping Method not supported by CFPP.', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
+        $this->price = __('Please, proceed with the purchase normally.', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
         $this->days = '-';
         $this->class = 'cfpp_shipping_method_not_available';
         $this->should_display = false;
@@ -120,8 +130,8 @@ class Response
     public function generateUnknownErrorResponse()
     {
         $this->status = 'error';
-        $this->debug = 'Erro desconhecido na resposta da requisição.';
-        $this->price = 'Prossiga com a compra normalmente para ver o preço deste método de entrega.';
+        $this->debug = __('Unknown response from the webservice request', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
+        $this->price = __('Please, proceed with the purchase normally.', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
         $this->days = '-';
         $this->class = 'cfpp_shipping_method_unknown_error';
         $this->should_display = false;
