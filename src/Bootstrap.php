@@ -5,7 +5,7 @@ namespace CFPP;
 use CFPP\Common\Notifications;
 use CFPP\Common\Requirements;
 use CFPP\Common\MinimumRequirementNotMetException;
-use CFPP\Frontend\Frontend;
+use CFPP\Common\Frontend;
 
 class Bootstrap
 {

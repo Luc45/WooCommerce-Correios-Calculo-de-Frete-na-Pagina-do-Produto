@@ -28,16 +28,6 @@ class Notifications
     }
 
     /**
-    *   Hooks a notification in product page for admins only
-    */
-    public function productPageNotice($message)
-    {
-        if (current_user_can('manage_options')) {
-            Template::include('cfpp-not-showing', array('error' => $message));
-        }
-    }
-
-    /**
      * Hooks a fatal error notification display
      */
     public function fatal($message)
