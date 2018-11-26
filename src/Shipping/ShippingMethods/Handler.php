@@ -3,14 +3,20 @@
 namespace CFPP\Shipping\ShippingMethods;
 
 use CFPP\Shipping\Payload;
+use CFPP\Shipping\ShippingMethods\Traits\ValidateDimensionsTrait;
 
 abstract class Handler
 {
+    use ValidateDimensionsTrait;
+
     /** @var \WC_Shipping_Method */
     protected $shipping_method;
 
     /** @var \CFPP\Shipping\ShippingMethods\Response */
     protected $response;
+
+    /** @var array */
+    protected $validation_rules;
 
     /**
      * Handler constructor.
@@ -29,4 +35,13 @@ abstract class Handler
      * @return mixed
      */
     abstract public function calculate(Payload $payload);
+
+    /**
+     * Gives a chance to modify validation behavior
+     *
+     * @return mixed
+     */
+    public function beforeValidate() {
+
+    }
 }

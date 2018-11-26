@@ -4,12 +4,9 @@ namespace CFPP\Shipping\ShippingMethods\Handlers;
 
 use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\Handler;
-use CFPP\Shipping\ShippingMethods\Traits\ValidateDimensionsTrait;
 
 class WC_Correios_Shipping_Carta_Registrada extends Handler
 {
-    use ValidateDimensionsTrait;
-
     /**
      * Receives a Request and calculates the shipping
      *
@@ -18,17 +15,15 @@ class WC_Correios_Shipping_Carta_Registrada extends Handler
      */
     public function calculate(Payload $payload)
     {
-        $errors = $this->validate(array(
-                      'maxWeight' => 0.5
-                  ), $payload->getProduct());
-
+        // Calculate costs
         $price = $this->getPriceFromWooCommerceCorreios($payload);
         $days = $this->getEstimatedDeliveryDate();
 
-        if (empty($errors) && is_numeric($price)) {
+        // Return response
+        if ($price !== false) {
             return $this->response->success($price, $days);
         } else {
-            return $this->response->error(implode(', ', $errors));
+            return $this->response->error(__('Could not get price for Carta Registrada.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         }
     }
 
@@ -59,7 +54,7 @@ class WC_Correios_Shipping_Carta_Registrada extends Handler
             $r->setAccessible(true);
             $cost = $r->invoke(new \WC_Correios_Shipping_Carta_Registrada($this->shipping_method->instance_id), $request);
         } catch (\Exception $e) {
-            $cost = 'Prossiga com a compra normalmente para ver o preço deste método de entrega.';
+            return false;
         }
 
         return $cost;
@@ -82,5 +77,18 @@ class WC_Correios_Shipping_Carta_Registrada extends Handler
             $days = $this->shipping_method->additional_time . ' ' . $day_or_days;
         }
         return $days;
+    }
+
+    /**
+     * Set default validation rules, if not set
+     *
+     * @return mixed|void
+     */
+    public function beforeValidate()
+    {
+        add_filter('cfpp_handler_rules_wc_shipping_carta_registrada', function(\CFPP\Shipping\ShippingMethods\Traits\ValidationRules $rules) {
+            $rules->setDefault('weight', null, 0.5);
+            return $rules;
+        });
     }
 }

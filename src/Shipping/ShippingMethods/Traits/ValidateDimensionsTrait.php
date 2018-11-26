@@ -2,163 +2,159 @@
 
 namespace CFPP\Shipping\ShippingMethods\Traits;
 
+use CFPP\Shipping\Payload;
+
 trait ValidateDimensionsTrait
 {
+    /** @var array $package */
+    protected $package;
+
+    /** @var string $dimensions_unit */
+    protected $dimensions_unit;
+
+    /** @var string $weight_unit */
+    protected $weight_unit;
+
     /**
-    *   Validates a product according to WooCommerce Correios requirements
-    *
-    *   @param $rules array Validation rules
-    *   @param $request array Product info sent through AJAX
-    */
-    public function validate(array $rules, \WC_Product $product, $quantity = 1)
+     * Validates a product according to given rules and payload
+     *
+     * @param Payload $payload
+     * @throws \Exception
+     */
+    public function validate(Payload $payload)
     {
-        $errors = array();
+        $this->package = $payload->getPackage();
+        $this->dimensions_unit = get_option('woocommerce_dimension_unit');
+        $this->weight_unit = get_option('woocommerce_weight_unit');
 
-        $rules = $this->normalizeValidationRules($rules);
+        $validation_rules = new ValidationRules;
 
-        // Each of these methods returns an array.
-        $errors[] = $this->checkHeight($product->get_height(), $rules['height']['max'], $rules['height']['min']);
-        $errors[] = $this->checkWidth($product->get_width(), $rules['width']['max'], $rules['width']['min']);
-        $errors[] = $this->checkLength($product->get_length(), $rules['length']['max'], $rules['length']['min']);
-        $errors[] = $this->checkWeight($product->get_weight(), $rules['maxWeight'], $quantity);
-        $errors[] = $this->checkPrice($product->get_price(), $rules['maxPrice']);
-        if ($rules['checkSumHeightWidthLength'] !== false) {
-            $errors[] = $this->checkSumHeightWidthLength($product->get_height(), $product->get_width(), $product->get_length(), $rules['checkSumHeightWidthLength']);
+        /** Allows for custom validation rules per shipping method using filters */
+        $validation_rules = apply_filters('cfpp_handler_rules_' . sanitize_title(get_class($this->shipping_method)), $validation_rules);
+
+        if ($validation_rules->hasRules() === false) {
+            return;
         }
+
+        $validation_rules = $validation_rules->getRules();
+
+        $errors = array();
+        $errors[] = $this->checkDimensionsAndTotalCost($validation_rules);
+        $errors[] = $this->checkSumHeightWidthLength($validation_rules['sum_height_width_length']);
 
         // Flattens array
         $errors = call_user_func_array('array_merge', $errors);
 
-        // Do we have any error?
-        return $errors;
-    }
-
-    /**
-    *   Normalizes a set of rules. Since we do numeric comparison, we either add
-    *   0 for minimum values or PHP_INT_MAX for max values, if those are empty.
-    */
-    protected function normalizeValidationRules(array $rules)
-    {
-        return array(
-            'height' => array(
-                'max' => !empty($rules['height']['max']) ? $rules['height']['max'] : PHP_INT_MAX,
-                'min' => !empty($rules['height']['min']) ? $rules['height']['min'] : 0
-            ),
-            'width' => array(
-                'max' => !empty($rules['width']['max']) ? $rules['width']['max'] : PHP_INT_MAX,
-                'min' => !empty($rules['width']['min']) ? $rules['width']['min'] : 0
-            ),
-            'length' => array(
-                'max' => !empty($rules['length']['max']) ? $rules['length']['max'] : PHP_INT_MAX,
-                'min' => !empty($rules['length']['min']) ? $rules['length']['min'] : 0
-            ),
-            'maxWeight' => !empty($rules['maxWeight']) ? $rules['maxWeight'] : PHP_INT_MAX,
-            'maxPrice' => !empty($rules['maxPrice']) ? $rules['maxPrice'] : PHP_INT_MAX,
-            'checkSumHeightWidthLength' => !empty($rules['checkSumHeightWidthLength']) ? $rules['checkSumHeightWidthLength'] : false
-        );
-    }
-
-    /**
-     * Validates a product height
-     * @return array
-     */
-    private function checkHeight($height, $max, $min)
-    {
-        $errors = array();
-        if (!is_numeric($height)) {
-            $errors[] = 'Altura inválida ou não preenchida.';
-        } elseif (is_numeric($height) && $height > $max) {
-            $errors[] = 'Altura ('.$height.'cm) ultrapassa o máximo permitido pelo método de entrega ('.$max.'cm).';
-        } elseif (is_numeric($height) && $height < $min) {
-            $errors[] = 'Altura ('.$height.'cm) é menor do que o mínimo permitido pelo método de entrega ('.$min.'cm).';
+        if ( ! empty($errors)) {
+            throw new \Exception(implode('<br>', $errors));
         }
-        return $errors;
     }
 
     /**
-     * Validates a product width
+     * Validates minimum and maximum values for
+     * Height, Width, Length, Weight and Price
+     * according to given $rules and $payload
+     *
+     * @param array $rules
      * @return array
      */
-    private function checkWidth($width, $max, $min)
+    public function checkDimensionsAndTotalCost(array $rules)
     {
         $errors = array();
-        if (!is_numeric($width)) {
-            $errors[] = 'Largura inválida ou não preenchida.';
-        } elseif (is_numeric($width) && $width > $max) {
-            $errors[] = 'Largura ('.$width.'cm) ultrapassa o máximo permitido pelo método de entrega ('.$max.'cm).';
-        } elseif (is_numeric($width) && $width < $min) {
-            $errors[] = 'Largura ('.$width.'cm) é menor do que o mínimo permitido pelo método de entrega ('.$min.'cm).';
-        }
-        return $errors;
-    }
 
-    /**
-     * Validates a product length
-     * @return array
-     */
-    private function checkLength($length, $max, $min)
-    {
-        $errors = array();
-        if (!is_numeric($length)) {
-            $errors[] = 'Comprimento inválido ou não preenchido.';
-        } elseif (is_numeric($length) && $length > $max) {
-            $errors[] = 'Comprimento ('.$length.'cm) ultrapassa o máximo permitido pelo método de entrega ('.$max.'cm).';
-        } elseif (is_numeric($length) && $length < $min) {
-            $errors[] = 'Comprimento ('.$length.'cm) é menor do que o mínimo permitido pelo método de entrega ('.$min.'cm).';
-        }
-        return $errors;
-    }
+        $allowed_properties = ['height', 'width', 'length', 'weight', 'total_cost'];
 
-    /**
-     * Validates a product weight
-     * @return array
-     */
-    private function checkWeight($weight, $max, $quantity)
-    {
-        $weight = $weight * $quantity;
+        foreach ($rules as $property => $rule) {
+            if ( ! in_array($property, $allowed_properties)) {
+                continue;
+            }
+            $readable_property = ucfirst($property);
+            $value = $this->package[$property];
 
-        $extra_weight = !empty($this->shipping_method->extra_weight) ? $this->shipping_method->extra_weight: 0;
+            $max = $rules[$property]['max'];
+            $min = $rules[$property]['min'];
 
-        $errors = array();
-        if (!is_numeric($weight)) {
-            $errors[] = 'Peso inválido ou não preenchido.';
-        } elseif (is_numeric($weight) && ($weight + $extra_weight) > $max) {
-            if ($extra_weight > 0) {
-                $errors[] = 'Peso ('.$weight.'kg) ultrapassa o máximo permitido do método de entrega ('.$max.'kg). Considerando peso extra configurado do método de entrega, que é de '.$extra_weight.'kg';
-            } else {
-                $errors[] = 'Peso ('.$weight.'kg) ultrapassa o máximo permitido do método de entrega ('.$max.'kg).';
+            switch ($property) {
+                case 'height':
+                case 'width':
+                case 'length':
+                    $unit = $this->dimensions_unit;
+                    break;
+                case 'weight':
+                    $unit = $this->weight_unit;
+                    break;
+                case 'total_cost':
+                    $unit = '';
+                    break;
+            }
+
+            // Max
+            if ($value > $max) {
+                $errors[] = sprintf(
+                    /* translators: 1: readable property, 2: value, 3: maximum value, 4: unit */
+                    __('%1$s (%2$s%4$s) is bigger than the maximum allowed for this shipping method (%3$s%4$s).', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                    $readable_property,
+                    $value,
+                    $max,
+                    $unit
+                );
+            } else if ($value < $min) {
+                // Min
+                $errors[] = sprintf(
+                    /* translators: 1: readable property, 2: value, 3: minimum value, 4: unit */
+                    __('%1$s (%2$s%4$s) is smaller than the minimum required for this shipping method (%3$s%4$s).', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                    $readable_property,
+                    $value,
+                    $min,
+                    $unit
+                );
             }
         }
+
         return $errors;
     }
 
     /**
-     * Validates a product price
-     * @return array
+     * Validates the product sum of height, width and length
+     *
+     * @param array $package
+     * @param $max
+     * @return array|void
      */
-    private function checkPrice($price, $max)
+    private function checkSumHeightWidthLength($sum_height_width_length)
     {
-        $errors = array();
-        if (!is_numeric($price)) {
-            $errors[] = 'Preço inválido ou não preenchido. ('.$price.')';
-        } elseif (is_numeric($price) && $price > $max) {
-            $errors[] = 'Preço (R$ '.$price.') ultrapassa o máximo permitido do método de entrega (R$ '.$max.').';
-        }
-        return $errors;
-    }
+        $max = $sum_height_width_length['max'];
+        $min = $sum_height_width_length['min'];
+        $height = $this->package['height'];
+        $width = $this->package['width'];
+        $length = $this->package['length'];
 
-    /**
-     * Validates a product length
-     * @return array
-     */
-    private function checkSumHeightWidthLength($height, $width, $length, $max)
-    {
         $errors = array();
+
         if (is_numeric($height) && is_numeric($width) && is_numeric($length)) {
             if ($height + $width + $length > $max) {
-                $errors[] = "Soma da Altura, Largura e Comprimento (".($height + $width + $length)."cm) ultrapassa o máximo permitido pelo método de entrega (".$max."cm).";
+                $errors[] = sprintf(
+                    /* translators: 1: height, 2: width, 3: length, 4: maximum value, 5: unit */
+                    __('Sum of Height, Width and Length (%1$sx%2$sx%3$s%5$s) is bigger than the maximum allowed for this shipping method (%4$s%5$s).', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                    $height,
+                    $width,
+                    $length,
+                    $max,
+                    $this->dimensions_unit
+                );
+            } else if ($height + $width + $length < $min) {
+                $errors[] = sprintf(
+                    /* translators: 1: height, 2: width, 3: length, 4: maximum value, 5: unit */
+                    __('Sum of Height, Width and Length (%1$sx%2$sx%3$s%5$s) is smaller than the minimum required for this shipping method (%4$s%5$s).', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                    $height,
+                    $width,
+                    $length,
+                    $min,
+                    $this->dimensions_unit
+                );
             }
         }
+
         return $errors;
     }
 }

@@ -50,21 +50,31 @@ class Costs
         $shipping_costs = array();
 
         foreach ($shipping_methods as $shipping_method) {
+            $response = new Response($shipping_method);
+
             // Create CFPP handler for this Shipping Method
             try {
                 $cfpp_handler = Factory::create($shipping_method);
             } catch (\Exception $e) {
-                $response = new Response($shipping_method);
                 $shipping_costs[] = (array) $response->generateNotSupportedShippingMethodResponse();
                 continue;
             }
 
-            // Calculate the costs using Handler
+            // Validate Payload before Calculation
+            try {
+                // Gives a chance to modify validation behavior
+                $cfpp_handler->beforeValidate();
+                $cfpp_handler->validate($payload);
+            } catch (\Exception $e) {
+                $shipping_costs[] = (array) $response->error($e->getMessage());
+                continue;
+            }
+
+            // Calculate Costs
             try {
                 $response = $cfpp_handler->calculate($payload);
                 $shipping_costs[] = (array) $response;
             } catch (\Exception $e) {
-                $response = new Response($shipping_method);
                 $shipping_costs[] = (array) $response->generateUnknownErrorResponse();
                 continue;
             }

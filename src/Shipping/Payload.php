@@ -13,6 +13,9 @@ class Payload
     /** @var int $quantity */
     public $quantity;
 
+    /** @var array $package */
+    protected $package;
+
     /**
      * Generate a Payload object based on input or throws Exception
      *
@@ -25,9 +28,7 @@ class Payload
      */
     public function makeFrom(\WC_Product $product, $destination_postcode, $quantity, $selected_variation)
     {
-        $this->postcode = $destination_postcode;
-        $this->quantity = $quantity;
-
+        // Get real product from variation
         if (empty($selected_variation)) {
             $this->product = $product;
         } else {
@@ -37,10 +38,42 @@ class Payload
                 throw new \Exception(__('Could not calculate shipping with variation data for product that is not variable.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
             }
         }
+        $this->postcode = $destination_postcode;
+        $this->quantity = $quantity;
+
+        // Create package according to quantity of products chosen
+        $package = new Package($this);
+        $this->package = $package->getData();
+
+        if ( ! $this->validatePackage()) {
+            throw new \Exception(__('Could not create a Package for Payload object in CFPP.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+        }
 
         return $this;
     }
 
+    /**
+     * Validates a Payload's package
+     *
+     * @return bool
+     */
+    private function validatePackage()
+    {
+        $is_valid = true;
+        $required_properties = ['height', 'width', 'length', 'weight'];
+
+        foreach ($required_properties as $required_property) {
+            if ( ! array_key_exists($required_property, $this->package)) {
+                $is_valid = false;
+            } else {
+                if ( ! is_numeric($this->package[$required_property])) {
+                    $is_valid = false;
+                }
+            }
+        }
+
+        return $is_valid;
+    }
 
     /**
      * Returns WC_Product based on selected variation on frontend
@@ -77,6 +110,16 @@ class Payload
         }
 
         return $product;
+    }
+
+    /**
+     * Returns a package array
+     *
+     * @return array
+     */
+    public function getPackage()
+    {
+        return $this->package;
     }
 
     public function getPostcode()

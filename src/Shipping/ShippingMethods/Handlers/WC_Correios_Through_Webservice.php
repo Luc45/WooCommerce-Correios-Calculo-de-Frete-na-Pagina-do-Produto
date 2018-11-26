@@ -17,14 +17,14 @@ class WC_Correios_Through_Webservice extends Handler
      */
     public function calculate(Payload $payload)
     {
-        $package = $this->generatePackage($payload);
-
+        // Calculate costs
         try {
-            $reflection_response = $this->getReflectionResponse($this->shipping_method, $package);
+            $reflection_response = $this->getReflectionResponse($this->shipping_method, $this->generateCorreiosPackage($payload));
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
 
+        // Return response
         if ($reflection_response['Erro'] == "0") {
             return $this->response->success(
                 $reflection_response['Valor'],
@@ -37,12 +37,12 @@ class WC_Correios_Through_Webservice extends Handler
     }
 
     /**
-     * Generate an package array, needed by WooCommerce Correios classes
+     * Generate a Correios Package, needed by WooCommerce Correios
      *
      * @param Payload $payload
      * @return array
      */
-    public function generatePackage(Payload $payload)
+    public function generateCorreiosPackage(Payload $payload)
     {
         $total_cost = $payload->getProduct()->get_price() * $payload->getQuantity();
 
@@ -56,6 +56,7 @@ class WC_Correios_Through_Webservice extends Handler
                 'quantity' => $payload->getQuantity()
             )
         );
+
         return $package;
     }
 
@@ -68,6 +69,7 @@ class WC_Correios_Through_Webservice extends Handler
     private function getReflectionResponse(\WC_Correios_Shipping $shipping_method, $package)
     {
         $r_class_name = get_class($shipping_method);
+
         try {
             $r_get_rate = new \ReflectionMethod($r_class_name, 'get_rate');
         } catch (\ReflectionException $e) {
@@ -82,5 +84,32 @@ class WC_Correios_Through_Webservice extends Handler
 
         }
         return (array) $r_response;
+    }
+
+    /**
+     * Runs before Validate() method
+     */
+    public function beforeValidate()
+    {
+        add_filter('cfpp_handler_rules_wc_correios_shipping_pac', [$this, 'validatePacSedex']);
+        add_filter('cfpp_handler_rules_wc_correios_shipping_sedex', [$this, 'validatePacSedex']);
+    }
+
+    /**
+     * Default validation rules for PAC and SEDEX
+     *
+     * @param \CFPP\Shipping\ShippingMethods\Traits\ValidationRules $rules
+     * @return \CFPP\Shipping\ShippingMethods\Traits\ValidationRules
+     */
+    public function validatePacSedex(\CFPP\Shipping\ShippingMethods\Traits\ValidationRules $rules)
+    {
+        // Swapping height and length due to WooCommerce Correios bug
+        // @see https://github.com/claudiosanches/woocommerce-correios/pull/130
+        $rules->setDefault('height', 16, 105);
+        $rules->setDefault('width', 11, 105);
+        $rules->setDefault('length', 2, 105);
+        $rules->setDefault('weight', null, 30);
+        $rules->setDefault('sum_height_width_length', 29, 200);
+        return $rules;
     }
 }
