@@ -28,8 +28,14 @@ class Costs
         $cfpp_shipping_methods = new ShippingMethods;
         $shipping_methods = $cfpp_shipping_methods->getShippingMethods($shipping_zone, $payload);
 
-        // Get shipping cost for each shipping method
-        return $this->getCostPerShippingMethod($shipping_methods, $payload);
+        if ( ! empty($shipping_methods)) {
+            // Get shipping cost for each shipping method
+            return $this->getCostPerShippingMethod($shipping_methods, $payload);
+        } else {
+            throw new \Exception('Couldn\'t find any shipping method for this postcode and product.');
+        }
+
+
     }
 
     /**

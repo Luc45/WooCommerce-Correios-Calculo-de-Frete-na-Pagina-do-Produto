@@ -39,7 +39,7 @@ class Rest
 
     /**
      * Receives a REST Request, creates the payload object and pass it
-     * to Costs to calculate it, then return it
+     * to Costs to calculate it, then send the JSON response
      *
      * @param \WP_REST_Request $request
      */

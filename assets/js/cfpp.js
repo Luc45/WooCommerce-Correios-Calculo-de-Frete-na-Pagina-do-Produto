@@ -1,7 +1,7 @@
 (function( $ ) {
 	'use strict';
 
-	$(function() {
+    $(function() {
         /**
 		 *	Roda quando clica para calcular o Frete
 		 */
@@ -10,13 +10,13 @@
 		 		return;
 		 	}
 
-		 	var url =       $('#cfpp_endpoint_url').val();
-		 	var cep =       $('#cfpp .calculo-de-frete input').val().replace(/\D+/g, '');
-			var id =        $('#cfpp_id').val().replace(/\D+/g, '');
-			var quantity =  getQuantity().replace(/\D+/g, '');
+		 	var url = getUrl();
+		 	var cep = getCep();
+			var id =  getId();
+			var quantity = getQuantity();
 			var variation = getSelectedVariation();
 
-		 	if (cep.length != 8) {
+		 	if (cep.length !== 8) {
 		 		alert('Por favor, verifique se o CEP informado é válido.');
 		 		return false;
 		 	}
@@ -36,38 +36,30 @@
 				type: "GET",
                 dataType: "json",
                 error:function(jqXHR, exception) {
-                    var msg = '';
-                    if (jqXHR.status === 0) {
-                        msg = 'Not connect.\n Verify Network.';
-                    } else if (jqXHR.status == 404) {
-                        msg = 'Requested page not found. [404]';
-                    } else if (jqXHR.status == 500) {
-                        msg = 'Internal Server Error [500].';
-                    } else if (exception === 'parsererror') {
-                        msg = 'Requested JSON parse failed.';
-                    } else if (exception === 'timeout') {
-                        msg = 'Time out error.';
-                    } else if (exception === 'abort') {
-                        msg = 'Ajax request aborted.';
-                    } else {
-                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
-                    }
-                    console.log(msg);
+                    console.log(jqXHR);
+                    console.log(exception);
                     esconderLoader();
                     esconderTabela();
                     resetarTabela();
                     return false;
                 },
                 success:function(result) {
+
                     // Teve erro?
-                    if (!result.success) {
-                        console.log('CFPP: '+result.data);
+                    if ( ! result.success) {
+                        //$('#cfpp .resultado-frete table tbody').append('<tr><td colspan="3">' + result.data + '</td></tr>');
+                        //esconderLoader();
+                        //exibirTabela();
+						console.log(result.data);
                         esconderLoader();
                         esconderTabela();
                         resetarTabela();
+                        return;
                     }
+
                     var comErro = [];
                     var row = '';
+
                     // Outros métodos de envio
                     if (result.data) {
                         console.log(result.data);
@@ -171,12 +163,27 @@
 
 		 // Get quantity or defaults to 1
         function getQuantity() {
-		 	let qt = $('input.qty').val();
+		 	let qt = $('input.qty').val().replace(/\D+/g, '');
             if (qt.length === 0) {
             	return 1;
 			} else {
             	return qt;
 			}
+        }
+
+        // Return REST request endpoint URL
+        function getUrl() {
+            return $('#cfpp_endpoint_url').val();
+        }
+
+        // Return Destination Postcode
+        function getCep() {
+            return $('#cfpp .calculo-de-frete input').val().replace(/\D+/g, '');
+        }
+
+        // Return Product ID
+        function getId() {
+            return $('#cfpp_id').val().replace(/\D+/g, '');
         }
 
 	});

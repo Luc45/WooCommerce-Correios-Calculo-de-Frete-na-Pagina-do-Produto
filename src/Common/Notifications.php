@@ -62,8 +62,8 @@ class Notifications
     {
         ?>
         <div class="error notice">
-            <p style="font-weight: bold;">Cálculo de Frete na Página do Produto</p>
-            <p>O plugin encontrou um problema: <strong><?php echo $this->fatal ?></strong></p>
+            <p style="font-weight: bold;"><?php echo __('CFPP - Cálculo de Frete na Página do Produto' , 'woo-correios-calculo-de-frete-na-pagina-do-produto'); ?></p>
+            <p><?php echo __('CFPP is not showing on the product page right now, because:' , 'woo-correios-calculo-de-frete-na-pagina-do-produto'); ?> <strong><?php echo $this->fatal ?></strong></p>
         </div>
         <?php
     }
@@ -75,7 +75,7 @@ class Notifications
     {
         ?>
         <div class="notice-warning notice">
-            <p style="font-weight: bold;">Cálculo de Frete na Página do Produto</p>
+            <p style="font-weight: bold;"><?php echo __('CFPP - Cálculo de Frete na Página do Produto' , 'woo-correios-calculo-de-frete-na-pagina-do-produto'); ?></p>
             <p><?php echo $this->warning ?></p>
         </div>
         <?php
