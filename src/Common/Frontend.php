@@ -28,9 +28,9 @@ class Frontend
             wp_enqueue_style('cfpp-css', CFPP_BASE_URL . 'assets/css/cfpp.css', array(), filemtime(CFPP_BASE_PATH.'/assets/css/cfpp.css'), 'all');
 
             // JS
-            wp_enqueue_script('cfpp-sanitize-title', CFPP_BASE_URL . 'assets/js/wp-fe-sanitize-title.js', array(), filemtime(CFPP_BASE_PATH.'/assets/js/wp-fe-sanitize-title.js'), false);
-            wp_enqueue_script('cfpp-vanilla-masker', CFPP_BASE_URL . 'assets/js/vanilla-masker.min.js', array(), filemtime(CFPP_BASE_PATH.'/assets/js/vanilla-masker.min.js'), false);
-            wp_enqueue_script('cfpp-js', CFPP_BASE_URL . 'assets/js/cfpp.js', array('jquery', 'cfpp-vanilla-masker', 'cfpp-sanitize-title'), filemtime(CFPP_BASE_PATH.'/assets/js/cfpp.js'), false);
+            wp_enqueue_script('cfpp-sanitize-title', CFPP_BASE_URL . 'assets/js/wp-fe-sanitize-title.js', array(), filemtime(CFPP_BASE_PATH.'/assets/js/wp-fe-sanitize-title.js'));
+            wp_enqueue_script('cfpp-vanilla-masker', CFPP_BASE_URL . 'assets/js/vanilla-masker.min.js', array(), filemtime(CFPP_BASE_PATH.'/assets/js/vanilla-masker.min.js'));
+            wp_enqueue_script('cfpp-js', CFPP_BASE_URL . 'assets/js/cfpp.js', array('jquery', 'cfpp-vanilla-masker', 'cfpp-sanitize-title'), filemtime(CFPP_BASE_PATH.'/assets/js/cfpp.js'));
         }
     }
 
@@ -49,34 +49,27 @@ class Frontend
     }
 
     /**
-     *   Displays the HTML for the plugin in the product page
+     * Displays the HTML for the plugin in the product page
      */
     public function showCFPPInProductPage()
     {
-        if (is_product()) {
-            global $product;
+        global $product;
+        if ($product instanceof \WC_Product && $product->is_virtual() === false) {
+            $cfpp_data = array(
+                'cfpp_product_id' => $product->get_id(),
+                'cfpp_default_display' => $product->is_type('variable') ? 'none' : 'block',
+                'cfpp_options' => array(
+                    'text' => '#FFF',
+                    'button' => '#03A9F4'
+                ),
+                'cfpp_truck_svg' => $this->getSvg('truck')
+            );
 
-            if (is_subclass_of($product, 'WC_Product')) {
-                if ($product->is_virtual()) {
-                    return;
-                }
+            $cfpp_data = apply_filters('cfpp_product_page_data', $cfpp_data);
 
-                $cfpp_data = array(
-                    'cfpp_product_id' => $product->get_id(),
-                    'cfpp_default_display' => $product->is_type('variable') ? 'none' : 'block',
-                    'cfpp_options' => array(
-                        'text' => '#FFF',
-                        'button' => '#03A9F4'
-                    ),
-                    'cfpp_truck_svg' => $this->getSvg('truck')
-                );
+            extract($cfpp_data);
 
-                $cfpp_data = apply_filters('cfpp_product_page_data', $cfpp_data);
-
-                extract($cfpp_data);
-
-                include_once(CFPP_BASE_PATH . '/views/product-page-cfpp.php');
-            }
+            include_once(CFPP_BASE_PATH . '/views/product-page-cfpp.php');
         }
     }
 }
