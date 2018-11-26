@@ -4,8 +4,13 @@ namespace CFPP\Shipping;
 
 class Payload
 {
+    /** @var \WC_Product */
     public $product;
+
+    /** @var int $postcode */
     public $postcode;
+
+    /** @var int $quantity */
     public $quantity;
 
     /**
@@ -29,7 +34,7 @@ class Payload
             if ($product instanceof \WC_Product_Variable) {
                 $this->product = $this->getRealVariationProduct($product, $selected_variation);
             } else {
-                throw new \Exception('Não foi possível calcular frete com variações para produto que não é variável.');
+                throw new \Exception(__('Could not calculate shipping with variation data for product that is not variable.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
             }
         }
 
@@ -40,23 +45,34 @@ class Payload
     /**
      * Returns WC_Product based on selected variation on frontend
      *
-     * @param \WC_Product $product
+     * @param \WC_Product_Variable $product
      * @param $selected_variation
      * @return false|null|\WC_Product
      */
-    private function getRealVariationProduct(\WC_Product $product, $selected_variation)
+    private function getRealVariationProduct(\WC_Product_Variable $product, $selected_variation)
     {
         $variations = $product->get_children();
 
         foreach ($variations as $variation_id) {
             $possible_product = wc_get_product($variation_id);
+
+            /** @example $attributes = ['color' => 'Black', 'size' => 'Large'] */
             $attributes = $possible_product->get_attributes();
 
+            /** @example $attributes = 'Black-Large' */
             $attributes = implode('-', $attributes);
+
+            /** @example $attributes = 'black-large' */
             $attributes = sanitize_title($attributes);
 
+            /**
+             * $selected_variation comes from the front-end, where we
+             * replicate implode('-') and sanitize_title() with JavaScript
+             * functions and libraries
+             */
             if ($attributes == $selected_variation) {
                 $product = $possible_product;
+                break;
             }
         }
 

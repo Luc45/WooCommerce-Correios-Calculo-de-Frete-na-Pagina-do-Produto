@@ -10,7 +10,7 @@ class Rest
     /**
      * Register REST routes in WordPress
      */
-    public static function registerRoutes()
+    public function registerRoutes()
     {
         /**
          * @route calculate
