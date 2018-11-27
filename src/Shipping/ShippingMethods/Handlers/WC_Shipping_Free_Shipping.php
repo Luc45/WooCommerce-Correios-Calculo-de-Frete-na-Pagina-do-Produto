@@ -16,7 +16,7 @@ class WC_Shipping_Free_Shipping extends Handler
     public function calculate(Payload $payload)
     {
         // Check if this product is entitled for free shipping
-        $should_show = $this->meetsFreeShippingRequirements($payload) ? true : false;
+        $should_show = $this->meetsFreeShippingRequirements($payload);
 
         if ($should_show) {
             return $this->response->success(0, __('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));

@@ -101,7 +101,6 @@ class Payload
             /**
              * $selected_variation comes from the front-end, where we
              * replicate implode('-') and sanitize_title() with JavaScript
-             * functions and libraries
              */
             if ($attributes == $selected_variation) {
                 $product = $possible_product;
@@ -122,16 +121,25 @@ class Payload
         return $this->package;
     }
 
+    /**
+     * @return int
+     */
     public function getPostcode()
     {
         return $this->postcode;
     }
 
+    /**
+     * @return \WC_Product
+     */
     public function getProduct()
     {
         return $this->product;
     }
 
+    /**
+     * @return int
+     */
     public function getQuantity()
     {
         return $this->quantity;
