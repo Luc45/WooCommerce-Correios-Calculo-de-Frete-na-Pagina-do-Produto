@@ -19,9 +19,9 @@ class WC_Shipping_Free_Shipping extends Handler
         $should_show = $this->meetsFreeShippingRequirements($payload) ? true : false;
 
         if ($should_show) {
-            return $this->response->success(0, apply_filters('cfpp_free_shipping_days', 'Consulte-nos'));
+            return $this->response->success(0, __('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         } else {
-            return $this->response->error('Não se encaixa nos requisitos de frete grátis.');
+            return $this->response->error(__('Does not meet free shipping requirements.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         }
     }
 

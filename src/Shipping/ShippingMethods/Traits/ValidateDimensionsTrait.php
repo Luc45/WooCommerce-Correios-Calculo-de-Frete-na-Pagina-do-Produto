@@ -30,7 +30,7 @@ trait ValidateDimensionsTrait
         $validation_rules = new ValidationRules;
 
         /** Allows for custom validation rules per shipping method using filters */
-        $validation_rules = apply_filters('cfpp_handler_rules_' . sanitize_title(get_class($this->shipping_method)), $validation_rules);
+        $validation_rules = apply_filters('cfpp_handler_rules_' . $this->shipping_method_slug, $validation_rules);
 
         if ($validation_rules->hasRules() === false) {
             return;

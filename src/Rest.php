@@ -54,6 +54,7 @@ class Rest
             $payload = new Payload;
             $payload = $payload->makeFrom($product, $destination_postcode, $quantity, $selected_variation);
         } catch (\Exception $e) {
+            do_action('cfpp_before_send_make_payload_error_response', $e->getMessage());
             wp_send_json_error($e->getMessage());
         }
 
@@ -61,8 +62,11 @@ class Rest
             $costs = new Costs;
             $response = $costs->calculate($payload);
         } catch(\Exception $e) {
+            do_action('cfpp_before_send_calculate_error_response', $e->getMessage());
             wp_send_json_error($e->getMessage());
         }
+
+        do_action('cfpp_before_send_calculate_success_response', $response);
 
         wp_send_json_success($response);
     }

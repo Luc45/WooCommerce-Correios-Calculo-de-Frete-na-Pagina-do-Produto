@@ -4,6 +4,7 @@ namespace CFPP\Shipping;
 
 use CFPP\Shipping\ShippingMethods\Factory;
 use CFPP\Shipping\ShippingMethods\Response;
+use CFPP\Shipping\ShippingMethods\Handler;
 
 class Costs
 {
@@ -20,6 +21,8 @@ class Costs
         $cfpp_shipping_zones = new ShippingZones;
         $shipping_zone = $cfpp_shipping_zones->getFirstMatchingShippingZone($payload->getPostcode());
 
+        $shipping_zone = apply_filters('cfpp_get_shipping_zone', $shipping_zone, $payload);
+
         if ( ! $shipping_zone instanceof \WC_Shipping_Zone) {
             throw new \Exception(__('Couldn\'t find a matching shipping zone for this postcode.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         }
@@ -27,6 +30,8 @@ class Costs
         // Get available shipping methods within this shipping zone
         $cfpp_shipping_methods = new ShippingMethods;
         $shipping_methods = $cfpp_shipping_methods->getShippingMethods($shipping_zone, $payload);
+
+        $shipping_methods = apply_filters('cfpp_get_shipping_methods', $shipping_methods, $shipping_zone, $payload);
 
         if ( ! empty($shipping_methods)) {
             // Get shipping cost for each shipping method
@@ -50,13 +55,24 @@ class Costs
         $shipping_costs = array();
 
         foreach ($shipping_methods as $shipping_method) {
+            $shipping_method_slug = sanitize_title(get_class($shipping_method));
             $response = new Response($shipping_method);
 
             // Create CFPP handler for this Shipping Method
             try {
                 $cfpp_handler = Factory::create($shipping_method);
+
+                if ( ! $cfpp_handler instanceof Handler) {
+                    throw new \Exception(sprintf(
+                        /* translators: %s class name for shipping method */
+                        __('Could not create a CFPP Handler class for this Shipping Method. (%s)', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                        get_class($shipping_method)
+                    ));
+                }
+
             } catch (\Exception $e) {
-                $shipping_costs[] = (array) $response->generateNotSupportedShippingMethodResponse();
+                do_action('cfpp_not_supported_shipping_method', $shipping_method);
+                $shipping_costs[] = $response->generateNotSupportedShippingMethodResponse();
                 continue;
             }
 
@@ -66,16 +82,18 @@ class Costs
                 $cfpp_handler->beforeValidate();
                 $cfpp_handler->validate($payload);
             } catch (\Exception $e) {
-                $shipping_costs[] = (array) $response->error($e->getMessage());
+                do_action('cfpp_payload_validation_error', $payload, $shipping_method);
+                $shipping_costs[] = apply_filters('cfpp_response_validation_error_' . $shipping_method_slug, $response->error($e->getMessage()));
                 continue;
             }
 
             // Calculate Costs
             try {
+                do_action('cfpp_before_calculate_cost', $payload, $shipping_method);
                 $response = $cfpp_handler->calculate($payload);
-                $shipping_costs[] = (array) $response;
+                $shipping_costs[] = apply_filters('cfpp_response_success_' . $shipping_method_slug, $response);
             } catch (\Exception $e) {
-                $shipping_costs[] = (array) $response->generateUnknownErrorResponse();
+                $shipping_costs[] = $response->generateUnknownErrorResponse();
                 continue;
             }
         }

@@ -12,6 +12,9 @@ abstract class Handler
     /** @var \WC_Shipping_Method */
     protected $shipping_method;
 
+    /** @var string $shipping_method_slug */
+    protected $shipping_method_slug;
+
     /** @var \CFPP\Shipping\ShippingMethods\Response */
     protected $response;
 
@@ -25,6 +28,7 @@ abstract class Handler
     public function __construct(\WC_Shipping_Method $shipping_method)
     {
         $this->shipping_method = $shipping_method;
+        $this->shipping_method_slug = sanitize_title(get_class($shipping_method));
         $this->response = new Response($shipping_method);
     }
 

@@ -14,6 +14,14 @@ class Factory
     public static function create(\WC_Shipping_Method $shipping_method)
     {
         $shipping_method_name = get_class($shipping_method);
+        $shipping_method_slug = sanitize_title(get_class($shipping_method));
+
+        /** Give the user a chance to override shipping method handler */
+        $custom_handler = apply_filters('cfpp_custom_handler_' . $shipping_method_slug, null);
+
+        if ( ! empty($custom_handler) && class_exists($custom_handler)) {
+            return new $custom_handler($shipping_method);
+        }
 
         /**
          * Here we map a shipping method name to a class that will handle it's request

@@ -18,6 +18,6 @@ class WC_Shipping_Local_Pickup extends Handler
         // Additional cost for local pickup?
         $cost = is_numeric($this->shipping_method->cost) ? $this->shipping_method->cost : 0;
 
-        return $this->response->success($cost, apply_filters('cfpp_local_pickup_days', 'Consulte-nos'));
+        return $this->response->success($cost, __('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
     }
 }

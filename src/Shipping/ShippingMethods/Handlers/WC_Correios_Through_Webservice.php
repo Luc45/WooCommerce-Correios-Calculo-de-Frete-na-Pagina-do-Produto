@@ -4,6 +4,7 @@ namespace CFPP\Shipping\ShippingMethods\Handlers;
 
 use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\Handler;
+use CFPP\Shipping\ShippingMethods\Traits\ValidationRules;
 
 class WC_Correios_Through_Webservice extends Handler
 {
@@ -73,14 +74,18 @@ class WC_Correios_Through_Webservice extends Handler
         try {
             $r_get_rate = new \ReflectionMethod($r_class_name, 'get_rate');
         } catch (\ReflectionException $e) {
-            throw new \Exception('Unable to reflect ' . $r_class_name);
+            throw new \Exception(sprintf(
+                /* translators: %s class name that tried reflect and failed */
+                __('Unable to reflect %s', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                $r_class_name
+            ));
         }
 
         $r_get_rate->setAccessible(true);
         $r_response = $r_get_rate->invoke(new $r_class_name($this->shipping_method->instance_id), $package);
 
         if ($r_response instanceof \SimpleXMLElement === false) {
-            throw new \Exception('Unexpected response from reflection method.');
+            throw new \Exception(__('Unexpected response from reflection method.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
 
         }
         return (array) $r_response;
@@ -101,7 +106,7 @@ class WC_Correios_Through_Webservice extends Handler
      * @param \CFPP\Shipping\ShippingMethods\Traits\ValidationRules $rules
      * @return \CFPP\Shipping\ShippingMethods\Traits\ValidationRules
      */
-    public function validatePacSedex(\CFPP\Shipping\ShippingMethods\Traits\ValidationRules $rules)
+    public function validatePacSedex(ValidationRules $rules)
     {
         // Swapping height and length due to WooCommerce Correios bug
         // @see https://github.com/claudiosanches/woocommerce-correios/pull/130

@@ -49,7 +49,7 @@ class WC_Shipping_Flat_Rate extends Handler
         }
 
         if (is_numeric($sum)) {
-            return $this->response->success($sum, apply_filters('cfpp_flat_rate_days', 'Consulte-nos'));
+            return $this->response->success($sum, __('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         } else {
             return $this->response->error($sum);
         }

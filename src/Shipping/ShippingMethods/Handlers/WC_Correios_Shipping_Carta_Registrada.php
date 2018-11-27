@@ -4,6 +4,7 @@ namespace CFPP\Shipping\ShippingMethods\Handlers;
 
 use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\Handler;
+use CFPP\Shipping\ShippingMethods\Traits\ValidationRules;
 
 class WC_Correios_Shipping_Carta_Registrada extends Handler
 {
@@ -86,7 +87,7 @@ class WC_Correios_Shipping_Carta_Registrada extends Handler
      */
     public function beforeValidate()
     {
-        add_filter('cfpp_handler_rules_wc_shipping_carta_registrada', function(\CFPP\Shipping\ShippingMethods\Traits\ValidationRules $rules) {
+        add_filter('cfpp_handler_rules_wc_shipping_carta_registrada', function(ValidationRules $rules) {
             $rules->setDefault('weight', null, 0.5);
             return $rules;
         });

@@ -51,7 +51,7 @@ class Response
         $this->debug = $debug;
         $this->class = $class;
         $this->should_display = true;
-        return $this;
+        return (array) $this;
     }
 
     /**
@@ -66,7 +66,7 @@ class Response
         // Only show errors to logged in users
         $this->should_display = current_user_can('manage_options');
 
-        return $this;
+        return (array) $this;
     }
 
     /**
@@ -119,7 +119,7 @@ class Response
         $this->class = 'cfpp_shipping_method_not_available';
         $this->should_display = false;
 
-        return $this;
+        return (array) $this;
     }
 
     /**
@@ -136,7 +136,7 @@ class Response
         $this->class = 'cfpp_shipping_method_unknown_error';
         $this->should_display = false;
 
-        return $this;
+        return (array) $this;
     }
 
 
