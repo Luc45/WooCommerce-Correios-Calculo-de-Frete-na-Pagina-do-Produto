@@ -53,7 +53,7 @@ class Notifications
         ?>
         <div class="error notice">
             <p style="font-weight: bold;"><?php echo __('CFPP - Cálculo de Frete na Página do Produto' , 'woo-correios-calculo-de-frete-na-pagina-do-produto'); ?></p>
-            <p><?php echo __('CFPP is not showing on the product page right now, because:' , 'woo-correios-calculo-de-frete-na-pagina-do-produto'); ?> <strong><?php echo $this->fatal ?></strong></p>
+            <p><?php echo __('CFPP plugin DEACTIVATED itself, because:' , 'woo-correios-calculo-de-frete-na-pagina-do-produto'); ?> <strong><?php echo $this->fatal ?></strong></p>
         </div>
         <?php
     }

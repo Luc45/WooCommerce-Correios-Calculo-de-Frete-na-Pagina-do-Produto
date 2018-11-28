@@ -4,8 +4,8 @@ namespace CFPP;
 
 use CFPP\Common\Notifications;
 use CFPP\Common\Requirements;
-use CFPP\Common\MinimumRequirementNotMetException;
 use CFPP\Common\Frontend;
+use CFPP\Exceptions\MinimumRequirementNotMetException;
 
 class Bootstrap
 {
@@ -30,6 +30,8 @@ class Bootstrap
                 $frontend->run();
             } catch (MinimumRequirementNotMetException $e) {
                 Notifications::getInstance()->fatal($e->getMessage());
+                include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+                deactivate_plugins( CFPP_BASE_PLUGIN_FILE );
             }
         });
     }

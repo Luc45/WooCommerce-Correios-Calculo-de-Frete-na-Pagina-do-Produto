@@ -2,87 +2,91 @@
 
 namespace CFPP\Common;
 
-class MinimumRequirementNotMetException extends \Exception {}
+use CFPP\Exceptions\MinimumRequirementNotMetException;
 
 class Requirements
 {
     CONST MINIMUM_PHP_VERSION = '5.4.0';
     CONST MINIMUM_WOOCOMMERCE_VERSION = '3.2.0';
+    CONST MINIMUM_WORDPRESS_VERSION = '4.4.0';
 
     /**
      * @throws MinimumRequirementNotMetException
      */
     public function checkMinimumRequirements()
     {
-        if (!$this->phpVersionSupported()) {
-            throw new MinimumRequirementNotMetException(sprintf(
-                /* translators: %s: Minimum PHP version number */
-                __('Minimum PHP version required: %s', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
-                self::MINIMUM_PHP_VERSION
-            ));
+        if ($this->phpVersionNotSupported()) {
+            throw MinimumRequirementNotMetException::php_version_not_supported(self::MINIMUM_PHP_VERSION);
         }
 
-        if (!$this->wooCommerceInstalled()) {
-            throw new MinimumRequirementNotMetException(__('WooCommerce plugin must be active to use this plugin.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+        if ($this->wooCommerceNotActive()) {
+            throw MinimumRequirementNotMetException::woocommerce_not_active();
         }
 
-        if (!$this->wooCommerceVersionSupported()) {
-            throw new MinimumRequirementNotMetException(sprintf(
-                /* translators: %s: Minimum WooCommerce version number */
-                __('CFPP requires WooCommerce %s or higher. Optionally, you can add this code to your wp-config.php: <strong>define("CFPP_CEP", "XXXXX-XXX");</strong> (add it right under WP_DEBUG)', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
-                self::MINIMUM_WOOCOMMERCE_VERSION
-            ));
+        if ($this->wooCommerceVersionNotSupported()) {
+            throw MinimumRequirementNotMetException::woocommerce_version_not_supported(self::MINIMUM_WOOCOMMERCE_VERSION);
         }
 
-        if (!$this->validOriginCep()) {
-            if (defined('CFPP_CEP')) {
-                throw new MinimumRequirementNotMetException(__('Constant CFPP_CEP is in an invalid format, please fill it in this exact format: XXXXX-XXX, replacing X by the number of your postcode.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
-            } else {
-                throw new MinimumRequirementNotMetException(__('Before using this plugin, please configure your store postcode in WooCommerce -> Settings. Also make sure the postcode has 8 numeric digits: XXXXXXXX or XXXXX-XXX', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
-            }
+        if ($this->invalidOriginPostcode()) {
+            throw MinimumRequirementNotMetException::invalid_origin_postcode();
+        }
+
+        if ($this->wordpressVersionNotSupported()) {
+            throw MinimumRequirementNotMetException::wordpress_version_not_supported(self::MINIMUM_WORDPRESS_VERSION);
         }
     }
 
     /**
-     * Checks if the current PHP version is supported
+     * Returns true if PHP version is NOT supported
      *
      * @return mixed
      */
-    private function phpVersionSupported()
+    private function phpVersionNotSupported()
     {
-        return version_compare(phpversion(), self::MINIMUM_PHP_VERSION, '>=');
+        return version_compare(phpversion(), self::MINIMUM_PHP_VERSION, '<');
     }
 
     /**
-     * Checks if WooCommerce is installed
+     * Returns true if WooCommerce plugin is NOT active
      *
      * @return bool
      */
-    private function wooCommerceInstalled()
+    private function wooCommerceNotActive()
     {
-        return in_array('woocommerce/woocommerce.php', get_option('active_plugins'));
+        return ! in_array('woocommerce/woocommerce.php', get_option('active_plugins'));
     }
 
     /**
-     * Checks if WooCommerce version is supported
+     * Returns true if WooCommerce version is NOT supported
      *
      * @return bool
      */
-    private function wooCommerceVersionSupported()
+    private function wooCommerceVersionNotSupported()
     {
         global $woocommerce;
-        return version_compare($woocommerce->version, self::MINIMUM_WOOCOMMERCE_VERSION, ">=") || defined('CFPP_CEP');
+        return version_compare($woocommerce->version, self::MINIMUM_WOOCOMMERCE_VERSION, "<") && defined('CFPP_CEP') === false;
     }
 
     /**
-     * Checks if a valid origin CEP is present
+     * Returns true if an origin postcode is NOT valid
      *
      * @return bool
      */
-    private function validOriginCep()
+    private function invalidOriginPostcode()
     {
         $cep = Helpers::getOriginCep();
         $cep = preg_replace('/[^0-9]/', '', $cep);
-        return strlen($cep) === 8;
+        return strlen($cep) != 8;
+    }
+
+    /**
+     * Returns true if WordPress version is NOT supported
+     *
+     * @return bool
+     */
+    private function wordpressVersionNotSupported()
+    {
+        global $wp_version;
+        return version_compare($wp_version, self::MINIMUM_WORDPRESS_VERSION, '<');
     }
 }
