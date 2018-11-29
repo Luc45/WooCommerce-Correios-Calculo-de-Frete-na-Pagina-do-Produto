@@ -67,18 +67,14 @@ class Rest
      */
     public function calculatePermissionsCheck(WP_REST_Request $request)
     {
-        /** @var \WC_Product $product */
-        $product = wc_get_product($request['product_id']);
-
         if (current_user_can('manage_woocommerce')) {
             return true;
         }
 
-        /**
-         * @todo should check post_password?
-         * empty(get_post($request['product_id'])->post_password);
-         */
-        return $product->is_visible();
+        $is_visible = wc_get_product($request['product_id'])->is_visible();
+        $password   = get_post($request['product_id'])->post_password;
+
+        return $is_visible && empty($password);
     }
 
     /**
