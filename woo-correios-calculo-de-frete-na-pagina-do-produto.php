@@ -29,6 +29,7 @@ function run_cfpp_plugin()
     // Constants we will use later on
     define('CFPP_BASE_PATH', __DIR__);
     define('CFPP_BASE_URL', plugin_dir_url(__FILE__));
+    define('CFPP_BASE_PLUGIN_FILE', __FILE__);
 
     // i18n
     add_action('plugins_loaded', function() {

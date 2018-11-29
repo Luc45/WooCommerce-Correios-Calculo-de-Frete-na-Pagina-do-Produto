@@ -11,15 +11,12 @@
         ?>
     </style>
 
-    <input type="hidden" id="cfpp_endpoint_url" value="<?php echo esc_url(get_rest_url(null, '/cfpp/v1/calculate/')); ?>">
-    <input type="hidden" id="cfpp_id" value="<?php echo absint($cfpp_product_id);?>">
-
     <div class="calculo-de-frete">
 
         <input type="text" maxlength="9">
 
         <div id="calcular-frete">
-            <?php /** purposely not escaped */ echo $cfpp_truck_svg; ?> <?php echo __('Calculate Shipping', 'woo-correios-calculo-de-frete-na-pagina-do-produto') ?>
+            <?php /** purposely not escaped */ echo $cfpp_icon_svg; ?> <?php echo __('Calculate Shipping', 'woo-correios-calculo-de-frete-na-pagina-do-produto') ?>
             <a href="https://www.lucasbustamante.com.br" title="Cálculo de Frete na Página do Produto, por Lucas Bustamante" target="_blank" id="cfpp_credits">CFPP</a>
         </div>
 

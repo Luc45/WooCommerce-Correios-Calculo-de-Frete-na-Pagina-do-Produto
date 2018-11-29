@@ -2,9 +2,18 @@
 
 namespace CFPP;
 
+use WP_REST_Server;
+use WP_REST_Request;
+use CFPP\Shipping\Calculator;
 use CFPP\Shipping\Costs;
 use CFPP\Shipping\Payload;
 
+/**
+ * Class Rest
+ * Handles REST requests and returns a response.
+ *
+ * @package CFPP
+ */
 class Rest
 {
     /**
@@ -19,46 +28,86 @@ class Rest
          * @param3 int Quantity (optional, defaults to 1)
          * @param4 string Selected Variation (optional, captures a-z, 0-9 and -)
          */
-        register_rest_route('cfpp/v1', '/calculate/(?P<product_id>\d+)/(?P<destination_postcode>\d+)(?:/(?P<quantity>\d+))?(?:/(?P<selected_variation>[0-9a-z-]+))?', [
-            'methods' => \WP_REST_Server::READABLE,
-            'callback' => array($this, 'calculate'),
+        register_rest_route('cfpp/v1', '/calculate/(?P<product_id>\d+)/(?P<destination_postcode>\d+)', [
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, 'calculate'],
             'args' => [
                 'product_id' => [
-                    'validate_callback' => function($param, $request, $key) {
-                        return wc_get_product($param) !== false;
+                    'validate_callback' => function($product_id) {
+                        return wc_get_product($product_id) instanceof \WC_Product;
                     }
                 ],
                 'destination_postcode' => [
-                    'validate_callback' => function($param, $request, $key) {
-                        return strlen($param) === 8;
+                    'validate_callback' => function($destination_postcode) {
+                        return strlen($destination_postcode) === 8;
                     }
+                ],
+                'quantity' => [
+                    'validate_callback' => function($quantity) {
+                        return intval($quantity) > 0;
+                    },
+                    'default' => 1
+                ],
+                'selected_variation' => [
+                    'validate_callback' => function($selected_variation) {
+                        return $selected_variation === sanitize_title($selected_variation);
+                    },
+                    'default' => null
                 ]
-            ]
+            ],
+            'permission_callback' => [$this, 'calculatePermissionsCheck']
         ]);
     }
 
     /**
+     * Permission Callback for Calculate route
+     *
+     * @param \WP_REST_Request $request
+     * @return bool
+     */
+    public function calculatePermissionsCheck(WP_REST_Request $request)
+    {
+        /** @var \WC_Product $product */
+        $product = wc_get_product($request['product_id']);
+
+        if (current_user_can('manage_woocommerce')) {
+            return true;
+        }
+
+        /**
+         * @todo should check post_password?
+         * empty(get_post($request['product_id'])->post_password);
+         */
+        return $product->is_visible();
+    }
+
+    /**
+     * Callback for Calculate route
+     *
      * Receives a REST Request, creates the payload object and pass it
      * to Costs to calculate it, then send the JSON response
      *
      * @param \WP_REST_Request $request
      */
-    public function calculate(\WP_REST_Request $request)
+    public function calculate(WP_REST_Request $request)
     {
-        $product = wc_get_product($request->get_param('product_id'));
-        $destination_postcode = absint($request->get_param('destination_postcode'));
-        $quantity = $request->offsetExists('quantity') ? absint($request->get_param('quantity')) : 1;
-        $selected_variation = $request->offsetExists('selected_variation') ? $request->get_param('selected_variation') : null;
+        $product              = wc_get_product($request['product_id']);
+        $destination_postcode = absint($request['destination_postcode']);
+        $quantity             = absint($request['quantity']);
+        $selected_variation   = $request['selected_variation'];
 
+        /**
+         * @todo delegate these tasks to another class
+         */
         try {
-            $payload = new Payload;
-            $payload = $payload->makeFrom($product, $destination_postcode, $quantity, $selected_variation);
+            $payload = Payload::makeFrom($product, $destination_postcode, $quantity, $selected_variation);
         } catch (\Exception $e) {
             do_action('cfpp_before_send_make_payload_error_response', $e->getMessage());
             wp_send_json_error($e->getMessage());
         }
 
         try {
+            /** @todo new Costs($payload) then calculate() */
             $costs = new Costs;
             $response = $costs->calculate($payload);
         } catch(\Exception $e) {
