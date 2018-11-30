@@ -12,7 +12,7 @@ class MinimumRequirementNotMetException extends \Exception
      * Called when PHP version is bellow minimum required
      *
      * @param $minimum_php_version
-     * @return string
+     * @return MinimumRequirementNotMetException
      */
     public static function php_version_not_supported($minimum_php_version)
     {
@@ -26,7 +26,7 @@ class MinimumRequirementNotMetException extends \Exception
     /**
      * Called when WooCommerce plugin is not active
      *
-     * @return string
+     * @return MinimumRequirementNotMetException
      */
     public static function woocommerce_not_active()
     {
@@ -37,7 +37,7 @@ class MinimumRequirementNotMetException extends \Exception
      * Called when WooCommerce version is not supported without CFPP_CEP constant
      *
      * @param $minimum_woocommerce_version
-     * @return string
+     * @return MinimumRequirementNotMetException
      */
     public static function woocommerce_version_not_supported($minimum_woocommerce_version)
     {
@@ -51,7 +51,7 @@ class MinimumRequirementNotMetException extends \Exception
     /**
      * Called when origin postcode is invalid
      *
-     * @return string
+     * @return MinimumRequirementNotMetException
      */
     public static function invalid_origin_postcode()
     {
@@ -67,7 +67,7 @@ class MinimumRequirementNotMetException extends \Exception
      * Called when WordPress version is bellow minimum required
      *
      * @param $minimum_wordpress_version
-     * @return string
+     * @return MinimumRequirementNotMetException
      */
     public static function wordpress_version_not_supported($minimum_wordpress_version)
     {
