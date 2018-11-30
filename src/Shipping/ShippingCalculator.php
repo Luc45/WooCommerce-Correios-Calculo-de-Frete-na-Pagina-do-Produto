@@ -60,9 +60,6 @@ class ShippingCalculator
         } catch(ShippingMethodsException $e) {
             do_action('cfpp_exception_invalid_shipping_method_provided', $shipping_methods, $this->payload);
             throw new ShippingCalculatorException($e->getMessage());
-        } catch(HandlerException $e) {
-            do_action('cfpp_exception_handler_error', $shipping_methods, $this->payload);
-            throw new ShippingCalculatorException($e->getMessage());
         } catch(\Exception $e) {
             throw new ShippingCalculatorException($e->getMessage());
         }
