@@ -14,8 +14,8 @@ class WC_Correios_Through_Webservice extends Handler
      * WooCommerce Correios plugin
      *
      * @param Payload $payload
-     * @return mixed
-     * @throws \Exception
+     * @return array|mixed
+     * @throws HandlerException
      */
     public function calculate(Payload $payload)
     {
@@ -59,10 +59,10 @@ class WC_Correios_Through_Webservice extends Handler
     }
 
     /**
-     * @param $shipping_method_class
+     * @param \WC_Correios_Shipping $shipping_method
      * @param $package
-     * @return array|mixed|object
-     * @throws \Exception
+     * @return array
+     * @throws HandlerException
      */
     private function getReflectionResponse(\WC_Correios_Shipping $shipping_method, $package)
     {
