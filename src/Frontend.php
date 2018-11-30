@@ -40,7 +40,10 @@ class Frontend
                 ],
                 'product_id' => $post->ID,
                 'i18n' => [
-                    'invalid_postcode' => __('Please, check if postcode is valid.', 'woo-correios-calculo-de-frete-na-pagina-do-produto')
+                    'invalid_postcode' => __('Please, check if postcode is valid.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                    'shipping_method_not_shown' => __('One or more shipping methods were not shown. Only administrators can see this message.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                    'shipping_costs_not_available' => __('Sorry, the shipping costs are only available in the cart right now. Please proceed with your purchase normally.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                    'postcode_mask' => __('99999-999', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
                 ]
             ]);
             wp_enqueue_script('cfpp-js');

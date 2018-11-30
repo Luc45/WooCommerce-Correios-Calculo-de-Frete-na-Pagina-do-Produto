@@ -105,6 +105,7 @@ class WC_Correios_Through_Webservice extends Handler
         $rules->setDefault('width', 11, 105);
         $rules->setDefault('length', 16, 105);
         $rules->setDefault('weight', null, 30);
+        $rules->setDefault('total_cost', null, 10000);
         $rules->setDefault('sum_height_width_length', 29, 200);
         return $rules;
     }

@@ -61,7 +61,7 @@
                 }
 
                 if (row == '') {
-                    row = '<tr><td colspan="3">Desculpe, o cálculo de frete para este produto só está disponível no Carrinho, por favor, prossiga com a compra normalmente.</td></tr>';
+                    row = '<tr><td colspan="3">\' + cfppData.i18n.shipping_costs_not_available + \'</td></tr>';
                 }
 
                 if (comErro.length) {
@@ -74,7 +74,7 @@
                         stringErro += v.debug;
                     });
                     console.error('CFPP: Métodos de entrega não exibidos: ' + stringErro);
-                    row += '<tr class="cfpp-has-error"><td colspan="3">Um ou mais métodos de entrega não foram exibidos aqui. Somente o administrador pode ver esta mensagem e os métodos não exibidos.</td></tr>';
+                    row += '<tr class="cfpp-has-error"><td colspan="3">' + cfppData.i18n.shipping_method_not_shown + '</td></tr>';
                 }
 
                 $('#cfpp .resultado-frete table tbody').append(row);
@@ -89,43 +89,30 @@
 			});
 		 })
 
-		 // Exibe o loader
 		 function showLoader() {
 		 	$('#cfpp #calcular-frete').css('display', 'none');
 		 	$('#cfpp #calcular-frete-loader').css('display', 'inline-block');
 		 }
 
-		 // Esconder o loader
 		 function hideLoader() {
 		 	$('#cfpp #calcular-frete').css('display', 'inline-block');
 		 	$('#cfpp #calcular-frete-loader').css('display', 'none');
 		 }
 
-		 // Exibe a tabela
 		 function showTable() {
 		 	$('#cfpp .resultado-frete').show();
 		 }
 
-		 // Esconde a tabela
 		 function hideTable() {
 		 	$('#cfpp .resultado-frete').hide();
 		 }
 
-		 // Reseta a tabela
 		 function resetTable() {
 		 	$('#cfpp .resultado-frete table tbody').html('');
 		 }
 
-		// Altera o preço do produto caso uma nova variação seja selecionada
-		$("*").on("show_variation", function (event, variation) {
-			resetTable();
-			hideTable();
-			$('#cfpp').show();
-			$('#cfpp_price').val(variation.display_price.toFixed(2));
-		});
-
-		// Reseta a tabela caso clique no botão "Clear all" para limpar
-		// as variações selecionadas
+		// Reset the table when clicks on the "Clear all" button
+		// to clear selected variations
 		$("*").on("reset_data", function () {
 			resetTable();
 			hideTable();
@@ -166,9 +153,9 @@
 		var input_postcode = $(".calculo-de-frete input[type='text']");
 
 		// Postcode mask
-		VMasker(input_postcode).maskPattern("99999-999");
+		VMasker(input_postcode).maskPattern(cfppData.i18n.postcode_mask);
 
-		// Faz com que "Enter" calcule o frete
+		// Makes "Enter" calculate shipping costs
 		input_postcode.on('keydown', function (e) {
 		    if (e.keyCode === 13) {
 		 		$('#calcular-frete').click();

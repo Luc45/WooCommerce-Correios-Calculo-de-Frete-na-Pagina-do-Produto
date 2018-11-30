@@ -197,7 +197,10 @@ class CorreiosPackage
                 throw PackageException::invalid_package();
             }
 
+            $total_cost = $product->get_price() * $quantity;
+
             return array(
+                'total_cost' => $total_cost,
                 'height' => $cubage['height'],
                 'width'  => $cubage['width'],
                 'length' => $cubage['length'],
