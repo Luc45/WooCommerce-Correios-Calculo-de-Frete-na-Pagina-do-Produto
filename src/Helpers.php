@@ -4,7 +4,6 @@ namespace CFPP;
 
 class Helpers
 {
-
     /**
      * Normalize weight to kilos
      */

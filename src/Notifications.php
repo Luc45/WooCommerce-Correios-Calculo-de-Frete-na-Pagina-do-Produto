@@ -4,7 +4,6 @@ namespace CFPP;
 
 class Notifications
 {
-
     private $fatal, $warning;
 
     // Singleton instance
