@@ -10,22 +10,13 @@ use CFPP\Exceptions\PackageException;
  * Class Package
  * @package CFPP\Shipping
  */
-class Package
+class CorreiosPackage
 {
     /** @var \WC_Product $product */
     protected $product;
 
     /** @var int $quantity */
     protected $quantity;
-
-    /**
-     * Package constructor.
-     * @param Payload $payload
-     */
-    public function __construct(\WC_Product $product, $quantity) {
-        $this->product = $product;
-        $this->quantity = intval($quantity);
-    }
 
     /**
      * Extracts the weight and dimensions from the package.
@@ -39,9 +30,9 @@ class Package
         $length = array();
         $weight = array();
 
-        $_height = wc_get_dimension( (float) $product->get_length(), 'cm' );
+        $_height = wc_get_dimension( (float) $product->get_height(), 'cm' );
         $_width  = wc_get_dimension( (float) $product->get_width(), 'cm' );
-        $_length = wc_get_dimension( (float) $product->get_height(), 'cm' );
+        $_length = wc_get_dimension( (float) $product->get_length(), 'cm' );
         $_weight = wc_get_weight( (float) $product->get_weight(), 'kg' );
 
         $height[ $count ] = $_height;
@@ -190,14 +181,19 @@ class Package
      * @return array
      * @throws PackageException
      */
-    public function generatePackage()
+    public static function generate(\WC_Product $product, $quantity)
     {
+        $instance = new self;
+
+        $instance->product = $product;
+        $instance->quantity = intval($quantity);
+
         try {
-            $data = $this->getPackageData($this->product, $this->quantity);
+            $data = $instance->getPackageData($instance->product, $instance->quantity);
 
-            $cubage = $this->getCubage($data['height'], $data['width'], $data['length']);
+            $cubage = $instance->getCubage($data['height'], $data['width'], $data['length']);
 
-            if ( ! $this->validatePackage($data, $cubage)) {
+            if ( ! $instance->validatePackage($data, $cubage)) {
                 throw PackageException::invalid_package();
             }
 

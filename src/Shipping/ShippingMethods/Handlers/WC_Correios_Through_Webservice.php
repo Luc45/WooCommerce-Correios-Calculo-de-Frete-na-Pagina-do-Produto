@@ -101,11 +101,9 @@ class WC_Correios_Through_Webservice extends Handler
      */
     public function validatePacSedex(ValidationRules $rules)
     {
-        // Swapping height and length due to WooCommerce Correios bug
-        // @see https://github.com/claudiosanches/woocommerce-correios/pull/130
-        $rules->setDefault('height', 16, 105);
+        $rules->setDefault('height', 2, 105);
         $rules->setDefault('width', 11, 105);
-        $rules->setDefault('length', 2, 105);
+        $rules->setDefault('length', 16, 105);
         $rules->setDefault('weight', null, 30);
         $rules->setDefault('sum_height_width_length', 29, 200);
         return $rules;

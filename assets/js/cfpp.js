@@ -25,7 +25,7 @@
 				type: "GET",
                 data: {
 					'quantity' : getQuantity(),
-				 	'variation' : getSelectedVariation()
+				 	'selected_variation' : getSelectedVariation()
 				},
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('X-WP-Nonce', cfppData.rest.nonce);

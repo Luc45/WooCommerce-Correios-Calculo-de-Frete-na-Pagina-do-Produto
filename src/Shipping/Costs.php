@@ -21,10 +21,18 @@ class Costs
     {
         $instance = new self;
         $shipping_costs = array();
+        $original_payload = $payload;
 
         foreach ($shipping_methods as $shipping_method) {
             $shipping_method_slug = sanitize_title(get_class($shipping_method));
             $response = new Response($shipping_method);
+
+            /** Fix for Correios Shipping Methods bug */
+            if ($shipping_method instanceof \WC_Correios_Shipping) {
+                $payload = $payload->adjustPackageForCorreios();
+            } else {
+                $payload = $original_payload;
+            }
 
             try {
                 // Create CFPP handler for this Shipping Method

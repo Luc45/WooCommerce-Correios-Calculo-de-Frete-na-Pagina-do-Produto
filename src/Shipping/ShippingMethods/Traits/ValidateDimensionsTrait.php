@@ -70,7 +70,6 @@ trait ValidateDimensionsTrait
             if ( ! in_array($property, $allowed_properties)) {
                 continue;
             }
-            $readable_property = ucfirst($property);
             $value = $this->package[$property];
 
             $max = $rules[$property]['max'];
@@ -94,8 +93,8 @@ trait ValidateDimensionsTrait
             if ($value > $max) {
                 $errors[] = sprintf(
                     /* translators: 1: readable property, 2: value, 3: maximum value, 4: unit */
-                    __('%1$s (%2$s%4$s) is bigger than the maximum allowed for this shipping method (%3$s%4$s).', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
-                    $readable_property,
+                    __('Package %1$s (%2$s%4$s) is bigger than the maximum allowed for this shipping method (%3$s%4$s).', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                    $property,
                     $value,
                     $max,
                     $unit
@@ -104,8 +103,8 @@ trait ValidateDimensionsTrait
                 // Min
                 $errors[] = sprintf(
                     /* translators: 1: readable property, 2: value, 3: minimum value, 4: unit */
-                    __('%1$s (%2$s%4$s) is smaller than the minimum required for this shipping method (%3$s%4$s).', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
-                    $readable_property,
+                    __('Package %1$s (%2$s%4$s) is smaller than the minimum required for this shipping method (%3$s%4$s).', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                    $property,
                     $value,
                     $min,
                     $unit

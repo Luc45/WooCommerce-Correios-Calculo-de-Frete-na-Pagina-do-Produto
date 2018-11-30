@@ -54,6 +54,23 @@ class Payload
     }
 
     /**
+     * WooCommerce Correios has a bug that inverts height
+     * and length dimensions. We must do it too.
+     *
+     * @see https://github.com/claudiosanches/woocommerce-correios/pull/130
+     */
+    public function adjustPackageForCorreios()
+    {
+        $height = $this->package['height'];
+        $length = $this->package['length'];
+
+        $this->package['height'] = $length;
+        $this->package['length'] = $height;
+
+        return $this;
+    }
+
+    /**
      * Generate a Payload object based on input or throws Exception
      *
      * @param \WC_Product $product
@@ -81,8 +98,8 @@ class Payload
 
         // Create package according to quantity of products chosen
         try {
-            $package = new Package($instance->getProduct(), $instance->getQuantity());
-            $instance->package = $package->generatePackage();
+            // We'll be using Correios Package calculation as default
+            $instance->package = CorreiosPackage::generate($instance->getProduct(), $instance->getQuantity());
         } catch(PackageException $e) {
             throw PayloadException::invalid_package_exception($e->getMessage());
         }
