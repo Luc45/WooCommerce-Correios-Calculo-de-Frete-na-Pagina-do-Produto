@@ -1,6 +1,6 @@
 <?php
 
-namespace CFPP\Common;
+namespace CFPP;
 
 class Frontend
 {

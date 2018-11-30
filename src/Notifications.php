@@ -1,8 +1,6 @@
 <?php
 
-namespace CFPP\Common;
-
-use CFPP\Frontend\Template;
+namespace CFPP;
 
 class Notifications
 {

@@ -4,9 +4,8 @@ namespace CFPP;
 
 use WP_REST_Server;
 use WP_REST_Request;
-use CFPP\Shipping\Calculator;
-use CFPP\Shipping\Costs;
-use CFPP\Shipping\Payload;
+use CFPP\Shipping\ShippingCalculator;
+use CFPP\Exceptions\ShippingCalculatorException;
 
 /**
  * Class Rest
@@ -55,26 +54,17 @@ class Rest
                     'default' => null
                 ]
             ],
-            'permission_callback' => [$this, 'calculatePermissionsCheck']
+            'permission_callback' => function(WP_REST_Request $request) {
+                if (current_user_can('manage_woocommerce')) {
+                    return true;
+                }
+
+                $is_visible = wc_get_product($request['product_id'])->is_visible();
+                $password   = get_post($request['product_id'])->post_password;
+
+                return $is_visible && empty($password);
+            }
         ]);
-    }
-
-    /**
-     * Permission Callback for Calculate route
-     *
-     * @param \WP_REST_Request $request
-     * @return bool
-     */
-    public function calculatePermissionsCheck(WP_REST_Request $request)
-    {
-        if (current_user_can('manage_woocommerce')) {
-            return true;
-        }
-
-        $is_visible = wc_get_product($request['product_id'])->is_visible();
-        $password   = get_post($request['product_id'])->post_password;
-
-        return $is_visible && empty($password);
     }
 
     /**
@@ -92,27 +82,17 @@ class Rest
         $quantity             = absint($request['quantity']);
         $selected_variation   = $request['selected_variation'];
 
-        /**
-         * @todo delegate these tasks to another class
-         */
         try {
-            $payload = Payload::makeFrom($product, $destination_postcode, $quantity, $selected_variation);
-        } catch (\Exception $e) {
-            do_action('cfpp_before_send_make_payload_error_response', $e->getMessage());
+            $shipping = new ShippingCalculator($product, $destination_postcode, $quantity, $selected_variation);
+            $response = $shipping->processRequest();
+
+            do_action('cfpp_before_send_calculate_success_response', $response);
+
+            wp_send_json_success($response);
+
+        } catch(ShippingCalculatorException $e) {
+            do_action('cfpp_before_send_shipping_calculator_error_response', $e, $request);
             wp_send_json_error($e->getMessage());
         }
-
-        try {
-            /** @todo new Costs($payload) then calculate() */
-            $costs = new Costs;
-            $response = $costs->calculate($payload);
-        } catch(\Exception $e) {
-            do_action('cfpp_before_send_calculate_error_response', $e->getMessage());
-            wp_send_json_error($e->getMessage());
-        }
-
-        do_action('cfpp_before_send_calculate_success_response', $response);
-
-        wp_send_json_success($response);
     }
 }

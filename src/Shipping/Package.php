@@ -2,6 +2,8 @@
 
 namespace CFPP\Shipping;
 
+use CFPP\Exceptions\PackageException;
+
 /**
  * This is a wrapper from Claudio Sanche's WC_Correios_Package class
  *
@@ -10,15 +12,19 @@ namespace CFPP\Shipping;
  */
 class Package
 {
-    /** @var Payload $payload */
-    protected $payload;
+    /** @var \WC_Product $product */
+    protected $product;
+
+    /** @var int $quantity */
+    protected $quantity;
 
     /**
      * Package constructor.
      * @param Payload $payload
      */
-    public function __construct(Payload $payload) {
-        $this->payload = $payload;
+    public function __construct(\WC_Product $product, $quantity) {
+        $this->product = $product;
+        $this->quantity = intval($quantity);
     }
 
     /**
@@ -26,15 +32,12 @@ class Package
      *
      * @return array
      */
-    protected function getPackageData() {
+    protected function getPackageData(\WC_Product $product, $qty) {
         $count  = 0;
         $height = array();
         $width  = array();
         $length = array();
         $weight = array();
-
-        $product = $this->payload->getProduct();
-        $qty = $this->payload->getQuantity();
 
         $_height = wc_get_dimension( (float) $product->get_length(), 'cm' );
         $_width  = wc_get_dimension( (float) $product->get_width(), 'cm' );
@@ -185,16 +188,51 @@ class Package
      * Get the package data.
      *
      * @return array
+     * @throws PackageException
      */
-    public function getData() {
-        $data = $this->getPackageData();
-        $cubage = $this->getCubage($data['height'], $data['width'], $data['length']);
+    public function generatePackage()
+    {
+        try {
+            $data = $this->getPackageData($this->product, $this->quantity);
 
-        return array(
-            'height' => $cubage['height'],
-            'width'  => $cubage['width'],
-            'length' => $cubage['length'],
-            'weight' => $data['weight'],
-        );
+            $cubage = $this->getCubage($data['height'], $data['width'], $data['length']);
+
+            if ( ! $this->validatePackage($data, $cubage)) {
+                throw PackageException::invalid_package();
+            }
+
+            return array(
+                'height' => $cubage['height'],
+                'width'  => $cubage['width'],
+                'length' => $cubage['length'],
+                'weight' => $data['weight'],
+            );
+        } catch(PackageException $e) {
+            throw new PackageException($e->getMessage());
+        }
+    }
+
+    /**
+     * Validates a Package
+     *
+     * @param $data
+     * @param $cubage
+     * @return bool
+     */
+    private function validatePackage($data, $cubage)
+    {
+        // Only positive numeric dimensions
+        foreach ($cubage as $dimension) {
+            if ( ! is_numeric($dimension) || (float) $dimension <= 0) {
+                return false;
+            }
+        }
+
+        // Only positive numeric weight
+        if ( ! is_numeric($data['weight']) || (float) $data['weight'] <= 0) {
+            return false;
+        }
+
+        return true;
     }
 }

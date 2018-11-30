@@ -14,11 +14,11 @@ class ShippingMethods
      * @param Payload $payload
      * @return array
      */
-    public function getShippingMethods(\WC_Shipping_Zone $shipping_zone, Payload $payload)
+    public function getShippingMethods(\WC_Shipping_Zone $shipping_zone, \WC_Product $product)
     {
         $shipping_methods = $shipping_zone->get_shipping_methods();
         $shipping_methods = $this->filterByEnabledShippingMethods($shipping_methods);
-        $shipping_methods = $this->filterByShippingClass($shipping_methods, $payload);
+        $shipping_methods = $this->filterByShippingClass($shipping_methods, $product);
         return $shipping_methods;
     }
 
@@ -41,17 +41,17 @@ class ShippingMethods
 
     /**
      * Determines which shipping methods should show, according to shipping class
-    *  and requested product
+     * and requested product
      *
      * @param array $shipping_methods
-     * @param Payload $payload
+     * @param \WC_Product $product
      * @return array
      */
-    private function filterByShippingClass(array $shipping_methods, Payload $payload)
+    private function filterByShippingClass(array $shipping_methods, \WC_Product $product)
     {
         foreach ($shipping_methods as $key => $shipping_method) {
             if (property_exists($shipping_method, 'shipping_class') && $shipping_method->shipping_class != '') {
-                if ($payload->getProduct() != $shipping_method->shipping_class) {
+                if ($product != $shipping_method->shipping_class) {
                     unset($shipping_methods[$key]);
                 }
             }

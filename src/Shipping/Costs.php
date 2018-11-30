@@ -2,42 +2,58 @@
 
 namespace CFPP\Shipping;
 
+use CFPP\Exceptions\CostsException;
 use CFPP\Shipping\ShippingMethods\Factory;
 use CFPP\Shipping\ShippingMethods\Response;
 use CFPP\Shipping\ShippingMethods\Handler;
 
 class Costs
 {
+    /** @var Payload $payload */
+    protected $payload;
+
+    /**
+     * Costs constructor.
+     * @param Payload $payload
+     */
+    public function __construct(Payload $payload)
+    {
+        $this->payload = $payload;
+    }
+
     /**
      * Calculate the shipping costs for the payload object
      *
-     * @param Payload $payload
      * @return array
-     * @throws \Exception
+     * @throws CostsException
      */
-    public function calculate(Payload $payload)
+    public function calculate()
     {
         // Get first matching shipping zone for destination postcode
         $cfpp_shipping_zones = new ShippingZones;
-        $shipping_zone = $cfpp_shipping_zones->getFirstMatchingShippingZone($payload->getPostcode());
+        $shipping_zone = $cfpp_shipping_zones->getFirstMatchingShippingZone($this->payload->getPostcode());
 
-        $shipping_zone = apply_filters('cfpp_get_shipping_zone', $shipping_zone, $payload);
+        $shipping_zone = apply_filters('cfpp_get_shipping_zone', $shipping_zone, $this->payload);
 
         if ( ! $shipping_zone instanceof \WC_Shipping_Zone) {
-            throw new \Exception(__('Couldn\'t find a matching shipping zone for this postcode.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+            throw CostsException::invalid_shipping_zone_exception();
         }
 
         // Get available shipping methods within this shipping zone
         $cfpp_shipping_methods = new ShippingMethods;
-        $shipping_methods = $cfpp_shipping_methods->getShippingMethods($shipping_zone, $payload);
+        $shipping_methods = $cfpp_shipping_methods->getShippingMethods($shipping_zone, $this->payload->getProduct());
 
-        $shipping_methods = apply_filters('cfpp_get_shipping_methods', $shipping_methods, $shipping_zone, $payload);
+        $shipping_methods = apply_filters('cfpp_get_shipping_methods', $shipping_methods, $shipping_zone, $this->payload);
 
         if ( ! empty($shipping_methods)) {
-            // Get shipping cost for each shipping method
-            return $this->getCostPerShippingMethod($shipping_methods, $payload);
+            try {
+                // Get shipping cost for each shipping method
+                return $this->getCostPerShippingMethod($shipping_methods, $this->payload);
+            } catch(\Exception $e) {
+                dd($e->getMessage());
+            }
         } else {
-            throw new \Exception(__('Couldn\'t find any shipping method for this postcode and product.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+            throw CostsException::shipping_methods_not_found_exception();
         }
 
 
@@ -61,15 +77,13 @@ class Costs
             // Create CFPP handler for this Shipping Method
             try {
                 $cfpp_handler = Factory::create($shipping_method);
-
                 if ( ! $cfpp_handler instanceof Handler) {
                     throw new \Exception(sprintf(
-                        /* translators: %s class name for shipping method */
+                    /* translators: %s class name for shipping method */
                         __('Could not create a CFPP Handler class for this Shipping Method. (%s)', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
                         get_class($shipping_method)
                     ));
                 }
-
             } catch (\Exception $e) {
                 do_action('cfpp_not_supported_shipping_method', $shipping_method);
                 $shipping_costs[] = $response->generateNotSupportedShippingMethodResponse();

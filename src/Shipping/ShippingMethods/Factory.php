@@ -19,7 +19,7 @@ class Factory
         /** Give the user a chance to override shipping method handler */
         $custom_handler = apply_filters('cfpp_custom_handler_' . $shipping_method_slug, null);
 
-        if ( ! empty($custom_handler) && class_exists($custom_handler)) {
+        if ( ! empty($custom_handler) && $custom_handler instanceof Handler) {
             return new $custom_handler($shipping_method);
         }
 

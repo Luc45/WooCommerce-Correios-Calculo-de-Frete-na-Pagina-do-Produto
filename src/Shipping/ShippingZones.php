@@ -3,7 +3,7 @@
 namespace CFPP\Shipping;
 
 use WC_Shipping_Zones;
-use CFPP\Common\Helpers;
+use CFPP\Helpers;
 
 class ShippingZones
 {

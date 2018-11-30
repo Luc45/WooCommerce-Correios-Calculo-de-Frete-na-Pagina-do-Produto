@@ -2,77 +2,92 @@
 
 namespace CFPP\Shipping;
 
+use CFPP\Exceptions\PackageException;
+use CFPP\Exceptions\PayloadException;
+
 class Payload
 {
     /** @var \WC_Product */
-    public $product;
+    protected $product;
 
     /** @var int $postcode */
-    public $postcode;
+    protected $postcode;
 
     /** @var int $quantity */
-    public $quantity;
+    protected $quantity;
 
     /** @var array $package */
     protected $package;
 
     /**
-     * Generate a Payload object based on input or throws Exception
+     * Returns a package array
      *
-     * @param \WC_Product $product
-     * @param int $destination_postcode
-     * @param int $quantity
-     * @param mixed $selected_variation
-     * @throws \Exception
-     * @return $this
+     * @return array
      */
-    public function makeFrom(\WC_Product $product, $destination_postcode, $quantity, $selected_variation)
+    public function getPackage()
     {
-        // Get real product from variation
-        if (empty($selected_variation)) {
-            $this->product = $product;
-        } else {
-            if ($product instanceof \WC_Product_Variable) {
-                $this->product = $this->getRealVariationProduct($product, $selected_variation);
-            } else {
-                throw new \Exception(__('Could not calculate shipping with variation data for product that is not variable.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
-            }
-        }
-        $this->postcode = $destination_postcode;
-        $this->quantity = $quantity;
-
-        // Create package according to quantity of products chosen
-        $package = new Package($this);
-        $this->package = $package->getData();
-
-        if ( ! $this->validatePackage()) {
-            throw new \Exception(__('Could not create a Package for Payload object in CFPP.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
-        }
-
-        return $this;
+        return $this->package;
     }
 
     /**
-     * Validates a Payload's package
-     *
-     * @return bool
+     * @return int
      */
-    private function validatePackage()
+    public function getPostcode()
     {
-        $is_valid = true;
-        $required_properties = ['height', 'width', 'length', 'weight'];
+        return $this->postcode;
+    }
 
-        foreach ($required_properties as $required_property) {
-            if ( ! array_key_exists($required_property, $this->package)) {
-                $is_valid = false;
+    /**
+     * @return \WC_Product
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * Generate a Payload object based on input or throws Exception
+     *
+     * @param \WC_Product $product
+     * @param $destination_postcode
+     * @param $quantity
+     * @param $selected_variation
+     * @throws PayloadException
+     */
+    public static function makeFrom(\WC_Product $product, $destination_postcode, $quantity, $selected_variation)
+    {
+        $instance = new self;
+        $instance->postcode = $destination_postcode;
+        $instance->quantity = $quantity;
+
+        // Get real product from variation
+        if (empty($selected_variation)) {
+            $instance->product = $product;
+        } else {
+            if ($product instanceof \WC_Product_Variable) {
+                $instance->product = $instance->getRealVariationProduct($product, $selected_variation);
             } else {
-                if ( ! is_numeric($this->package[$required_property])) {
-                    $is_valid = false;
-                }
+                throw PayloadException::product_is_not_variable($product);
             }
         }
 
-        return $is_valid;
+        // Create package according to quantity of products chosen
+        try {
+            $package = new Package($instance->getProduct(), $instance->getQuantity());
+            $instance->package = $package->generatePackage();
+        } catch(PackageException $e) {
+            throw PayloadException::invalid_package_exception($e->getMessage());
+        }
+
+        return $instance;
     }
 
     /**
@@ -109,39 +124,5 @@ class Payload
         }
 
         return $product;
-    }
-
-    /**
-     * Returns a package array
-     *
-     * @return array
-     */
-    public function getPackage()
-    {
-        return $this->package;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPostcode()
-    {
-        return $this->postcode;
-    }
-
-    /**
-     * @return \WC_Product
-     */
-    public function getProduct()
-    {
-        return $this->product;
-    }
-
-    /**
-     * @return int
-     */
-    public function getQuantity()
-    {
-        return $this->quantity;
     }
 }
