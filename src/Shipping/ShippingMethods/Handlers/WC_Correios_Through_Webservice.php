@@ -2,6 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods\Handlers;
 
+use CFPP\Exceptions\HandlerException;
 use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\Handler;
 use CFPP\Shipping\ShippingMethods\Traits\ValidationRules;
@@ -19,11 +20,7 @@ class WC_Correios_Through_Webservice extends Handler
     public function calculate(Payload $payload)
     {
         // Calculate costs
-        try {
-            $reflection_response = $this->getReflectionResponse($this->shipping_method, $this->generateCorreiosPackage($payload));
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
+        $reflection_response = $this->getReflectionResponse($this->shipping_method, $this->generateCorreiosPackage($payload));
 
         // Return response
         if ($reflection_response['Erro'] == "0") {
@@ -74,18 +71,14 @@ class WC_Correios_Through_Webservice extends Handler
         try {
             $r_get_rate = new \ReflectionMethod($r_class_name, 'get_rate');
         } catch (\ReflectionException $e) {
-            throw new \Exception(sprintf(
-                /* translators: %s class name that tried reflect and failed */
-                __('Unable to reflect %s', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
-                $r_class_name
-            ));
+            throw HandlerException::unable_to_reflect_exception($r_class_name);
         }
 
         $r_get_rate->setAccessible(true);
         $r_response = $r_get_rate->invoke(new $r_class_name($this->shipping_method->instance_id), $package);
 
         if ($r_response instanceof \SimpleXMLElement === false) {
-            throw new \Exception(__('Unexpected response from reflection method.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+            throw HandlerException::unexpected_reflection_response_exception();
 
         }
         return (array) $r_response;

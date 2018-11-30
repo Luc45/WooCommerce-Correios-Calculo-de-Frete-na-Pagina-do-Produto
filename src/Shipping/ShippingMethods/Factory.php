@@ -2,31 +2,26 @@
 
 namespace CFPP\Shipping\ShippingMethods;
 
+use CFPP\Exceptions\FactoryException;
+
+/**
+ * Class Factory
+ *
+ * Creates CFPP Handler classes for given Shipping Methods
+ *
+ * @package CFPP\Shipping\ShippingMethods
+ */
 class Factory
 {
     /**
-     * Returns Handler concrete class for Shipping Method
+     * Here we map a shipping method name to a class
+     * that will handle it's request
      *
-     * @param \WC_Shipping_Method $shipping_method
-     * @return mixed
-     * @throws \Exception
+     * @return array
      */
-    public static function create(\WC_Shipping_Method $shipping_method)
+    protected function getFactoryMap()
     {
-        $shipping_method_name = get_class($shipping_method);
-        $shipping_method_slug = sanitize_title(get_class($shipping_method));
-
-        /** Give the user a chance to override shipping method handler */
-        $custom_handler = apply_filters('cfpp_custom_handler_' . $shipping_method_slug, null);
-
-        if ( ! empty($custom_handler) && $custom_handler instanceof Handler) {
-            return new $custom_handler($shipping_method);
-        }
-
-        /**
-         * Here we map a shipping method name to a class that will handle it's request
-         */
-        $shipping_methods_handlers = array(
+        return [
             'WC_Correios_Shipping_SEDEX_Hoje'           => 'WC_Correios_Through_Webservice',
             'WC_Correios_Shipping_SEDEX_12'             => 'WC_Correios_Through_Webservice',
             'WC_Correios_Shipping_SEDEX_10_Pacote'      => 'WC_Correios_Through_Webservice',
@@ -45,7 +40,35 @@ class Factory
             // @todo implement following methods
             // 'WC_Correios_Shipping_Impresso_Urgente'  => 'WC_Correios_Shipping_Impresso_Urgente',
             // 'WC_Correios_Shipping_Impresso_Normal'   => 'WC_Correios_Shipping_Impresso_Normal',
-        );
+        ];
+    }
+
+    /**
+     * Returns Handler concrete class for Shipping Method
+     *
+     * @param \WC_Shipping_Method $shipping_method
+     * @return Handler
+     * @throws FactoryException
+     */
+    public static function createHandler(\WC_Shipping_Method $shipping_method)
+    {
+        $instance = new self;
+        $shipping_method_name = get_class($shipping_method);
+        $shipping_method_slug = sanitize_title(get_class($shipping_method));
+
+        /** Give the user a chance to override shipping method handler */
+        $custom_handler = apply_filters('cfpp_custom_handler_' . $shipping_method_slug, null);
+
+        if ( ! empty($custom_handler)) {
+            if ($custom_handler instanceof Handler) {
+                return new $custom_handler($shipping_method);
+            } else {
+                do_action('cfpp_exception_invalid_custom_handler', $shipping_method);
+                throw FactoryException::invalid_custom_handler_exception($shipping_method_name);
+            }
+        }
+
+        $shipping_methods_handlers = $instance->getFactoryMap();
 
         if (array_key_exists($shipping_method_name, $shipping_methods_handlers) &&
             file_exists(__DIR__ . '/Handlers/' . $shipping_methods_handlers[$shipping_method_name] .'.php')
@@ -53,7 +76,7 @@ class Factory
             $class = "\\CFPP\\Shipping\\ShippingMethods\\Handlers\\" . $shipping_methods_handlers[$shipping_method_name];
             return new $class($shipping_method);
         } else {
-            throw new \Exception(__('Method not supported or handler not found', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+            throw FactoryException::handler_not_found_exception($shipping_method_name);
         }
     }
 }

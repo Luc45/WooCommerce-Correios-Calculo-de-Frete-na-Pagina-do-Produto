@@ -2,6 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods\Traits;
 
+use CFPP\Exceptions\ValidationErrorException;
 use CFPP\Shipping\Payload;
 
 trait ValidateDimensionsTrait
@@ -19,7 +20,7 @@ trait ValidateDimensionsTrait
      * Validates a product according to given rules and payload
      *
      * @param Payload $payload
-     * @throws \Exception
+     * @throws ValidationErrorException
      */
     public function validate(Payload $payload)
     {
@@ -46,7 +47,8 @@ trait ValidateDimensionsTrait
         $errors = call_user_func_array('array_merge', $errors);
 
         if ( ! empty($errors)) {
-            throw new \Exception(implode('<br>', $errors));
+            do_action('cfpp_exception_validation_error', $errors, $payload);
+            throw ValidationErrorException::validation_error(implode('<br>', $errors));
         }
     }
 

@@ -17,6 +17,7 @@ class WC_Shipping_Flat_Rate extends Handler
     {
         // Includes WooCommerce Math Class
         $wc_eval_math_file = WP_PLUGIN_DIR.'/woocommerce/includes/libraries/class-wc-eval-math.php';
+
         if (file_exists($wc_eval_math_file)) {
             include_once($wc_eval_math_file);
         }

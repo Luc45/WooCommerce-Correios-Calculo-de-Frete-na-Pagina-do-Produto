@@ -84,14 +84,14 @@ class Rest
 
         try {
             $shipping = new ShippingCalculator($product, $destination_postcode, $quantity, $selected_variation);
-            $response = $shipping->processRequest();
+            $response = $shipping->processRestRequest();
 
             do_action('cfpp_before_send_calculate_success_response', $response);
-
             wp_send_json_success($response);
 
         } catch(ShippingCalculatorException $e) {
-            do_action('cfpp_before_send_shipping_calculator_error_response', $e, $request);
+            /** Generic error catcher */
+            do_action('cfpp_exception_shipping_calculator', $e, $request);
             wp_send_json_error($e->getMessage());
         }
     }

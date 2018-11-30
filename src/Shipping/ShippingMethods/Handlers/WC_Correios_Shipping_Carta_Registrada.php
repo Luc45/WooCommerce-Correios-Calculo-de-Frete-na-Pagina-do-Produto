@@ -54,7 +54,7 @@ class WC_Correios_Shipping_Carta_Registrada extends Handler
             $r = new \ReflectionMethod('WC_Correios_Shipping_Carta_Registrada', 'get_shipping_cost');
             $r->setAccessible(true);
             $cost = $r->invoke(new \WC_Correios_Shipping_Carta_Registrada($this->shipping_method->instance_id), $request);
-        } catch (\Exception $e) {
+        } catch (\ReflectionException $e) {
             return false;
         }
 

@@ -15,29 +15,43 @@
 
 namespace CFPP;
 
-// If this file is called directly, abort.
+use CFPP\Exceptions\MinimumRequirementNotMetException;
+
+/** If this file is called directly, abort. */
 defined('ABSPATH') || die();
 
+/** Composer Autoloader */
+require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
+
+/** Constants we will use later on */
+define('CFPP_BASE_PATH', __DIR__);
+define('CFPP_BASE_URL', plugin_dir_url(__FILE__));
+
+/** i18n */
+add_action('plugins_loaded', function() {
+    load_plugin_textdomain('woo-correios-calculo-de-frete-na-pagina-do-produto', FALSE, basename(dirname(__FILE__)) . '/languages');
+});
+
+/** Register REST routes */
+add_action('rest_api_init', [new Rest, 'registerRoutes']);
+
 /**
- * Bootstrap the plugin
+ * Hook plugin initialization at plugins_loaded, since we use
+ * WooCommerce and WooCommerce Correios functions
  */
-function run_cfpp_plugin()
-{
-    // Composer Autoloader
-    require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
+add_action('plugins_loaded', function() {
+    try {
+        // Check requirements
+        $requirements = new Requirements;
+        $requirements->checkMinimumRequirements();
 
-    // Constants we will use later on
-    define('CFPP_BASE_PATH', __DIR__);
-    define('CFPP_BASE_URL', plugin_dir_url(__FILE__));
-    define('CFPP_BASE_PLUGIN_FILE', __FILE__);
+        // Enqueue assets and show CFPP on product page
+        $frontend = new Frontend;
+        $frontend->run();
+    } catch (MinimumRequirementNotMetException $e) {
+        Notifications::getInstance()->fatal($e->getMessage());
+        include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        deactivate_plugins( __FILE__ );
+    }
+}, 25);
 
-    // i18n
-    add_action('plugins_loaded', function() {
-        load_plugin_textdomain('woo-correios-calculo-de-frete-na-pagina-do-produto', FALSE, basename(dirname(__FILE__)) . '/languages');
-    }, 9);
-
-    // Yahoooo!
-    $cfpp = new Bootstrap();
-    $cfpp->run();
-}
-run_cfpp_plugin();

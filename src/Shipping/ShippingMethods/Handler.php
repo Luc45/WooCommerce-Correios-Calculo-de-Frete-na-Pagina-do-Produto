@@ -4,6 +4,7 @@ namespace CFPP\Shipping\ShippingMethods;
 
 use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\Traits\ValidateDimensionsTrait;
+use CFPP\Exceptions\HandlerException;
 
 abstract class Handler
 {
@@ -36,6 +37,7 @@ abstract class Handler
      * Calculate cost for Shipping Method based on Payload
      *
      * @param Payload $payload
+     * @throws HandlerException
      * @return mixed
      */
     abstract public function calculate(Payload $payload);
