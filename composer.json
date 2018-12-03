@@ -4,8 +4,16 @@
             "CFPP\\": "src"
         }
     },
+    "repositories": [
+        {
+            "type": "github",
+            "url": "http://github.com/Luc45/wc-smooth-generator"
+        }
+    ],
     "require-dev": {
-        "lucatume/wp-browser": "^2.1",
-        "phpcompatibility/php-compatibility": "^8.2"
-    }
+        "lucatume/wp-browser": "2.2.",
+        "phpcompatibility/php-compatibility": "^8.2",
+        "woocommerce/wc-smooth-generator": "dev-master"
+    },
+    "minimum-stability": "dev"
 }
