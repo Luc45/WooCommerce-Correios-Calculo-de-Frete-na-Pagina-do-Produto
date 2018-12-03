@@ -120,7 +120,7 @@ trait ValidateDimensionsTrait
      *
      * @param array $package
      * @param $max
-     * @return array|void
+     * @return array
      */
     private function checkSumHeightWidthLength($sum_height_width_length)
     {

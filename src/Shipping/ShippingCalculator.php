@@ -2,11 +2,10 @@
 
 namespace CFPP\Shipping;
 
-use CFPP\Exceptions\HandlerException;
-use CFPP\Exceptions\PayloadException;
 use CFPP\Exceptions\ShippingCalculatorException;
 use CFPP\Exceptions\ShippingMethodsException;
 use CFPP\Exceptions\ShippingZoneException;
+use CFPP\Exceptions\PayloadException;
 
 /**
  * Class Shipping
@@ -52,6 +51,7 @@ class ShippingCalculator
             // Get available shipping methods within this shipping zone
             $shipping_methods = ShippingMethods::filterShippingMethods($shipping_zone->get_shipping_methods(), $this->payload->getProduct());
 
+            // Return costs for each available shipping method
             return Costs::getCostPerShippingMethod($shipping_methods, $this->payload);
 
         } catch(ShippingZoneException $e) {
@@ -61,20 +61,9 @@ class ShippingCalculator
             do_action('cfpp_exception_invalid_shipping_method_provided', $shipping_methods, $this->payload);
             throw new ShippingCalculatorException($e->getMessage());
         } catch(\Exception $e) {
+            // Unknown error?
+            do_action('cfpp_exception_unknown_error', __METHOD__, $shipping_methods, $this->payload);
             throw new ShippingCalculatorException($e->getMessage());
         }
-    }
-
-    /**
-     * Get first matching shipping zone for destination postcode
-     *
-     * @param $destination_postcode
-     * @return ShippingZone|mixed
-     */
-    protected function getFirstMatchingShippingZone($destination_postcode)
-    {
-        $shipping_zone = new ShippingZone($destination_postcode);
-        $shipping_zone = apply_filters('cfpp_get_shipping_zone', $shipping_zone, $this->payload);
-        return $shipping_zone;
     }
 }

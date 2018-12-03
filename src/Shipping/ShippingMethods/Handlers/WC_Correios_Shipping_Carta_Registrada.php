@@ -83,7 +83,7 @@ class WC_Correios_Shipping_Carta_Registrada extends Handler
     /**
      * Set default validation rules, if not set
      *
-     * @return mixed|void
+     * @return $this
      */
     public function beforeValidate()
     {
@@ -91,5 +91,6 @@ class WC_Correios_Shipping_Carta_Registrada extends Handler
             $rules->setDefault('weight', null, 0.5);
             return $rules;
         });
+        return $this;
     }
 }

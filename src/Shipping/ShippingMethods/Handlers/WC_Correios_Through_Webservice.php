@@ -85,12 +85,15 @@ class WC_Correios_Through_Webservice extends Handler
     }
 
     /**
-     * Runs before Validate() method
+     * Set default validation rules, if not set
+     *
+     * @return $this
      */
     public function beforeValidate()
     {
         add_filter('cfpp_handler_rules_wc_correios_shipping_pac', [$this, 'validatePacSedex']);
         add_filter('cfpp_handler_rules_wc_correios_shipping_sedex', [$this, 'validatePacSedex']);
+        return $this;
     }
 
     /**

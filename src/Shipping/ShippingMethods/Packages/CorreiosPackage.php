@@ -1,22 +1,49 @@
 <?php
 
-namespace CFPP\Shipping;
+namespace CFPP\Shipping\ShippingMethods\Packages;
 
-use CFPP\Exceptions\PackageException;
+use CFPP\Shipping\ShippingMethods\PackageInterface;
 
 /**
  * This is a wrapper from Claudio Sanche's WC_Correios_Package class
  *
- * Class Package
- * @package CFPP\Shipping
+ * Class CorreiosPackage
+ * @package CFPP\Shipping\ShippingMethods\Packages
  */
-class CorreiosPackage
+class CorreiosPackage implements PackageInterface
 {
     /** @var \WC_Product $product */
     protected $product;
 
     /** @var int $quantity */
     protected $quantity;
+
+    /**
+     * Generate the package data
+     *
+     * @param \WC_Product $product
+     * @param $quantity
+     * @return array
+     */
+    public function generatePackage(\WC_Product $product, $quantity)
+    {
+        $this->product = $product;
+        $this->quantity = intval($quantity);
+
+        $data = $this->getPackageData($this->product, $this->quantity);
+
+        $cubage = $this->getCubage($data['height'], $data['width'], $data['length']);
+
+        $total_cost = $product->get_price() * $quantity;
+
+        return array(
+            'total_cost' => $total_cost,
+            'height' => $cubage['height'],
+            'width'  => $cubage['width'],
+            'length' => $cubage['length'],
+            'weight' => $data['weight'],
+        );
+    }
 
     /**
      * Extracts the weight and dimensions from the package.
@@ -173,65 +200,5 @@ class CorreiosPackage
         }
 
         return $cubage;
-    }
-
-    /**
-     * Get the package data.
-     *
-     * @return array
-     * @throws PackageException
-     */
-    public static function generate(\WC_Product $product, $quantity)
-    {
-        $instance = new self;
-
-        $instance->product = $product;
-        $instance->quantity = intval($quantity);
-
-        try {
-            $data = $instance->getPackageData($instance->product, $instance->quantity);
-
-            $cubage = $instance->getCubage($data['height'], $data['width'], $data['length']);
-
-            if ( ! $instance->validatePackage($data, $cubage)) {
-                throw PackageException::invalid_package();
-            }
-
-            $total_cost = $product->get_price() * $quantity;
-
-            return array(
-                'total_cost' => $total_cost,
-                'height' => $cubage['height'],
-                'width'  => $cubage['width'],
-                'length' => $cubage['length'],
-                'weight' => $data['weight'],
-            );
-        } catch(PackageException $e) {
-            throw new PackageException($e->getMessage());
-        }
-    }
-
-    /**
-     * Validates a Package
-     *
-     * @param $data
-     * @param $cubage
-     * @return bool
-     */
-    private function validatePackage($data, $cubage)
-    {
-        // Only positive numeric dimensions
-        foreach ($cubage as $dimension) {
-            if ( ! is_numeric($dimension) || (float) $dimension <= 0) {
-                return false;
-            }
-        }
-
-        // Only positive numeric weight
-        if ( ! is_numeric($data['weight']) || (float) $data['weight'] <= 0) {
-            return false;
-        }
-
-        return true;
     }
 }

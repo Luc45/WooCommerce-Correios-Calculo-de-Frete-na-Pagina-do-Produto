@@ -3,9 +3,12 @@
 namespace CFPP\Shipping;
 
 use CFPP\Shipping\ShippingMethods\Factory;
+use CFPP\Shipping\ShippingMethods\Package;
 use CFPP\Shipping\ShippingMethods\Response;
-use CFPP\Exceptions\HandlerException;
+
 use CFPP\Exceptions\FactoryException;
+use CFPP\Exceptions\HandlerException;
+use CFPP\Exceptions\PackageException;
 use CFPP\Exceptions\ValidationErrorException;
 
 class Costs
@@ -21,33 +24,29 @@ class Costs
     {
         $instance = new self;
         $shipping_costs = array();
-        $original_payload = $payload;
 
         foreach ($shipping_methods as $shipping_method) {
             $shipping_method_slug = sanitize_title(get_class($shipping_method));
             $response = new Response($shipping_method);
 
-            /** Fix for Correios Shipping Methods bug */
-            if ($shipping_method instanceof \WC_Correios_Shipping) {
-                $payload = $payload->adjustPackageForCorreios();
-            } else {
-                $payload = $original_payload;
-            }
-
             try {
+                // Create Package based on product and quantities per Shipping Method
+                $package = Package::makeFrom($payload->getProduct(), $payload->getQuantity(), $shipping_method);
+                $payload->setPackage($package);
+
                 // Create CFPP handler for this Shipping Method
                 $cfpp_handler = Factory::createHandler($shipping_method);
 
-                // Validate Payload per Shipping Method
-                // Gives a chance to modify validation behavior
-                $cfpp_handler->beforeValidate();
-                $cfpp_handler->validate($payload);
+                // Gives a chance to set rules, then validate Payload per Shipping Method
+                $cfpp_handler->beforeValidate()->validate($payload);
 
                 // Calculate Costs
                 do_action('cfpp_before_calculate_cost', $payload, $shipping_method);
                 $response = $cfpp_handler->calculate($payload);
                 $shipping_costs[] = apply_filters('cfpp_response_success_' . $shipping_method_slug, $response);
 
+            } catch(PackageException $e) {
+                $shipping_costs[] = apply_filters('cfpp_response_package_exception_' . $shipping_method_slug, $response->error($e->getMessage()));
             } catch (FactoryException $e) {
                 $shipping_costs[] = apply_filters('cfpp_response_factory_exception_' . $shipping_method_slug, $response->error($e->getMessage()));
             } catch (ValidationErrorException $e) {

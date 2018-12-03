@@ -45,9 +45,9 @@ abstract class Handler
     /**
      * Gives a chance to modify validation behavior
      *
-     * @return mixed
+     * @return $this
      */
     public function beforeValidate() {
-
+        return $this;
     }
 }
