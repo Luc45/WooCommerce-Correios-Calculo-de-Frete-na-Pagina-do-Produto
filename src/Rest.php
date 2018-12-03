@@ -59,7 +59,15 @@ class Rest
                     return true;
                 }
 
-                $is_visible = wc_get_product($request['product_id'])->is_visible();
+                // Makes sure we are processing an product
+                $product = wc_get_product($request['product_id']);
+
+                if (! $product instanceof \WC_Product) {
+                    return false;
+                }
+
+                // Check if user has access to it
+                $is_visible = $product->is_visible();
                 $password   = get_post($request['product_id'])->post_password;
 
                 return $is_visible && empty($password);
