@@ -42,17 +42,20 @@ class Costs
 
                 // Calculate Costs
                 do_action('cfpp_before_calculate_cost', $payload, $shipping_method);
-                $response = $cfpp_handler->calculate($payload);
-                $shipping_costs[] = apply_filters('cfpp_response_success_' . $shipping_method_slug, $response);
+                $shipping_costs[] = apply_filters('cfpp_response_success_' . $shipping_method_slug, $cfpp_handler->calculate($payload));
 
             } catch(PackageException $e) {
-                $shipping_costs[] = apply_filters('cfpp_response_package_exception_' . $shipping_method_slug, $response->error($e->getMessage()));
+                do_action('cfpp_response_package_exception', $shipping_method_slug);
+                $shipping_costs[] = $response->error($e->getMessage());
             } catch (FactoryException $e) {
-                $shipping_costs[] = apply_filters('cfpp_response_factory_exception_' . $shipping_method_slug, $response->error($e->getMessage()));
+                do_action('cfpp_response_factory_exception', $shipping_method_slug);
+                $shipping_costs[] = $response->error($e->getMessage());
             } catch (ValidationErrorException $e) {
-                $shipping_costs[] = apply_filters('cfpp_response_validation_exception_' . $shipping_method_slug, $response->error($e->getMessage()));
+                do_action('cfpp_response_validation_exception', $shipping_method_slug);
+                $shipping_costs[] = $response->error($e->getMessage());
             } catch (HandlerException $e) {
-                $shipping_costs[] = apply_filters('cfpp_response_handler_exception_' . $shipping_method_slug, $response->error($e->getMessage()));
+                do_action('cfpp_response_handler_exception', $shipping_method_slug);
+                $shipping_costs[] = $response->error($e->getMessage());
             }
         }
 
