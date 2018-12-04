@@ -58,13 +58,18 @@ class Response
     *   Returns an error response
     */
     public function error(
-        $debug = ''
+        $debug = '',
+        $error_code = null
     ) {
         $this->status = 'error';
         $this->debug = $debug;
         $this->class = 'cfpp-has-error';
         // Only show errors to logged in users
         $this->should_display = current_user_can('manage_options');
+
+        if (!is_null($error_code)) {
+            $this->error_code = $error_code;
+        }
 
         return (array) $this;
     }

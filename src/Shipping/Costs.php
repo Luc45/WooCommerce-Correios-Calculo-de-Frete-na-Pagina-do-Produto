@@ -46,13 +46,13 @@ class Costs
 
             } catch(PackageException $e) {
                 do_action('cfpp_response_package_exception', $shipping_method_slug);
-                $shipping_costs[] = $response->error($e->getMessage());
+                $shipping_costs[] = $response->error($e->getMessage(), $e->getCode());
             } catch (FactoryException $e) {
                 do_action('cfpp_response_factory_exception', $shipping_method_slug);
-                $shipping_costs[] = $response->error($e->getMessage());
+                $shipping_costs[] = $response->error($e->getMessage(), $e->getCode());
             } catch (ValidationErrorException $e) {
                 do_action('cfpp_response_validation_exception', $shipping_method_slug);
-                $shipping_costs[] = $response->error($e->getMessage());
+                $shipping_costs[] = $response->error($e->getMessage(), $e->getCode());
             } catch (HandlerException $e) {
                 do_action('cfpp_response_handler_exception', $shipping_method_slug);
                 $shipping_costs[] = $response->error($e->getMessage());

@@ -22,7 +22,7 @@ class Package
 
         /** Fix for Correios Shipping Methods bug */
         if ($shipping_method instanceof \WC_Correios_Shipping) {
-            $package = $instance->adjustPackageForCorreios($package);
+            $package = $instance->adjustPackageForCorreiosShippingMethods($package);
         }
 
         $instance->validatePackage($package);
@@ -63,7 +63,7 @@ class Package
      *
      * @see https://github.com/claudiosanches/woocommerce-correios/pull/130
      */
-    protected function adjustPackageForCorreios($package)
+    protected function adjustPackageForCorreiosShippingMethods($package)
     {
         $height = $package['height'];
         $length = $package['length'];

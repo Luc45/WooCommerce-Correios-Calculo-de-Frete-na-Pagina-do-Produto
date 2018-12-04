@@ -34,11 +34,42 @@ class FunctionalTester extends \Codeception\Actor
         $zone_obj->zone_name = "Shipping Zone Test";
         $zone_obj->save();
 
-        $zone_obj->set_zone_locations([
-            'type' => 'country',
-            'code' => 'BR'
-        ]);
-
         return $zone_obj;
     }
+
+    /**
+     * Prepares a Shipping Zone
+     *
+     * Usage:
+     * $shipping_zone = $this->generateShippingZone();
+     * $shipping_zone->add_shipping_method( 'correios-leve-internacional' );
+     *
+    public function generateShippingZone(array $shipping_zone_methods)
+    {
+        // Generate Shipping Zone
+        $table_zones = $this->grabPrefixedTableNameFor('woocommerce_shipping_zones');
+        $zone_id = $this->haveInDatabase($table_zones, [
+            'zone_name' => 'Shipping Zone Test',
+            'zone_order' => -1
+        ]);
+
+        // Generate Shipping Zone Locations
+        $table_zone_locations = $this->grabPrefixedTableNameFor('woocommerce_shipping_zone_locations');
+        $this->haveInDatabase($table_zone_locations, [
+            'zone_id' => $zone_id,
+            'location_code' => 'BR',
+            'location_type' => 'country'
+        ]);
+
+        // Generate Shipping Zone Methods
+        $table_zone_methods = $this->grabPrefixedTableNameFor('woocommerce_shipping_zone_methods');
+        foreach ($shipping_zone_methods as $index => $method) {
+            $this->haveInDatabase($table_zone_methods, [
+                'zone_id' => $zone_id,
+                'method_id' => $method,
+                'method_order' => $index,
+                'is_enabled' => 1
+            ]);
+        };
+    }*/
 }

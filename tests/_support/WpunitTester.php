@@ -20,7 +20,20 @@ class WpunitTester extends \Codeception\Actor
 {
     use _generated\WpunitTesterActions;
 
-   /**
-    * Define custom actions here
-    */
+    /**
+     * Prepares a Shipping Zone
+     *
+     * Usage:
+     * $shipping_zone = $this->generateShippingZone();
+     * $shipping_zone->add_shipping_method('correios-pac');
+     */
+    public function generateShippingZone()
+    {
+        // Create a new Shipping Zone for the test scenario
+        $zone_obj = new \WC_Shipping_Zone();
+        $zone_obj->zone_name = "Shipping Zone Test";
+        $zone_obj->save();
+
+        return $zone_obj;
+    }
 }
