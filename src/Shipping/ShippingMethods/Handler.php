@@ -3,21 +3,21 @@
 namespace CFPP\Shipping\ShippingMethods;
 
 use CFPP\Shipping\Payload;
-use CFPP\Shipping\ShippingMethods\Traits\ValidateDimensionsTrait;
+use CFPP\Shipping\ShippingMethods\Traits\ValidateRequestTrait;
 use CFPP\Exceptions\HandlerException;
 
 abstract class Handler
 {
-    use ValidateDimensionsTrait;
+    use ValidateRequestTrait;
+
+    /** @var \CFPP\Shipping\ShippingMethods\Response */
+    public $response;
 
     /** @var \WC_Shipping_Method */
     protected $shipping_method;
 
     /** @var string $shipping_method_slug */
     protected $shipping_method_slug;
-
-    /** @var \CFPP\Shipping\ShippingMethods\Response */
-    protected $response;
 
     /** @var array */
     protected $validation_rules;
@@ -47,7 +47,7 @@ abstract class Handler
      *
      * @return $this
      */
-    public function beforeValidate() {
+    public function beforeValidateRequest() {
         return $this;
     }
 }

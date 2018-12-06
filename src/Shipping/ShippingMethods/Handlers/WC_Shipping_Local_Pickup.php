@@ -11,13 +11,15 @@ class WC_Shipping_Local_Pickup extends Handler
      * Receives a Request and calculates the shipping
      *
      * @param Payload $payload
-     * @return \CFPP\Shipping\ShippingMethods\Response|mixed
+     * @return mixed|void
+     * @throws \CFPP\Exceptions\ResponseException
      */
     public function calculate(Payload $payload)
     {
         // Additional cost for local pickup?
         $cost = is_numeric($this->shipping_method->cost) ? $this->shipping_method->cost : 0;
 
-        return $this->response->success($cost, __('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+        $this->response->setPrice($cost);
+        $this->response->setDays(__('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
     }
 }

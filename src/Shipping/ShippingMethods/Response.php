@@ -2,6 +2,9 @@
 
 namespace CFPP\Shipping\ShippingMethods;
 
+use CFPP\Exceptions\ResponseException;
+use CFPP\Exceptions\ValidationErrorException;
+
 class Response
 {
     /**
@@ -11,73 +14,40 @@ class Response
      * @var        $price
      * @var        $days
      * @var mixed  $debug
-     * @var bool   $should_display
      */
-    public $name, $status, $class, $price, $days, $debug, $should_display;
+    public $name, $status, $price, $class, $days, $debug, $should_display, $error_code;
 
     public function __construct(\WC_Shipping_Method $shipping_method)
     {
         $this->name = $shipping_method->method_title;
-        $this->price = 'Undefined';
-        $this->days = 'Undefined';
-        $this->status = 'Undefined';
+        $this->price = __('Undefined', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
+        $this->days = __('Undefined', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
+        $this->status = __('Undefined', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
         $this->debug = '';
     }
 
     /**
-    *   Returns a succesful response
-    */
-    public function success(
-        $price,
-        $days,
-        $debug = '',
-        $class = ''
-    ) {
-        try {
-            $price = $this->formatPrice($price);
-        } catch (\Exception $e) {
-            $this->error(sprintf(
-                /* translators: %s Invalid price */
-                __('Tried to send a succesful response, but price was invalid: %s', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
-                $price
-            ));
-        }
-
-        $days = $this->formatDays($days);
-
-        $this->status = 'success';
-        $this->price = $price;
-        $this->days = $days;
-        $this->debug = $debug;
-        $this->class = $class;
-        $this->should_display = true;
-        return (array) $this;
-    }
-
-    /**
-    *   Returns an error response
-    */
-    public function error(
-        $debug = '',
-        $error_code = null
-    ) {
-        $this->status = 'error';
-        $this->debug = $debug;
-        $this->class = 'cfpp-has-error';
-        // Only show errors to logged in users
-        $this->should_display = current_user_can('manage_options');
-
-        if (!is_null($error_code)) {
-            $this->error_code = $error_code;
-        }
-
-        return (array) $this;
-    }
-
-    /**
-     * Formats a price to be returned
+     * @param $days
      */
-    private function formatPrice($price)
+    public function setDays($days)
+    {
+        if (is_numeric($days)) {
+            $days = (int) $days;
+            $this->days = sprintf(
+                /* translators: %d Estimated days for delivery */
+                esc_html(_n('Up to a day', 'Up to %d days', $days, 'woo-correios-calculo-de-frete-na-pagina-do-produto')),
+                $days
+            );
+        } else {
+            $this->days = $days;
+        }
+    }
+
+    /**
+     * @param $price
+     * @throws ResponseException
+     */
+    public function setPrice($price)
     {
         if ($price === 0) {
             $price = __('Free', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
@@ -86,28 +56,47 @@ class Response
             if (is_numeric($price)) {
                 $price = wc_price($price);
             } else {
-                throw new \Exception();
+                throw ResponseException::invalid_price_exception();
             }
         }
 
-        return $price;
+        $this->price = $price;
     }
 
     /**
-     * Formats a price to be returned
+     * @param $debug
      */
-    private function formatDays($days)
+    public function setDebug($debug)
     {
-        if (is_numeric($days)) {
-            $days = (int) $days;
-            return sprintf(
-                /* translators: %d Estimated days for delivery */
-                esc_html(_n('Up to a day', 'Up to %d days', $days, 'woo-correios-calculo-de-frete-na-pagina-do-produto')),
-                $days
-            );
-        } else {
-            return $days;
-        }
+        $this->debug = $debug;
+    }
+
+    /**
+     * @param $class
+     */
+    public function setClass($class)
+    {
+        $this->class = $class;
+    }
+
+    /**
+    *   Returns a succesful response
+    */
+    public function success() {
+        $this->status = 'success';
+        return (array) $this;
+    }
+
+    /**
+    *   Returns an error response
+    */
+    public function error(\WP_Error $wp_error) {
+        $this->status = 'error';
+        $this->setClass('cfpp-has-error');
+        $this->setDebug($wp_error->get_error_message());
+        $this->error_code = $wp_error->get_error_code();
+
+        return (array) $this;
     }
 
     /**

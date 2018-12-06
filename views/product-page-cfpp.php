@@ -3,12 +3,6 @@
         div#cfpp div.calculo-de-frete div#calcular-frete svg {fill:<?php echo esc_html($cfpp_options['text']); ?>;}
         div#cfpp div.calculo-de-frete div#calcular-frete {color:<?php echo esc_html($cfpp_options['text']); ?>;}
         div#cfpp div.calculo-de-frete div#calcular-frete {background-color:<?php echo esc_html($cfpp_options['button']); ?>;}
-        <?php
-        if ( ! current_user_can('manage_options')) {
-            // No big deal, just public debug info
-            echo '.cfpp-has-error {display:none !important;}';
-        }
-        ?>
     </style>
 
     <div class="calculo-de-frete">

@@ -2,6 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods\Handlers;
 
+use CFPP\Exceptions\HandlerException;
 use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\Handler;
 
@@ -11,7 +12,9 @@ class WC_Shipping_Free_Shipping extends Handler
      * Receives a Request and calculates the shipping
      *
      * @param Payload $payload
-     * @return \CFPP\Shipping\ShippingMethods\Response|mixed
+     * @return mixed
+     * @throws HandlerException
+     * @throws \CFPP\Exceptions\ResponseException
      */
     public function calculate(Payload $payload)
     {
@@ -19,9 +22,10 @@ class WC_Shipping_Free_Shipping extends Handler
         $should_show = $this->meetsFreeShippingRequirements($payload);
 
         if ($should_show) {
-            return $this->response->success(0, __('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+            $this->response->setDays(__('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+            $this->response->setPrice(0);
         } else {
-            return $this->response->error(__('Does not meet free shipping requirements.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+            throw HandlerException::unexpected_result_exception(__('Does not meet free shipping requirements.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         }
     }
 

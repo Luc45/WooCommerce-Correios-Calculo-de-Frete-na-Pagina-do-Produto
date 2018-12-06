@@ -2,6 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods\Handlers;
 
+use CFPP\Exceptions\HandlerException;
 use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\Handler;
 
@@ -11,7 +12,9 @@ class WC_Shipping_Flat_Rate extends Handler
      * Receives a Request and calculates the shipping
      *
      * @param Payload $payload
-     * @return \CFPP\Shipping\ShippingMethods\Response|mixed
+     * @return mixed
+     * @throws HandlerException
+     * @throws \CFPP\Exceptions\ResponseException
      */
     public function calculate(Payload $payload)
     {
@@ -50,9 +53,10 @@ class WC_Shipping_Flat_Rate extends Handler
         }
 
         if (is_numeric($sum)) {
-            return $this->response->success($sum, __('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+            $this->response->setDays(__('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
+            $this->response->setPrice($sum);
         } else {
-            return $this->response->error($sum);
+            throw HandlerException::unexpected_result_exception($sum);
         }
     }
 }

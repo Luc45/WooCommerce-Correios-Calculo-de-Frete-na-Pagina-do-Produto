@@ -5,7 +5,7 @@ namespace CFPP\Shipping\ShippingMethods\Traits;
 use CFPP\Exceptions\ValidationErrorException;
 use CFPP\Shipping\Payload;
 
-trait ValidateDimensionsTrait
+trait ValidateRequestTrait
 {
     /** @var array $package */
     protected $package;
@@ -22,7 +22,7 @@ trait ValidateDimensionsTrait
      * @param Payload $payload
      * @throws ValidationErrorException
      */
-    public function validate(Payload $payload)
+    public function validateRequest(Payload $payload)
     {
         $this->package = $payload->getPackage();
         $this->dimensions_unit = get_option('woocommerce_dimension_unit');

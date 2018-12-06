@@ -2,6 +2,7 @@
 
 namespace CFPP\Shipping\ShippingMethods\Handlers;
 
+use CFPP\Exceptions\HandlerException;
 use CFPP\Shipping\Payload;
 use CFPP\Shipping\ShippingMethods\Handler;
 use CFPP\Shipping\ShippingMethods\Traits\ValidationRules;
@@ -12,7 +13,8 @@ class WC_Correios_Shipping_Carta_Registrada extends Handler
      * Receives a Request and calculates the shipping
      *
      * @param Payload $payload
-     * @return \CFPP\Shipping\ShippingMethods\Response|mixed
+     * @return mixed
+     * @throws \CFPP\Exceptions\ResponseException
      */
     public function calculate(Payload $payload)
     {
@@ -20,12 +22,8 @@ class WC_Correios_Shipping_Carta_Registrada extends Handler
         $price = $this->getPriceFromWooCommerceCorreios($payload);
         $days = $this->getEstimatedDeliveryDate();
 
-        // Return response
-        if ($price !== false) {
-            return $this->response->success($price, $days);
-        } else {
-            return $this->response->error(__('Could not get price for Carta Registrada.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
-        }
+        $this->response->setDays($days);
+        $this->response->setPrice($price);
     }
 
     /**
@@ -85,7 +83,7 @@ class WC_Correios_Shipping_Carta_Registrada extends Handler
      *
      * @return $this
      */
-    public function beforeValidate()
+    public function beforeValidateRequest()
     {
         add_filter('cfpp_handler_rules_wc_shipping_carta_registrada', function(ValidationRules $rules) {
             $rules->setDefault('weight', null, 0.5);

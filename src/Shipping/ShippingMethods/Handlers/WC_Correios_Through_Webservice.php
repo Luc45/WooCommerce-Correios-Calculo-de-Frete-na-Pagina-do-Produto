@@ -14,24 +14,23 @@ class WC_Correios_Through_Webservice extends Handler
      * WooCommerce Correios plugin
      *
      * @param Payload $payload
-     * @return array|mixed
+     * @return mixed
      * @throws HandlerException
+     * @throws \CFPP\Exceptions\ResponseException
      */
     public function calculate(Payload $payload)
     {
         // Calculate costs
         $reflection_response = $this->getReflectionResponse($this->shipping_method, $this->generateCorreiosPackage($payload));
 
-        // Return response
         if ($reflection_response['Erro'] == "0") {
-            return $this->response->success(
-                $reflection_response['Valor'],
-                $reflection_response['PrazoEntrega'],
-                $reflection_response
-            );
+            $this->response->setDays($reflection_response['PrazoEntrega']);
+            $this->response->setPrice($reflection_response['Valor']);
+            $this->response->setDebug($reflection_response);
         } else {
-            return $this->response->error($reflection_response['MsgErro']);
+            throw HandlerException::webservice_error($reflection_response['MsgErro']);
         }
+
     }
 
     /**
@@ -89,7 +88,7 @@ class WC_Correios_Through_Webservice extends Handler
      *
      * @return $this
      */
-    public function beforeValidate()
+    public function beforeValidateRequest()
     {
         add_filter('cfpp_handler_rules_wc_correios_shipping_pac', [$this, 'validatePacSedex']);
         add_filter('cfpp_handler_rules_wc_correios_shipping_sedex', [$this, 'validatePacSedex']);

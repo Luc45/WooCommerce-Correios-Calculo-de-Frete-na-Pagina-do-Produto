@@ -20,4 +20,9 @@ class ValidationErrorException extends CFPPException
         //return new self($message, self::generateCode(__CLASS__) + 1);
         return new self($message, 1001);
     }
+
+    public static function invalid_response($message)
+    {
+        return new self($message, 1002);
+    }
 }
