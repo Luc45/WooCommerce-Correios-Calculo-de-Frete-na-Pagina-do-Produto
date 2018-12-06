@@ -3,7 +3,6 @@
 namespace CFPP\Shipping\ShippingMethods;
 
 use CFPP\Exceptions\ResponseException;
-use CFPP\Exceptions\ValidationErrorException;
 
 class Response
 {
@@ -98,40 +97,4 @@ class Response
 
         return (array) $this;
     }
-
-    /**
-     * Generates a Response object for Not Supported Shipping Method notice
-     *
-     * @return $this
-     */
-    public function generateNotSupportedShippingMethodResponse()
-    {
-        $this->status = 'error';
-        $this->debug = __('Shipping Method not supported by CFPP.', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
-        $this->price = __('Please, proceed with the purchase normally.', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
-        $this->days = '-';
-        $this->class = 'cfpp_shipping_method_not_available';
-        $this->should_display = false;
-
-        return (array) $this;
-    }
-
-    /**
-     * Generates a Response object for an Unknown Error in the Response of the handler
-     *
-     * @return $this
-     */
-    public function generateUnknownErrorResponse()
-    {
-        $this->status = 'error';
-        $this->debug = __('Unknown response from the webservice request', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
-        $this->price = __('Please, proceed with the purchase normally.', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
-        $this->days = '-';
-        $this->class = 'cfpp_shipping_method_unknown_error';
-        $this->should_display = false;
-
-        return (array) $this;
-    }
-
-
 }
