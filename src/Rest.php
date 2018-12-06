@@ -67,11 +67,13 @@ class Rest
                     return false;
                 }
 
-                // Check if user has access to it
-                $is_visible = $product->is_visible();
-                $password   = get_post($request['product_id'])->post_password;
+                return $product->is_visible() && empty(get_post($product->get_id())->post_password);
 
-                return $is_visible && empty($password);
+                // @todo implement new capability logic bellow
+                $pto = get_post_type_object(get_post_type($product->get_id()));
+                $cap = current_user_can($pto->cap->read_post, $product->get_id());
+
+                return $cap;
             }
         ]);
     }
