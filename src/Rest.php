@@ -4,6 +4,7 @@ namespace CFPP;
 
 use WP_REST_Server;
 use WP_REST_Request;
+use WP_REST_Response;
 use CFPP\Shipping\ShippingCalculator;
 use CFPP\Exceptions\ShippingCalculatorException;
 
@@ -62,7 +63,7 @@ class Rest
                 // Makes sure we are processing an product
                 $product = wc_get_product($request['product_id']);
 
-                if (! $product instanceof \WC_Product) {
+                if ( ! $product instanceof \WC_Product) {
                     return false;
                 }
 
@@ -95,12 +96,12 @@ class Rest
             $response = $shipping->processRestRequest();
 
             do_action('cfpp_before_send_calculate_success_response', $response);
-            wp_send_json_success($response);
+            return new WP_REST_Response($response);
 
         } catch(ShippingCalculatorException $e) {
             /** Generic error catcher */
             do_action('cfpp_exception_shipping_calculator', $e, $request);
-            wp_send_json_error($e->getMessage());
+            return new WP_REST_Response($e->getMessage(), 400);
         }
     }
 }

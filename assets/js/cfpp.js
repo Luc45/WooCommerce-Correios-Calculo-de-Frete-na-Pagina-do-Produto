@@ -23,6 +23,7 @@
 		 	$.ajax({
 				url: cfppData.rest.endpoint + `/${cfppData.product_id}/${destination_postcode}`,
 				type: "GET",
+				dataType: "json",
                 data: {
 					'quantity' : getQuantity(),
 				 	'selected_variation' : getSelectedVariation()
@@ -31,6 +32,10 @@
                     xhr.setRequestHeader('X-WP-Nonce', cfppData.rest.nonce);
                 }
 		 	}).done(function(result) {
+
+
+
+		 		/*
                 if ( ! result.success) {
                     console.log(result.data);
                     hideLoader();
@@ -38,12 +43,13 @@
                     resetTable();
                     return;
                 }
+                */
 
                 var comErro = [];
                 var row = '';
 
-                if (result.data) {
-                    $(result.data).each(function(i, v) {
+                if (result) {
+                    $(result).each(function(i, v) {
                         if (v.status == 'error') {
                             comErro.push(v);
                             row += '<tr class="'+v.class+' cfpp-shipping-mode-'+v.status+'"">\

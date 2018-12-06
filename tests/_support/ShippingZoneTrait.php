@@ -1,6 +1,7 @@
 <?php
 
-trait TraitCostsTests {
+trait ShippingZoneTrait
+{
     /**
      * Prepares a Shipping Zone
      *
@@ -32,5 +33,21 @@ trait TraitCostsTests {
         add_filter('woocommerce_countries_base_postcode', function() use ($postcode) {
             return $postcode;
         });
+    }
+
+    /**
+     * Add a shipping method to the default shipping zone
+     * and return an array of shipping methods
+     *
+     * @param $shipping_method
+     * @return array
+     */
+    public function addShippingMethod($shipping_method)
+    {
+        if (empty($this->default_shippingzone)) {
+            $this->default_shippingzone = $this->generateShippingZone();
+        }
+        $this->default_shippingzone->add_shipping_method($shipping_method);
+        return $this->default_shippingzone->get_shipping_methods();
     }
 }
