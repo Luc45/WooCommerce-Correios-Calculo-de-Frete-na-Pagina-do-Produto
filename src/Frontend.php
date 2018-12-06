@@ -72,8 +72,7 @@ class Frontend
         global $product;
         if ($product instanceof \WC_Product && $product->is_virtual() === false) {
             $cfpp_data = array(
-                // Defaults to block for now
-                'cfpp_default_display' => $product->is_type('variable') ? 'block' : 'block',
+                'cfpp_default_display' => $product->is_type('variable') ? 'none' : 'block',
                 'cfpp_options' => array(
                     'text' => '#FFF',
                     'button' => '#03A9F4'

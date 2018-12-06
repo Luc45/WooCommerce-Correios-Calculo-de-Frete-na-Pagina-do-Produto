@@ -1,11 +1,19 @@
-(function( $ ) {
+(function($) {
 	'use strict';
 
-    $(function() {
-        /**
-		 * Runs when user clicks to calculate shipping costs
-         */
-		 $('#cfpp .calculo-de-frete div').on('click', function(e, l) {
+    /** Holds the HTML to be displayed after AJAX runs */
+    var rows;
+
+    /** bool to determine if error header for faulty shipping methods has been outputted */
+    var error_header_outputted = false;
+
+    $(document).ready(function() {
+
+    	/** DOM element that holds the postcode input */
+        var input_postcode = $(".calculo-de-frete input[type='text']");
+
+        /** Runs when user clicks to calculate shipping costs */
+		 $('#cfpp .calculo-de-frete div').on('click', function(e) {
 		 	if ($(e.target).is('a#cfpp_credits')) {
 		 		return;
 		 	}
@@ -16,9 +24,9 @@
 		 		return false;
 		 	}
 
-             showLoader();
-             hideTable();
-             resetTable();
+            showLoader();
+            hideTable();
+            resetTable();
 
 		 	$.ajax({
 				url: cfppData.rest.endpoint + `/${cfppData.product_id}/${destination_postcode}`,
@@ -31,90 +39,37 @@
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('X-WP-Nonce', cfppData.rest.nonce);
                 }
-		 	}).done(function(result) {
+		 	}).done(function(results) {
 
-
-
-		 		/*
-                if ( ! result.success) {
-                    console.log(result.data);
-                    hideLoader();
-                    hideTable();
-                    resetTable();
-                    return;
-                }
-                */
-
-                var comErro = [];
-                var row = '';
-
-                if (result) {
-                    $(result).each(function(i, v) {
-                        if (v.status == 'error') {
-                            comErro.push(v);
-                            row += '<tr class="'+v.class+' cfpp-shipping-mode-'+v.status+'"">\
-			                            <td>'+v.name+'</td>\
-			                            <td colspan="2">'+v.debug+'</td>\
-		                        	</tr>';
+		 		if (results.length === 0) {
+                    addResponse.notFound();
+				} else {
+                    $(results).each(function(index, result) {
+                        if (result.status === 'success') {
+                            addResponse.successfulShippingMethod(result);
                         } else {
-                            row += '<tr class="'+v.class+' cfpp-shipping-mode-'+v.status+'"">\
-				                            <td>'+v.name+'</td>\
-				                            <td>'+v.price+'</td>\
-				                            <td>'+v.days+'</td>\
-			                        	</tr>';
+                            addResponse.errorShippingMethod(result);
                         }
                     });
-                }
+				}
 
-                if (row == '') {
-                    row = '<tr><td colspan="3">\' + cfppData.i18n.shipping_costs_not_available + \'</td></tr>';
-                }
-
-                if (comErro.length) {
-                    let stringErro = '';
-                    $(comErro).each(function(i, v) {
-                        stringErro += '\n';
-                        stringErro += '• ';
-                        stringErro += v.name;
-                        stringErro += ': ';
-                        stringErro += v.debug;
-                    });
-                    console.error('CFPP: Métodos de entrega não exibidos: ' + stringErro);
-                    row += '<tr class="cfpp-has-error"><td colspan="3">' + cfppData.i18n.shipping_method_not_shown + '</td></tr>';
-                }
-
-                $('#cfpp .resultado-frete table tbody').append(row);
+                $('#cfpp .resultado-frete table tbody').append(rows);
                 hideLoader();
                 showTable();
-			}).fail(function(jqXHR, exception) {
-				console.log(jqXHR);
-				console.log(exception);
+
+			}).fail(function(xhr) {
+				console.error('-= CFPP returned an error response: ' + xhr.responseText + ' =-');
 				hideLoader();
 				hideTable();
 				resetTable();
 			});
-		 })
+		 });
 
-		 function showLoader() {
-		 	$('#cfpp #calcular-frete').css('display', 'none');
-		 	$('#cfpp #calcular-frete-loader').css('display', 'inline-block');
-		 }
-
-		 function hideLoader() {
-		 	$('#cfpp #calcular-frete').css('display', 'inline-block');
-		 	$('#cfpp #calcular-frete-loader').css('display', 'none');
-		 }
-
-		 function showTable() {
-		 	$('#cfpp .resultado-frete').show();
-		 }
-
-		 function hideTable() {
-		 	$('#cfpp .resultado-frete').hide();
-		 }
-
-		 function resetTable() {
-		 	$('#cfpp .resultado-frete table tbody').html('');
+		 /** Display CFPP after variations are selected */
+		 if ($(".variations_form").length) {
+             $('.variations_form').on('show_variation', function() {
+                 $("#cfpp").show();
+             });
 		 }
 
 		// Reset the table when clicks on the "Clear all" button
@@ -123,40 +78,6 @@
 			resetTable();
 			hideTable();
 		});
-
-		 // Gets selected variation, if any
-		 function getSelectedVariation()
-		 {
-		 	let select = $('.variations_form select');
-		 	if (select.length) {
-		 		var select_json = [];
-		 		$.each(select, function() {
-		 			select_json.push(wpFeSanitizeTitle($(this).val()));
-				})
-		 		return select_json.join('-');
-			} else {
-		 		return '';
-			}
-		 }
-
-		 // Get quantity or defaults to 1
-        function getQuantity() {
-		 	let qt = $('input.qty').val().replace(/\D+/g, '');
-            if (qt.length === 0) {
-            	return 1;
-			} else {
-            	return qt;
-			}
-        }
-
-        // Return Destination Postcode
-        function getDestinationPostcode() {
-            return $('#cfpp .calculo-de-frete input').val().replace(/\D+/g, '');
-        }
-	});
-
-	$(document).ready(function() {
-		var input_postcode = $(".calculo-de-frete input[type='text']");
 
 		// Postcode mask
 		VMasker(input_postcode).maskPattern(cfppData.i18n.postcode_mask);
@@ -169,6 +90,155 @@
 		        return false;
 		    }
 		});
-	})
+    });
 
-})( jQuery );
+    /**
+	 * Methods responsible for receiving the AJAX JSON response and adding HTML to the results table
+     */
+    var addResponse = {
+        addToRow: function(content) {
+            if (typeof(content.class) === 'undefined') {
+                content.class = '';
+            }
+
+            rows += "<tr class='" + content.class + "'>";
+
+            $(content.cols).each(function(index, column) {
+                rows += "<td colspan='" + column.colspan + "'>" + column.text + "</td>";
+            });
+
+            rows += "</tr>";
+        },
+        notFound: function() {
+            this.addToRow(
+                {
+                    "class" : "cfpp-error",
+                    "cols" : [
+                        {
+                            "colspan" : 3,
+                            "text" : cfppData.i18n.shipping_costs_not_available
+                        }
+                    ]
+                }
+            );
+        },
+        successfulShippingMethod: function(result) {
+            this.addToRow(
+                {
+                    "cols" : [
+                        {
+                            "colspan" : 1,
+                            "text" : result.name
+                        },
+                        {
+                            "colspan" : 1,
+                            "text" : result.price
+                        },
+                        {
+                            "colspan" : 1,
+                            "text" : result.days
+                        }
+                    ]
+                }
+            );
+        },
+        errorShippingMethod: function(result) {
+            if (error_header_outputted === false) {
+                this.addErrorHeaderOnce();
+            }
+            this.addToRow(
+                {
+                    "class" : "cfpp-has-error",
+                    "cols" : [
+                        {
+                            "colspan" : 1,
+                            "text" : result.name
+                        },
+                        {
+                            "colspan" : 2,
+                            "text" : result.debug
+                        }
+                    ]
+                }
+            );
+        },
+        addErrorHeaderOnce: function() {
+            this.addToRow(
+                {
+                    "class" : "cfpp-has-error",
+                    "cols" : [
+                        {
+                            "colspan" : 3,
+                            "text" : cfppData.i18n.shipping_method_not_shown
+                        }
+                    ]
+                }
+            );
+            error_header_outputted = true;
+        }
+    };
+
+    /**
+	 * Gets selected variation, if any
+     * @returns {string}
+     */
+    function getSelectedVariation()
+    {
+        let select = $('.variations_form select');
+        if (select.length) {
+            var select_json = [];
+            $.each(select, function() {
+            	// Mimics sanitize_title() WordPress' function
+                select_json.push(wpFeSanitizeTitle($(this).val()));
+            })
+            return select_json.join('-');
+        } else {
+            return '';
+        }
+    }
+
+    /**
+	 * Get quantity or defaults to 1
+     * @returns {*}
+     */
+    function getQuantity() {
+        let qt = $('input.qty').val().replace(/\D+/g, '');
+        if (qt.length === 0) {
+            return 1;
+        } else {
+            return qt;
+        }
+    }
+
+    /**
+	 * Return Destination Postcode
+     * @returns {*}
+     */
+    function getDestinationPostcode() {
+        return $('#cfpp .calculo-de-frete input').val().replace(/\D+/g, '');
+    }
+
+    function showLoader() {
+        $('#cfpp #calcular-frete').css('display', 'none');
+        $('#cfpp #calcular-frete-loader').css('display', 'inline-block');
+    }
+
+    function hideLoader() {
+        $('#cfpp #calcular-frete').css('display', 'inline-block');
+        $('#cfpp #calcular-frete-loader').css('display', 'none');
+    }
+
+    function showTable() {
+        $('#cfpp .resultado-frete').show();
+    }
+
+    function hideTable() {
+        $('#cfpp .resultado-frete').hide();
+    }
+
+    function resetTable() {
+		rows = '';
+        $('#cfpp .resultado-frete table tbody').html(rows);
+    }
+
+})(jQuery);
