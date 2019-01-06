@@ -18,9 +18,10 @@ class PayloadException extends \Exception
     public static function product_is_not_variable(\WC_Product $product)
     {
         return new self(sprintf(
-            __('Could not calculate shipping with variation data for product that is not variable. (%s)', 'woo-correios-calculo-de-frete-na-pagina-do-produto')),
-            $product->get_name()
-        ));
+                /* translators: %s: Product name */
+                __('Could not calculate shipping with variation data for product that is not variable. (%s)', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
+                $product->get_name()
+            ));
     }
 
     /**
