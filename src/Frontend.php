@@ -37,6 +37,7 @@ class Frontend
                 'rest' => [
                     'endpoint' => esc_url_raw(rest_url('/cfpp/v1/calculate')),
                     'nonce' => wp_create_nonce('wp_rest'),
+                    'timeout' => apply_filters('cfpp_rest_timeout', 10000),
                 ],
                 'product_id' => $post->ID,
                 'i18n' => [

@@ -32,6 +32,7 @@
 				url: cfppData.rest.endpoint + `/${cfppData.product_id}/${destination_postcode}`,
 				type: "GET",
 				dataType: "json",
+                timeout: cfppData.rest.timeout,
                 data: {
 					'quantity' : getQuantity(),
 				 	'selected_variation' : getSelectedVariation()
