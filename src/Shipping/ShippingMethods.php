@@ -35,27 +35,9 @@ class ShippingMethods
             }
         }
 
-        $shipping_methods = $instance->filterByEnabledShippingMethods($shipping_methods);
         $shipping_methods = $instance->filterByShippingClass($shipping_methods, $product);
 
         return $shipping_methods;
-    }
-
-    /**
-     * Returns only enabled shipping methods
-     *
-     * @param array $shipping_methods
-     * @return array
-     */
-    private function filterByEnabledShippingMethods(array $shipping_methods)
-    {
-        $enabled_shipping_methods = array();
-        foreach ($shipping_methods as $shipping_method) {
-            if (property_exists($shipping_method, 'enabled') && $shipping_method->enabled == 'yes') {
-                $enabled_shipping_methods[] = $shipping_method;
-            }
-        }
-        return $enabled_shipping_methods;
     }
 
     /**

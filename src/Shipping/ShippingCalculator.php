@@ -49,13 +49,13 @@ class ShippingCalculator
             $shipping_zone = ShippingZone::getFirstMatchingShippingZone($this->payload->getPostcode());
 
             // Get available shipping methods within this shipping zone
-            $shipping_methods = ShippingMethods::filterShippingMethods($shipping_zone->get_shipping_methods(), $this->payload->getProduct());
+            $shipping_methods = ShippingMethods::filterShippingMethods($shipping_zone->get_shipping_methods(true), $this->payload->getProduct());
 
             // Return costs for each available shipping method
             return Costs::getCostPerShippingMethod($shipping_methods, $this->payload);
 
         } catch(ShippingZoneException $e) {
-            do_action('cfpp_exception_invalid_shipping_zone', $shipping_method, $this->payload);
+            do_action('cfpp_exception_invalid_shipping_zone', $this->payload);
             throw new ShippingCalculatorException($e->getMessage());
         } catch(ShippingMethodsException $e) {
             do_action('cfpp_exception_invalid_shipping_method_provided', $shipping_methods, $this->payload);
