@@ -2,7 +2,7 @@
 Contributors: lucasbustamante
 Donate link: http://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Stable tag: 3.0.6
+Stable tag: 3.0.7
 Requires at least: 4.4
 Tested up to: 5.0
 Requires PHP: 5.4
@@ -15,16 +15,36 @@ Habilita o cálculo de frete na página do produto.
 
 == Description ==
 
-Desde o lançamento da versão 3.0.0 do WooCommerce Correios em 26/06/2016, não é mais possível calcular o frete na página do produto. Este plugin implementa novamente esta função. Basta instalar e ativar.
+= WooCommerce Correios - Cálculo de Frete na Página do Produto =
+
+Ofereça cálculo de frete na página do produto no WooCommerce.
 
 ![exemplo de implementação do cálculo de frete na página do produto no WooCommerce](https://www.lucasbustamante.com.br/uploads/u/2018/03/dia-15_16h46m15s_chrome.jpg)
 
+= Plugin Gratuito =
+Este plugin é gratuito e open-source.
+
+= Métodos de entrega suportados: =
+- WooCommerce Correios SEDEX Hoje
+- WooCommerce Correios SEDEX 12
+- WooCommerce Correios SEDEX 10 Pacote
+- WooCommerce Correios SEDEX 10 Envelope
+- WooCommerce Correios SEDEX
+- WooCommerce Correios PAC
+- WooCommerce Correios Mercadoria Expressa
+- WooCommerce Correios Mercadoria Economica
+- WooCommerce Correios Leve Internacional
+- WooCommerce Correios Carta Registrada
+- WooCommerce Taxa Fixa
+- WooCommerce Frete Grátis
+- WooCommerce Retirada no Local
+
 = Considerações: =
 1. O CEP de origem será calculado a partir do CEP informado em WooCommerce -> Configurações -> CEP.
-2. Será informado preço e prazo de entrega para PAC e SEDEX (com ou sem contrato).
 3. Se o produto não tiver as dimensões ou peso especificados, o box de cálculo de frete não aparece para aquele produto.
 
-Este plugin é gratuito, open-source e está disponível no GitHub!
+= Link no repositório oficial de plugins do WordPress: =
+https://br.wordpress.org/plugins/woo-correios-calculo-de-frete-na-pagina-do-produto/
 
 == Installation ==
 
@@ -114,6 +134,10 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Melhorias diversas em classes internas
 = 3.0.5 =
 * Refatoração interna de como as respostas são enviadas
+= 3.0.6 =
+* Adicionado tradução pt_BR
+= 3.0.7 =
+* Melhorias no funcionamento interno das classes
 
 
 
@@ -187,3 +211,7 @@ Primeiro lançamento.
 * Melhorias diversas em classes internas
 = 3.0.5 =
 * Refatoração interna de como as respostas são enviadas
+= 3.0.6 =
+* Adicionado tradução pt_BR
+= 3.0.7 =
+* Melhorias no funcionamento interno das classes
