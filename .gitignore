@@ -8,3 +8,6 @@ vendor/**
 !vendor/composer/**
 
 \.idea/
+tests.bk
+tests/_support/_generated/
+tests/_output/

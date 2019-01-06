@@ -1,0 +1,178 @@
+# Copyright (C) 2018 Lucas Bustamante
+# This file is distributed under the same license as the WooCommerce Correios - Cálculo de Frete na Página do Produto (CFPP) plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Correios - Cálculo de Frete na Página do Produto (CFPP) 3.0.5\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-correios-calculo-de-frete-na-pagina-do-produto\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2018-11-27T02:24:47+00:00\n"
+"PO-Revision-Date: 2018-11-27T02:24:47+00:00\n"
+"X-Generator: WP-CLI 2.0.1\n"
+"X-Domain: woo-correios-calculo-de-frete-na-pagina-do-produto\n"
+
+#. Plugin Name of the plugin
+msgid "WooCommerce Correios - Cálculo de Frete na Página do Produto (CFPP)"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://github.com/Luc45/WooCommerce-Correios-Calculo-de-Frete-na-Pagina-do-Produto"
+msgstr ""
+
+#. Description of the plugin
+msgid "Habilita o cálculo de frete na página do produto."
+msgstr ""
+
+#. Author of the plugin
+msgid "Lucas Bustamante"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.lucasbustamante.com.br"
+msgstr ""
+
+#: src/Common/Notifications.php:55
+#: src/Common/Notifications.php:68
+msgid "CFPP - Cálculo de Frete na Página do Produto"
+msgstr ""
+
+#: src/Common/Notifications.php:56
+msgid "CFPP is not showing on the product page right now, because:"
+msgstr ""
+
+#. translators: %s: Minimum PHP version number
+#: src/Common/Requirements.php:20
+msgid "Minimum PHP version required: %s"
+msgstr ""
+
+#: src/Common/Requirements.php:26
+msgid "WooCommerce plugin must be active to use this plugin."
+msgstr ""
+
+#. translators: %s: Minimum WooCommerce version number
+#: src/Common/Requirements.php:32
+msgid "CFPP requires WooCommerce %s or higher. Optionally, you can add this code to your wp-config.php: <strong>define(\"CFPP_CEP\", \"XXXXX-XXX\");</strong> (add it right under WP_DEBUG)"
+msgstr ""
+
+#: src/Common/Requirements.php:39
+msgid "Constant CFPP_CEP is in an invalid format, please fill it in this exact format: XXXXX-XXX, replacing X by the number of your postcode."
+msgstr ""
+
+#: src/Common/Requirements.php:41
+msgid "Before using this plugin, please configure your store postcode in WooCommerce -> Settings. Also make sure the postcode has 8 numeric digits: XXXXXXXX or XXXXX-XXX"
+msgstr ""
+
+#: src/Shipping/Costs.php:27
+msgid "Couldn't find a matching shipping zone for this postcode."
+msgstr ""
+
+#: src/Shipping/Costs.php:40
+msgid "Couldn't find any shipping method for this postcode and product."
+msgstr ""
+
+#. translators: %s class name for shipping method
+#: src/Shipping/Costs.php:68
+msgid "Could not create a CFPP Handler class for this Shipping Method. (%s)"
+msgstr ""
+
+#: src/Shipping/Payload.php:38
+msgid "Could not calculate shipping with variation data for product that is not variable."
+msgstr ""
+
+#: src/Shipping/Payload.php:49
+msgid "Could not create a Package for Payload object in CFPP."
+msgstr ""
+
+#: src/Shipping/ShippingMethods/Factory.php:56
+msgid "Method not supported or handler not found"
+msgstr ""
+
+#: src/Shipping/ShippingMethods/Handlers/WC_Correios_Shipping_Carta_Registrada.php:27
+msgid "Could not get price for Carta Registrada."
+msgstr ""
+
+#. translators: %s class name that tried reflect and failed
+#: src/Shipping/ShippingMethods/Handlers/WC_Correios_Through_Webservice.php:79
+msgid "Unable to reflect %s"
+msgstr ""
+
+#: src/Shipping/ShippingMethods/Handlers/WC_Correios_Through_Webservice.php:88
+msgid "Unexpected response from reflection method."
+msgstr ""
+
+#: src/Shipping/ShippingMethods/Handlers/WC_Shipping_Flat_Rate.php:52
+#: src/Shipping/ShippingMethods/Handlers/WC_Shipping_Free_Shipping.php:22
+#: src/Shipping/ShippingMethods/Handlers/WC_Shipping_Local_Pickup.php:21
+msgid "Contact us"
+msgstr ""
+
+#: src/Shipping/ShippingMethods/Handlers/WC_Shipping_Free_Shipping.php:24
+msgid "Does not meet free shipping requirements."
+msgstr ""
+
+#. translators: %s Invalid price
+#: src/Shipping/ShippingMethods/Response.php:41
+msgid "Tried to send a succesful response, but price was invalid: %s"
+msgstr ""
+
+#: src/Shipping/ShippingMethods/Response.php:78
+msgid "Free"
+msgstr ""
+
+#. translators: %d Estimated days for delivery
+#: src/Shipping/ShippingMethods/Response.php:100
+msgid "Up to a day"
+msgid_plural "Up to %d days"
+msgstr[0] ""
+
+#: src/Shipping/ShippingMethods/Response.php:116
+msgid "Shipping Method not supported by CFPP."
+msgstr ""
+
+#: src/Shipping/ShippingMethods/Response.php:117
+#: src/Shipping/ShippingMethods/Response.php:134
+msgid "Please, proceed with the purchase normally."
+msgstr ""
+
+#: src/Shipping/ShippingMethods/Response.php:133
+msgid "Unknown response from the webservice request"
+msgstr ""
+
+#. translators: 1: readable property, 2: value, 3: maximum value, 4: unit
+#: src/Shipping/ShippingMethods/Traits/ValidateDimensionsTrait.php:95
+msgid "%1$s (%2$s%4$s) is bigger than the maximum allowed for this shipping method (%3$s%4$s)."
+msgstr ""
+
+#. translators: 1: readable property, 2: value, 3: minimum value, 4: unit
+#: src/Shipping/ShippingMethods/Traits/ValidateDimensionsTrait.php:105
+msgid "%1$s (%2$s%4$s) is smaller than the minimum required for this shipping method (%3$s%4$s)."
+msgstr ""
+
+#. translators: 1: height, 2: width, 3: length, 4: maximum value, 5: unit
+#: src/Shipping/ShippingMethods/Traits/ValidateDimensionsTrait.php:138
+msgid "Sum of Height, Width and Length (%1$sx%2$sx%3$s%5$s) is bigger than the maximum allowed for this shipping method (%4$s%5$s)."
+msgstr ""
+
+#. translators: 1: height, 2: width, 3: length, 4: maximum value, 5: unit
+#: src/Shipping/ShippingMethods/Traits/ValidateDimensionsTrait.php:148
+msgid "Sum of Height, Width and Length (%1$sx%2$sx%3$s%5$s) is smaller than the minimum required for this shipping method (%4$s%5$s)."
+msgstr ""
+
+#: views/product-page-cfpp.php:22
+msgid "Calculate Shipping"
+msgstr ""
+
+#: views/product-page-cfpp.php:33
+msgid "Shipping Method"
+msgstr ""
+
+#: views/product-page-cfpp.php:34
+msgid "Estimated Price"
+msgstr ""
+
+#: views/product-page-cfpp.php:35
+msgid "Estimated Delivery"
+msgstr ""

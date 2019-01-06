@@ -2,135 +2,61 @@
 
 namespace CFPP\Shipping;
 
-use CFPP\Shipping\ShippingMethods\ShippingMethodsFactory;
-use CFPP\Shipping\ShippingMethods\ShippingMethodResponse as Response;
+use CFPP\Exceptions\ShippingMethodsException;
 
 class ShippingMethods
 {
-
     /**
-    *   Calculates the shipping costs from the shipping zones provided
-    */
-    public function calculateShippingOptions($shipping_methods, $request)
-    {
-        $shipping_costs = array();
-
-        // Takes into account how many items we are requesting shipping for
-        // $request = $this->multiplyMeasurementsByQuantity($request);
-
-        // Get only enabled shipping methods
-        $shipping_methods = $this->filterByEnabledShippingMethods($shipping_methods);
-
-        // Get only shipping classes that matches the one from the product
-        $shipping_methods = $this->filterByShippingClass($shipping_methods, $request);
-
-        $factory = new ShippingMethodsFactory;
-
-        foreach ($shipping_methods as $shipping_method) {
-            $slug = sanitize_title(get_class($shipping_method));
-
-            // Get CFPP instance of Shipping Method
-            $shipping_method_instance = $factory->getInstance(get_class($shipping_method));
-
-            // If we don't support this Shipping Method, it will return false.
-            if ($shipping_method_instance !== false) {
-                // Pass the Shipping Method class to the CFPP Shipping Method
-                $shipping_method_instance->setup($shipping_method);
-
-                // Go to specific shipping method class to calculate
-                $response = $shipping_method_instance->calculate($request);
-
-                if (!$response instanceof Response) {
-                    throw new \Exception("Invalid CFPP Response.", 1);
-                }
-
-                $shipping_costs[] = array(
-                    'name' => $response->name,
-                    'status' => $response->status,
-                    'debug' => $response->debug,
-                    'price' => $response->price,
-                    'days' => $response->days,
-                    'class' => $response->class,
-                    'should_display' => $response->should_display,
-                );
-            } else {
-                $shipping_costs[] = array(
-                    'name' => $shipping_method->method_title,
-                    'status' => 'error',
-                    'debug' => 'Método não suportado pelo CFPP.',
-                    'price' => 'Prossiga com a compra normalmente para ver o preço deste método de entrega.',
-                    'days' => '-',
-                    'class' => 'cfpp_shipping_method_not_available',
-                    'should_display' => 'no'
-                );
-            }
-        }
-
-        // Success first, error last
-        $shipping_costs = $this->orderShippingCosts($shipping_costs);
-
-        return $shipping_costs;
-    }
-
-    /**
-     * Receives an array of Shipping Methods instances,
+     * Receives an array of shipping methods and returns a
+     * filtered array of shipping methods
+     *
+     * Filters by Enabled Shipping Methods
+     * Filters by Product Shipping Class
+     *
+     * @param $shipping_methods
+     * @param \WC_Product $product
+     * @return array
+     * @throws ShippingMethodsException
      */
-    private function filterByEnabledShippingMethods($shipping_methods)
+    public static function filterShippingMethods($shipping_methods, \WC_Product $product)
     {
-        $enabled_shipping_methods = array();
-        foreach ($shipping_methods as $shipping_method) {
-            if (property_exists($shipping_method, 'enabled') && $shipping_method->enabled == 'yes') {
-                $enabled_shipping_methods[] = $shipping_method;
+        $instance = new self;
+
+        $shipping_methods = apply_filters('cfpp_get_shipping_methods', $shipping_methods, $product);
+
+        // Validation and error handling
+        if (empty($shipping_methods)) {
+            throw ShippingMethodsException::empty_shipping_methods_exception();
+        } else {
+            foreach ($shipping_methods as $shipping_method) {
+                if ($shipping_method instanceof \WC_Shipping_Method === false) {
+                    throw ShippingMethodsException::invalid_shipping_method_exception();
+                }
             }
         }
-        return $enabled_shipping_methods;
+
+        $shipping_methods = $instance->filterByShippingClass($shipping_methods, $product);
+
+        return $shipping_methods;
     }
 
     /**
      * Determines which shipping methods should show, according to shipping class
      * and requested product
+     *
+     * @param array $shipping_methods
+     * @param \WC_Product $product
+     * @return array
      */
-    private function filterByShippingClass($shipping_methods, $request)
+    private function filterByShippingClass(array $shipping_methods, \WC_Product $product)
     {
         foreach ($shipping_methods as $key => $shipping_method) {
             if (property_exists($shipping_method, 'shipping_class') && $shipping_method->shipping_class != '') {
-                $product = wc_get_product($request['id']);
-                if ($product->get_shipping_class() != $shipping_method->shipping_class) {
+                if ($product != $shipping_method->shipping_class) {
                     unset($shipping_methods[$key]);
                 }
             }
         }
         return $shipping_methods;
-    }
-
-    /**
-     * Multiplies the product measurements by the quantity requested
-     */
-    private function multiplyMeasurementsByQuantity($request)
-    {
-        foreach ($request as $medida => &$valor) {
-            if (in_array($medida, array('height', 'width', 'length', 'weight', 'price'))) {
-                $valor = $valor * $request['quantity'];
-            }
-        }
-        return $request;
-    }
-
-    /**
-     * @param $shipping_costs
-     * @return array
-     */
-    private function orderShippingCosts($shipping_costs)
-    {
-        if (count($shipping_costs) == 1) {
-            return $shipping_costs;
-        }
-
-        $successes = array();
-        $errors = array();
-        foreach ($shipping_costs as $shipping_cost) {
-            $shipping_cost['status'] == 'success' ? $successes[] = $shipping_cost : $errors[] = $shipping_cost;
-        }
-        return array_merge($successes, $errors);
     }
 }
