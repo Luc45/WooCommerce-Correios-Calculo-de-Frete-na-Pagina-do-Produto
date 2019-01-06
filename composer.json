@@ -15,5 +15,10 @@
         "phpcompatibility/php-compatibility": "^8.2",
         "woocommerce/wc-smooth-generator": "dev-master"
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "extra": {
+       "imposter": {
+       "namespace": "CFPP\\Vendor"
+      }
+    }
 }
