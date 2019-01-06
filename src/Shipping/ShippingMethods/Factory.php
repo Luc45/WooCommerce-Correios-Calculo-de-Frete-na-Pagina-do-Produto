@@ -22,6 +22,7 @@ class Factory
     protected function getFactoryMap()
     {
         return [
+            /** WooCommerce Correios */
             'WC_Correios_Shipping_SEDEX_Hoje'           => 'WC_Correios_Through_Webservice',
             'WC_Correios_Shipping_SEDEX_12'             => 'WC_Correios_Through_Webservice',
             'WC_Correios_Shipping_SEDEX_10_Pacote'      => 'WC_Correios_Through_Webservice',
@@ -31,15 +32,15 @@ class Factory
             'WC_Correios_Shipping_Mercadoria_Expressa'  => 'WC_Correios_Through_Webservice',
             'WC_Correios_Shipping_Mercadoria_Economica' => 'WC_Correios_Through_Webservice',
             'WC_Correios_Shipping_Leve_Internacional'   => 'WC_Correios_Through_Webservice',
-
             'WC_Correios_Shipping_Carta_Registrada'     => 'WC_Correios_Shipping_Carta_Registrada',
-            'WC_Shipping_Flat_Rate'                     => 'WC_Shipping_Flat_Rate',
-            'WC_Shipping_Free_Shipping'                 => 'WC_Shipping_Free_Shipping',
-            'WC_Shipping_Local_Pickup'                  => 'WC_Shipping_Local_Pickup',
-
             // @todo implement following methods
             // 'WC_Correios_Shipping_Impresso_Urgente'  => 'WC_Correios_Shipping_Impresso_Urgente',
             // 'WC_Correios_Shipping_Impresso_Normal'   => 'WC_Correios_Shipping_Impresso_Normal',
+
+            /** WooCommerce */
+            'WC_Shipping_Flat_Rate'                     => 'WC_Shipping_Flat_Rate',
+            'WC_Shipping_Free_Shipping'                 => 'WC_Shipping_Free_Shipping',
+            'WC_Shipping_Local_Pickup'                  => 'WC_Shipping_Local_Pickup',
         ];
     }
 
@@ -68,7 +69,9 @@ class Factory
             }
         }
 
-        $shipping_methods_handlers = $instance->getFactoryMap();
+        /** @todo remove cfpp_custom_handler_* */
+        /** @todo add method to add a factory handler */
+        $shipping_methods_handlers = apply_filters('cfpp_factory_map', $instance->getFactoryMap());
 
         if (array_key_exists($shipping_method_name, $shipping_methods_handlers) &&
             file_exists(__DIR__ . '/Handlers/' . $shipping_methods_handlers[$shipping_method_name] .'.php')
