@@ -2,9 +2,12 @@
 Contributors: lucasbustamante
 Donate link: http://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Requires at least: 4.6
-Tested up to: 4.9.2
-Stable tag: 4.9
+Stable tag: 3.0.6
+Requires at least: 4.4
+Tested up to: 5.0
+Requires PHP: 5.4
+WC requires at least: 3.2
+WC tested up to: 3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -99,6 +102,19 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Fix undefined no javascript.
 = 2.3.3 =
 * Fix undefined no javascript.
+= 3.0.0 =
+* Plugin re-escrito do zero
+= 3.0.1 =
+* Alterado funcionamento interno de JSON para REST API
+= 3.0.2 =
+* Re-escrito regras de validação de método de entrega
+= 3.0.3 =
+* Melhorias diversas no JavaScript e classes internas
+= 3.0.4 =
+* Melhorias diversas em classes internas
+= 3.0.5 =
+* Refatoração interna de como as respostas são enviadas
+
 
 
 == Upgrade Notice ==
@@ -159,3 +175,15 @@ Primeiro lançamento.
 * Fix undefined no javascript.
 = 2.3.3 =
 * Fix undefined no javascript.
+= 3.0.0 =
+* Plugin re-escrito do zero
+= 3.0.1 =
+* Alterado funcionamento interno de JSON para REST API
+= 3.0.2 =
+* Re-escrito regras de validação de método de entrega
+= 3.0.3 =
+* Melhorias diversas no JavaScript e classes internas
+= 3.0.4 =
+* Melhorias diversas em classes internas
+= 3.0.5 =
+* Refatoração interna de como as respostas são enviadas

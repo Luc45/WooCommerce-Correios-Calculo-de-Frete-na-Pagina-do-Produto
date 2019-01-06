@@ -4602,12 +4602,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Luc45/wc-smooth-generator.git",
-                "reference": "d7ad9305979a9f98f552280b873196acce269810"
+                "reference": "813028df6c9fc55d2632debbf044df8733132fb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Luc45/wc-smooth-generator/zipball/d7ad9305979a9f98f552280b873196acce269810",
-                "reference": "d7ad9305979a9f98f552280b873196acce269810",
+                "url": "https://api.github.com/repos/Luc45/wc-smooth-generator/zipball/813028df6c9fc55d2632debbf044df8733132fb8",
+                "reference": "813028df6c9fc55d2632debbf044df8733132fb8",
                 "shasum": ""
             },
             "require": {
@@ -4662,7 +4662,7 @@
             "support": {
                 "source": "https://github.com/Luc45/wc-smooth-generator/tree/master"
             },
-            "time": "2018-12-03T15:54:27+00:00"
+            "time": "2018-12-04T13:41:07+00:00"
         },
         {
             "name": "wp-cli/autoload-splitter",
