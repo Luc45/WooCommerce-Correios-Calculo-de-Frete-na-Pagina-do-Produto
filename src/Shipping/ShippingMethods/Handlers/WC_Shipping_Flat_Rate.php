@@ -53,6 +53,10 @@ class WC_Shipping_Flat_Rate extends Handler
         }
 
         if (is_numeric($sum)) {
+
+            // Uses "," for decimals because setPrice runs wc_correios_normalize_price() on it.
+            $sum = str_replace('.', ',', $sum);
+
             $this->response->setDays(__('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
             $this->response->setPrice($sum);
         } else {
