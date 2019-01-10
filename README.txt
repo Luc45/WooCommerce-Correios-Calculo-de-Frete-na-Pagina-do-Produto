@@ -2,7 +2,7 @@
 Contributors: lucasbustamante
 Donate link: http://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Stable tag: 3.1.0
+Stable tag: 3.1.1
 Requires at least: 4.4
 Tested up to: 5.0
 Requires PHP: 5.4
@@ -144,6 +144,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Minor fix SVN WordPress
 = 3.1.0 =
 * Minor fix SVN WordPress
+= 3.1.1 =
+* Corrigido método de entrega "Taxa Fixa" quando este usa centavos no valor.
 
 
 == Upgrade Notice ==
@@ -226,3 +228,5 @@ Primeiro lançamento.
 * Minor fix SVN WordPres
 = 3.1.0 =
 * Minor fix SVN WordPress
+= 3.1.1 =
+* Corrigido método de entrega "Taxa Fixa" quando este usa centavos no valor.
