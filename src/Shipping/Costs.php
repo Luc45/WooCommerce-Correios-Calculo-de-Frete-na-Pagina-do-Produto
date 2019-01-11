@@ -29,12 +29,12 @@ class Costs
         foreach ($shipping_methods as $shipping_method) {
             $shipping_method_slug = sanitize_title(get_class($shipping_method));
             try {
+                // Create CFPP handler for this Shipping Method
+                $cfpp_handler = Factory::createHandler($shipping_method);
+
                 // Create Package based on product and quantities per Shipping Method
                 $package = Package::makeFrom($payload->getProduct(), $payload->getQuantity(), $shipping_method);
                 $payload->setPackage($package);
-
-                // Create CFPP handler for this Shipping Method
-                $cfpp_handler = Factory::createHandler($shipping_method);
 
                 // Gives a chance to set rules, then validate Payload per Shipping Method
                 $cfpp_handler->beforeValidateRequest()->validateRequest($payload);
