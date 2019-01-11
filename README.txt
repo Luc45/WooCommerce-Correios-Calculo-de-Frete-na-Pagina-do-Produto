@@ -145,8 +145,9 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 = 3.1.0 =
 * Minor fix SVN WordPress
 = 3.1.1 =
-* Corrigido método de entrega "Taxa Fixa" quando este usa centavos no valor.
-
+* Fix Flat Rate shipping method using cents in value.
+= 3.1.2 =
+* Fix differences with WooCommerce Correios in specific cases.
 
 == Upgrade Notice ==
 
@@ -229,4 +230,6 @@ Primeiro lançamento.
 = 3.1.0 =
 * Minor fix SVN WordPress
 = 3.1.1 =
-* Corrigido método de entrega "Taxa Fixa" quando este usa centavos no valor.
+* Fix Flat Rate shipping method using cents in value.
+= 3.1.2 =
+* Fix differences with WooCommerce Correios in specific cases.
