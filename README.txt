@@ -2,7 +2,7 @@
 Contributors: lucasbustamante
 Donate link: http://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Stable tag: 3.1.1
+Stable tag: 3.1.2
 Requires at least: 4.4
 Tested up to: 5.0
 Requires PHP: 5.4
