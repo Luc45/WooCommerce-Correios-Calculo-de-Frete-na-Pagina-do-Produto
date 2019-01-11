@@ -53,7 +53,7 @@ class Requirements
      */
     private function wooCommerceNotActive()
     {
-        return ! in_array('woocommerce/woocommerce.php', get_option('active_plugins'));
+        return ! function_exists('WC');
     }
 
     /**
@@ -63,8 +63,7 @@ class Requirements
      */
     private function wooCommerceVersionNotSupported()
     {
-        global $woocommerce;
-        return version_compare($woocommerce->version, self::MINIMUM_WOOCOMMERCE_VERSION, "<") && defined('CFPP_CEP') === false;
+        return version_compare(WC()->version, self::MINIMUM_WOOCOMMERCE_VERSION, "<") && defined('CFPP_CEP') === false;
     }
 
     /**
