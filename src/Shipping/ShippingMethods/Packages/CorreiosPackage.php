@@ -34,6 +34,9 @@ class CorreiosPackage implements PackageInterface
 
         $cubage = $this->getCubage($data['height'], $data['width'], $data['length']);
 
+
+        $cubage = $this->setMinimumDimensions($cubage);
+
         $total_cost = $product->get_price() * $quantity;
 
         return array(
@@ -198,6 +201,26 @@ class CorreiosPackage implements PackageInterface
                 );
                 break;
         }
+
+        return $cubage;
+    }
+
+    /**
+     * Sets minimum dimensions for packages.
+     *
+     * @param $cubage
+     *
+     * @return mixed
+     */
+    protected function setMinimumDimensions($cubage)
+    {
+        $minimum_height = 2;
+        $minimum_width = 11;
+        $minimum_length = 16;
+
+        $cubage['height'] = $cubage['height'] < $minimum_height ? $minimum_height : $cubage['height'];
+        $cubage['width']  = $cubage['width']  < $minimum_width  ? $minimum_width  : $cubage['width'];
+        $cubage['length'] = $cubage['length'] < $minimum_length ? $minimum_length : $cubage['length'];
 
         return $cubage;
     }

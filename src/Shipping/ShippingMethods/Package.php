@@ -20,11 +20,6 @@ class Package
         $package_handler = $instance->getPackageHandlerForShippingMethod($shipping_method);
         $package = $package_handler->generatePackage($product, $quantity);
 
-        /** Fix for Correios Shipping Methods bug */
-        if ($shipping_method instanceof \WC_Correios_Shipping) {
-            $package = $instance->adjustPackageForCorreiosShippingMethods($package);
-        }
-
         $instance->validatePackage($package);
         return $package;
     }
@@ -55,22 +50,5 @@ class Package
                 throw PackageException::invalid_package();
             }
         }
-    }
-
-    /**
-     * WooCommerce Correios has a bug that inverts height
-     * and length dimensions. We must do it too.
-     *
-     * @see https://github.com/claudiosanches/woocommerce-correios/pull/130
-     */
-    protected function adjustPackageForCorreiosShippingMethods($package)
-    {
-        $height = $package['height'];
-        $length = $package['length'];
-
-        $package['height'] = $length;
-        $package['length'] = $height;
-
-        return $package;
     }
 }
