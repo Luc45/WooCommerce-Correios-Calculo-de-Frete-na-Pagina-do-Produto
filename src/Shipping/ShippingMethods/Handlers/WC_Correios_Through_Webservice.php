@@ -23,7 +23,11 @@ class WC_Correios_Through_Webservice extends Handler
         // Calculate costs
         $reflection_response = $this->getReflectionResponse($this->shipping_method, $this->generateCorreiosPackage($payload));
 
-        if ($reflection_response['Erro'] == "0") {
+        /**
+         * Erro 0  = Sem erro.
+         * Erro 11 = Tempo de espera fora do comum para entrega nesta região.
+         */
+        if ($reflection_response['Erro'] == "0" || $reflection_response['Erro'] == "011") {
             $this->response->setDays($reflection_response['PrazoEntrega']);
             $this->response->setPrice($reflection_response['Valor']);
             $this->response->setDebug($reflection_response);

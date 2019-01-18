@@ -89,7 +89,7 @@ class Rest
     public function calculate(WP_REST_Request $request)
     {
         $product              = wc_get_product($request['product_id']);
-        $destination_postcode = absint($request['destination_postcode']);
+        $destination_postcode = substr(sprintf('%08d', $request['destination_postcode']),0,8);
         $quantity             = absint($request['quantity']);
         $selected_variation   = $request['selected_variation'];
 

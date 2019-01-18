@@ -2,7 +2,7 @@
 Contributors: lucasbustamante
 Donate link: http://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Stable tag: 3.1.2
+Stable tag: 3.1.3
 Requires at least: 4.4
 Tested up to: 5.0
 Requires PHP: 5.4
@@ -148,6 +148,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Fix Flat Rate shipping method using cents in value.
 = 3.1.2 =
 * Fix differences with WooCommerce Correios in specific cases.
+= 3.1.3 =
+* Fix some issues with postcodes starting with zero (from São Paulo, for instance).
 
 == Upgrade Notice ==
 
@@ -233,3 +235,5 @@ Primeiro lançamento.
 * Fix Flat Rate shipping method using cents in value.
 = 3.1.2 =
 * Fix differences with WooCommerce Correios in specific cases.
+= 3.1.3 =
+* Fix some issues with postcodes starting with zero (from São Paulo, for instance).
