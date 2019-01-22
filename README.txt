@@ -2,7 +2,7 @@
 Contributors: lucasbustamante
 Donate link: http://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Stable tag: 3.1.3
+Stable tag: 3.1.4
 Requires at least: 4.4
 Tested up to: 5.0
 Requires PHP: 5.4
@@ -43,8 +43,8 @@ Este plugin é gratuito e open-source.
 1. O CEP de origem será calculado a partir do CEP informado em WooCommerce -> Configurações -> CEP.
 3. Se o produto não tiver as dimensões ou peso especificados, o box de cálculo de frete não aparece para aquele produto.
 
-= Link no repositório oficial de plugins do WordPress: =
-https://br.wordpress.org/plugins/woo-correios-calculo-de-frete-na-pagina-do-produto/
+= Link do GitHub: =
+https://github.com/Luc45/WooCommerce-Correios-Calculo-de-Frete-na-Pagina-do-Produto
 
 == Installation ==
 
@@ -150,6 +150,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Fix differences with WooCommerce Correios in specific cases.
 = 3.1.3 =
 * Fix some issues with postcodes starting with zero (from São Paulo, for instance).
+= 3.1.4 =
+* Added fallback for postcode identification, such as some from Roraima and Rondônia.
 
 == Upgrade Notice ==
 
@@ -237,3 +239,5 @@ Primeiro lançamento.
 * Fix differences with WooCommerce Correios in specific cases.
 = 3.1.3 =
 * Fix some issues with postcodes starting with zero (from São Paulo, for instance).
+= 3.1.4 =
+* Added fallback for postcode identification, such as some from Roraima and Rondônia.
