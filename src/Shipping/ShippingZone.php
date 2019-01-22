@@ -122,9 +122,7 @@ class ShippingZone
     {
         $country_and_state = explode(':', $zone_location->code);
         if ($country_and_state[0] == 'BR') {
-            if (Helpers::isPostcodeFromState($destination_postcode, $country_and_state[1])) {
-                return true;
-            }
+            return Helpers::isPostcodeFromState($destination_postcode, $country_and_state[1]);
         }
         return false;
     }

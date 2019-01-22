@@ -2,6 +2,8 @@
 
 namespace CFPP;
 
+use WC_Correios_Autofill_Addresses;
+
 class Helpers
 {
     /**
@@ -36,44 +38,59 @@ class Helpers
     }
 
     /**
-    *   Returns true if a CEP belongs to a certain state
-    */
-    public static function isPostcodeFromState($cep, $estado)
+     * Asserts a CEP belongs to a certain state
+     *
+     * @param $cep
+     * @param $estado
+     *
+     * @return bool
+     */
+    public static function isPostcodeFromState($postcode, $state)
     {
-        $cep = substr($cep, 0, 5); // 5 primeiros dígitos
-        $cep = (int) $cep;
+        $p = substr($postcode, 0, 5); // 5 first digits of postcode
+        $p = (int) $p;
 
-        switch ($estado) {
+        switch ($state) {
             // phpcs:disable
-            case ('AC'): if ($cep >= 69900 && $cep <= 69999) return true; break;
-            case ('AL'): if ($cep >= 57000 && $cep <= 57999) return true; break;
-            case ('AP'): if ($cep >= 68900 && $cep <= 68999) return true; break;
-            case ('AM'): if ($cep >= 69400 && $cep <= 69899) return true; break;
-            case ('BA'): if ($cep >= 40000 && $cep <= 48999) return true; break;
-            case ('CE'): if ($cep >= 60000 && $cep <= 63999) return true; break;
-            case ('DF'): if ($cep >= 70000 && $cep <= 73699) return true; break;
-            case ('ES'): if ($cep >= 29000 && $cep <= 29999) return true; break;
-            case ('GO'): if ($cep >= 72800 && $cep <= 76799) return true; break;
-            case ('MA'): if ($cep >= 65000 && $cep <= 65999) return true; break;
-            case ('MT'): if ($cep >= 78000 && $cep <= 78899) return true; break;
-            case ('MS'): if ($cep >= 79000 && $cep <= 79999) return true; break;
-            case ('MG'): if ($cep >= 30000 && $cep <= 39999) return true; break;
-            case ('PA'): if ($cep >= 66000 && $cep <= 68899) return true; break;
-            case ('PB'): if ($cep >= 58000 && $cep <= 58999) return true; break;
-            case ('PR'): if ($cep >= 80000 && $cep <= 87999) return true; break;
-            case ('PE'): if ($cep >= 50000 && $cep <= 56999) return true; break;
-            case ('PI'): if ($cep >= 64000 && $cep <= 64999) return true; break;
-            case ('RJ'): if ($cep >= 20000 && $cep <= 28999) return true; break;
-            case ('RN'): if ($cep >= 59000 && $cep <= 59999) return true; break;
-            case ('RS'): if ($cep >= 90000 && $cep <= 99999) return true; break;
-            case ('RO'): if ($cep >= 78900 && $cep <= 78999) return true; break;
-            case ('RR'): if ($cep >= 69300 && $cep <= 69389) return true; break;
-            case ('SC'): if ($cep >= 88000 && $cep <= 89999) return true; break;
-            case ('SP'): if ($cep >= 01000 && $cep <= 19999) return true; break;
-            case ('SE'): if ($cep >= 49000 && $cep <= 49999) return true; break;
-            case ('TO'): if ($cep >= 77000 && $cep <= 77995) return true; break;
+            case ('AC'): if ($p >= 69900 && $p <= 69999) return true; break;
+            case ('AL'): if ($p >= 57000 && $p <= 57999) return true; break;
+            case ('AP'): if ($p >= 68900 && $p <= 68999) return true; break;
+            case ('AM'): if ($p >= 69400 && $p <= 69899) return true; break;
+            case ('BA'): if ($p >= 40000 && $p <= 48999) return true; break;
+            case ('CE'): if ($p >= 60000 && $p <= 63999) return true; break;
+            case ('DF'): if ($p >= 70000 && $p <= 73699) return true; break;
+            case ('ES'): if ($p >= 29000 && $p <= 29999) return true; break;
+            case ('GO'): if ($p >= 72800 && $p <= 76799) return true; break;
+            case ('MA'): if ($p >= 65000 && $p <= 65999) return true; break;
+            case ('MT'): if ($p >= 78000 && $p <= 78899) return true; break;
+            case ('MS'): if ($p >= 79000 && $p <= 79999) return true; break;
+            case ('MG'): if ($p >= 30000 && $p <= 39999) return true; break;
+            case ('PA'): if ($p >= 66000 && $p <= 68899) return true; break;
+            case ('PB'): if ($p >= 58000 && $p <= 58999) return true; break;
+            case ('PR'): if ($p >= 80000 && $p <= 87999) return true; break;
+            case ('PE'): if ($p >= 50000 && $p <= 56999) return true; break;
+            case ('PI'): if ($p >= 64000 && $p <= 64999) return true; break;
+            case ('RJ'): if ($p >= 20000 && $p <= 28999) return true; break;
+            case ('RN'): if ($p >= 59000 && $p <= 59999) return true; break;
+            case ('RS'): if ($p >= 90000 && $p <= 99999) return true; break;
+            case ('RO'): if ($p >= 78900 && $p <= 78999) return true; break;
+            case ('RR'): if ($p >= 69300 && $p <= 69389) return true; break;
+            case ('SC'): if ($p >= 88000 && $p <= 89999) return true; break;
+            case ('SP'): if ($p >= 01000 && $p <= 19999) return true; break;
+            case ('SE'): if ($p >= 49000 && $p <= 49999) return true; break;
+            case ('TO'): if ($p >= 77000 && $p <= 77995) return true; break;
             // phpcs:enable
         }
+
+        // If we got here it means the postcode didn't match the array above,
+        // so let's try to get it directly from Correios.
+        if (class_exists('WC_Correios_Autofill_Addresses')) {
+            $result = WC_Correios_Autofill_Addresses::get_address($postcode);
+            if ( ! empty($result)) {
+                return $result->state == $state;
+            }
+        }
+
         return false;
     }
 
