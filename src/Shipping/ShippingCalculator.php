@@ -6,6 +6,7 @@ use CFPP\Exceptions\ShippingCalculatorException;
 use CFPP\Exceptions\ShippingMethodsException;
 use CFPP\Exceptions\ShippingZoneException;
 use CFPP\Exceptions\PayloadException;
+use CFPP\Performance_Profiler;
 
 /**
  * Class Shipping
@@ -48,8 +49,12 @@ class ShippingCalculator
             // Get first matching Shipping Zone for this postcode
             $shipping_zone = ShippingZone::getFirstMatchingShippingZone($this->payload->getPostcode());
 
+	        Performance_Profiler::instance()->log(__METHOD__ . __LINE__);
+
             // Get available shipping methods within this shipping zone
             $shipping_methods = ShippingMethods::filterShippingMethods($shipping_zone->get_shipping_methods(true), $this->payload->getProduct());
+
+	        Performance_Profiler::instance()->log(__METHOD__ . __LINE__);
 
             // Return costs for each available shipping method
             return Costs::getCostPerShippingMethod($shipping_methods, $this->payload);

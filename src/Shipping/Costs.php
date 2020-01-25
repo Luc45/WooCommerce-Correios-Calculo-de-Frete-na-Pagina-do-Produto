@@ -2,6 +2,7 @@
 
 namespace CFPP\Shipping;
 
+use CFPP\Performance_Profiler;
 use WP_Error;
 use CFPP\Shipping\ShippingMethods\Factory;
 use CFPP\Shipping\ShippingMethods\Package;
@@ -29,19 +30,29 @@ class Costs
         foreach ($shipping_methods as $shipping_method) {
             $shipping_method_slug = sanitize_title(get_class($shipping_method));
             try {
+	            Performance_Profiler::instance()->log(__METHOD__ . $shipping_method_slug . __LINE__);
+
                 // Create CFPP handler for this Shipping Method
                 $cfpp_handler = Factory::createHandler($shipping_method);
+
+	            Performance_Profiler::instance()->log(__METHOD__ . $shipping_method_slug . __LINE__);
 
                 // Create Package based on product and quantities per Shipping Method
                 $package = Package::makeFrom($payload->getProduct(), $payload->getQuantity(), $shipping_method);
                 $payload->setPackage($package);
 
+	            Performance_Profiler::instance()->log(__METHOD__ . $shipping_method_slug . __LINE__);
+
                 // Gives a chance to set rules, then validate Payload per Shipping Method
                 $cfpp_handler->beforeValidateRequest()->validateRequest($payload);
+
+	            Performance_Profiler::instance()->log(__METHOD__ . $shipping_method_slug . __LINE__);
 
                 // Calculate Costs
                 do_action('cfpp_before_calculate_cost', $payload, $shipping_method);
                 $cfpp_handler->calculate($payload);
+
+	            Performance_Profiler::instance()->log(__METHOD__ . $shipping_method_slug . __LINE__);
 
                 $shipping_costs[] = $cfpp_handler->response->success();
 

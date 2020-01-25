@@ -68,26 +68,24 @@ class Rest
                 }
 
                 return $product->is_visible() && empty(get_post($product->get_id())->post_password);
-
-                // @todo implement new capability logic bellow
-                $pto = get_post_type_object(get_post_type($product->get_id()));
-                $cap = current_user_can($pto->cap->read_post, $product->get_id());
-
-                return $cap;
             }
         ]);
     }
 
-    /**
-     * Callback for Calculate route
-     *
-     * Receives a REST Request, creates the payload object and pass it
-     * to Costs to calculate it, then send the JSON response
-     *
-     * @param \WP_REST_Request $request
-     */
+	/**
+	 * Callback for Calculate route
+	 *
+	 * Receives a REST Request, creates the payload object and pass it
+	 * to Costs to calculate it, then send the JSON response
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response
+	 */
     public function calculate(WP_REST_Request $request)
     {
+    	Performance_Profiler::instance()->log(__METHOD__ . __LINE__);
+
         $product              = wc_get_product($request['product_id']);
         $destination_postcode = substr(sprintf('%08d', $request['destination_postcode']),0,8);
         $quantity             = absint($request['quantity']);
@@ -96,6 +94,12 @@ class Rest
         try {
             $shipping = new ShippingCalculator($product, $destination_postcode, $quantity, $selected_variation);
             $response = $shipping->processRestRequest();
+
+	        Performance_Profiler::instance()->log(__METHOD__ . __LINE__);
+
+	        if ( isset( $_COOKIE['profile_cfpp'] ) && current_user_can( 'manage_woocommerce' ) ) {
+	        	return new WP_REST_Response( Performance_Profiler::$instance->get_timings() );
+	        }
 
             do_action('cfpp_before_send_calculate_success_response', $response);
             return new WP_REST_Response($response);
