@@ -2,13 +2,8 @@
 .env
 
 # All vendor packages, except Composer autoloader
-/vendor/**
-!/vendor/autoload*
-!/vendor/composer/**
 
 \.idea/
-
-vendor/
 
 tests/_output/
 
