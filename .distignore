@@ -1,2 +1,11 @@
 /tests
-/test-distignore.php
+/.wordpress-org
+/.git
+/.github
+.distignore
+.gitignore
+.env.example
+codeception.dist.yml
+composer.json
+composer.lock
+readme.md
