@@ -8,9 +8,10 @@ jobs:
     name: New tag
     runs-on: ubuntu-latest
     steps:
-    - name: WordPress Plugin Deploy
-      uses: 10up/action-wordpress-plugin-deploy@1.4.0
-      env:
-        SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-        SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-        SLUG: woo-correios-calculo-de-frete-na-pagina-do-produto
+      - uses: actions/checkout@master
+      - name: WordPress Plugin Deploy
+        uses: 10up/action-wordpress-plugin-deploy@1.4.0
+        env:
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SLUG: woo-correios-calculo-de-frete-na-pagina-do-produto
