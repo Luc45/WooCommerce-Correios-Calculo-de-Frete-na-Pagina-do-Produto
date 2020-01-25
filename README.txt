@@ -1,13 +1,13 @@
 ﻿=== WooCommerce Correios - Cálculo de Frete na Página do Produto ===
 Contributors: lucasbustamante
-Donate link: http://www.lucasbustamante.com.br
+Donate link: https://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Stable tag: 3.1.4
+Stable tag: 3.1.5
 Requires at least: 4.4
-Tested up to: 5.0
+Tested up to: 5.3.2
 Requires PHP: 5.4
 WC requires at least: 3.2
-WC tested up to: 3.5
+WC tested up to: 3.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -152,6 +152,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Fix some issues with postcodes starting with zero (from São Paulo, for instance).
 = 3.1.4 =
 * Added fallback for postcode identification, such as some from Roraima and Rondônia.
+= 3.1.5 =
+* Fix CFPP no modo quick-view de Produtos. Adiciona alguns filtros. Adiciona possibilidade do admin medir a velocidade das requisições de cálculo de frete.
 
 == Upgrade Notice ==
 
@@ -241,3 +243,5 @@ Primeiro lançamento.
 * Fix some issues with postcodes starting with zero (from São Paulo, for instance).
 = 3.1.4 =
 * Added fallback for postcode identification, such as some from Roraima and Rondônia.
+= 3.1.5 =
+* Fix CFPP no modo quick-view de Produtos. Adiciona alguns filtros. Adiciona possibilidade do admin medir a velocidade das requisições de cálculo de frete.
