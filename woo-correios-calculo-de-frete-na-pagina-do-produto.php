@@ -30,11 +30,6 @@ require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 define('CFPP_BASE_PATH', __DIR__);
 define('CFPP_BASE_URL', plugin_dir_url(__FILE__));
 
-/** i18n */
-add_action('plugins_loaded', function() {
-    load_plugin_textdomain('woo-correios-calculo-de-frete-na-pagina-do-produto', FALSE, basename(dirname(__FILE__)) . '/languages');
-});
-
 /** Register REST routes */
 add_action('rest_api_init', [new Rest, 'registerRoutes']);
 
@@ -44,6 +39,9 @@ add_action('rest_api_init', [new Rest, 'registerRoutes']);
  */
 add_action('plugins_loaded', function() {
     try {
+    	// i18n
+	    load_plugin_textdomain('woo-correios-calculo-de-frete-na-pagina-do-produto', FALSE, basename(dirname(__FILE__)) . '/languages');
+
         // Check requirements
         $requirements = new Requirements;
         $requirements->checkMinimumRequirements();
