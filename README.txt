@@ -154,6 +154,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Added fallback for postcode identification, such as some from Roraima and Rondônia.
 = 3.1.5 =
 * Fix CFPP no modo quick-view de Produtos. Adiciona alguns filtros. Adiciona possibilidade do admin medir a velocidade das requisições de cálculo de frete.
+= 3.1.6 =
+* Fix CFPP no modo quick-view de Produtos. Adiciona alguns filtros. Adiciona possibilidade do admin medir a velocidade das requisições de cálculo de frete.
 
 == Upgrade Notice ==
 
@@ -244,4 +246,6 @@ Primeiro lançamento.
 = 3.1.4 =
 * Added fallback for postcode identification, such as some from Roraima and Rondônia.
 = 3.1.5 =
+* Fix CFPP no modo quick-view de Produtos. Adiciona alguns filtros. Adiciona possibilidade do admin medir a velocidade das requisições de cálculo de frete.
+= 3.1.6 =
 * Fix CFPP no modo quick-view de Produtos. Adiciona alguns filtros. Adiciona possibilidade do admin medir a velocidade das requisições de cálculo de frete.
