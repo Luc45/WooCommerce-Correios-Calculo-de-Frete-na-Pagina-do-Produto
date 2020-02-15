@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:          WooCommerce Correios - Cálculo de Frete na Página do Produto (CFPP)
+ * Plugin Name:          WooCommerce Correios - Cálculo de Frete na Página do Produto (CFPP) Dev
  * Plugin URI:           https://github.com/Luc45/WooCommerce-Correios-Calculo-de-Frete-na-Pagina-do-Produto
  * Description:          Habilita o cálculo de frete na página do produto.
- * Version:              3.1.91
+ * Version:              3.1.92
  * Author:               Lucas Bustamante
  * Author URI:           https://www.lucasbustamante.com.br
  * Text Domain:          woo-correios-calculo-de-frete-na-pagina-do-produto
