@@ -1,11 +1,6 @@
 # Configuration file for test suite
 .env
 
-# All vendor packages, except Composer autoloader
-/vendor/**
-!/vendor/autoload*
-!/vendor/composer/**
-
 \.idea/
 
 tests/_output/
