@@ -2,7 +2,7 @@
 Contributors: lucasbustamante
 Donate link: https://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Stable tag: 3.1.9
+Stable tag: 3.1.93
 Requires at least: 4.4
 Tested up to: 5.3.2
 Requires PHP: 5.4
@@ -165,6 +165,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Removido link de creditos do CFPP
 = 3.1.91 =
 * Fix missing composer autoloader
+= 3.1.93 =
+* Fix composer
 
 == Upgrade Notice ==
 
@@ -267,3 +269,5 @@ Primeiro lançamento.
 * Removido link de creditos do CFPP
 = 3.1.91 =
 * Fix missing composer autoloader
+= 3.1.93 =
+* Fix composer
