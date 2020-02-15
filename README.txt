@@ -163,6 +163,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 = 3.1.9 =
 * Removido nonce de autenticação desnecessário que poderia causar conflitos com alguns plugins de cache.
 * Removido link de creditos do CFPP
+= 3.1.91 =
+* Fix missing composer autoloader
 
 == Upgrade Notice ==
 
@@ -263,3 +265,5 @@ Primeiro lançamento.
 = 3.1.9 =
 * Removido nonce de autenticação desnecessário que poderia causar conflitos com alguns plugins de cache.
 * Removido link de creditos do CFPP
+= 3.1.91 =
+* Fix missing composer autoloader
