@@ -2,7 +2,7 @@
 Contributors: lucasbustamante
 Donate link: https://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Stable tag: 3.1.8
+Stable tag: 3.1.9
 Requires at least: 4.4
 Tested up to: 5.3.2
 Requires PHP: 5.4
@@ -160,6 +160,9 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Fix CFPP no modo quick-view de Produtos. Adiciona alguns filtros. Adiciona possibilidade do admin medir a velocidade das requisições de cálculo de frete.
 = 3.1.8 =
 * Fix CFPP no modo quick-view de Produtos. Adiciona alguns filtros. Adiciona possibilidade do admin medir a velocidade das requisições de cálculo de frete.
+= 3.1.9 =
+* Removido nonce de autenticação desnecessário que poderia causar conflitos com alguns plugins de cache.
+* Removido link de creditos do CFPP
 
 == Upgrade Notice ==
 
@@ -257,3 +260,6 @@ Primeiro lançamento.
 * Fix CFPP no modo quick-view de Produtos. Adiciona alguns filtros. Adiciona possibilidade do admin medir a velocidade das requisições de cálculo de frete.
 = 3.1.8 =
 * Fix CFPP no modo quick-view de Produtos. Adiciona alguns filtros. Adiciona possibilidade do admin medir a velocidade das requisições de cálculo de frete.
+= 3.1.9 =
+* Removido nonce de autenticação desnecessário que poderia causar conflitos com alguns plugins de cache.
+* Removido link de creditos do CFPP
