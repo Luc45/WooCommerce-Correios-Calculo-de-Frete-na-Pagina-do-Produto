@@ -56,10 +56,6 @@ class Rest
                 ]
             ],
             'permission_callback' => function(WP_REST_Request $request) {
-                if (current_user_can('manage_woocommerce')) {
-                    return true;
-                }
-
                 // Makes sure we are processing an product
                 $product = wc_get_product($request['product_id']);
 

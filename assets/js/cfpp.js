@@ -36,10 +36,7 @@
                 data: {
 					'quantity' : getQuantity(),
 				 	'selected_variation' : getSelectedVariation()
-				},
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('X-WP-Nonce', cfppData.rest.nonce);
-                }
+				}
 		 	}).done(function(results) {
 
 		 		if (results.length === 0) {
