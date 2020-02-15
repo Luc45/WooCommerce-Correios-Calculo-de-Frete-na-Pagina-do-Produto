@@ -11,7 +11,6 @@
 
         <div id="calcular-frete">
             <?php /** purposely not escaped */ echo $cfpp_icon_svg; ?> <?php echo __('Calculate Shipping', 'woo-correios-calculo-de-frete-na-pagina-do-produto') ?>
-            <a href="https://www.lucasbustamante.com.br" title="Cálculo de Frete na Página do Produto, por Lucas Bustamante" target="_blank" id="cfpp_credits">CFPP</a>
         </div>
 
         <div id="calcular-frete-loader"></div>
