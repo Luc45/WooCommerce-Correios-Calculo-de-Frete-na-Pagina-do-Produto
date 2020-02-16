@@ -3,6 +3,7 @@
 namespace CFPP;
 
 use enshrined\svgSanitize\Sanitizer;
+use WP_Post;
 
 class Frontend
 {
@@ -27,6 +28,13 @@ class Frontend
 
 	    if ( $should_enqueue_assets ) {
             global $post;
+
+		    if ( $post instanceof WP_Post ) {
+			    $post_id = $post->ID;
+		    } else {
+			    $post_id = 0;
+		    }
+
             // CSS
             wp_enqueue_style('cfpp-css', CFPP_BASE_URL . 'assets/css/cfpp.css', array(), filemtime(CFPP_BASE_PATH.'/assets/css/cfpp.css'), 'all');
 
@@ -40,7 +48,7 @@ class Frontend
                     'endpoint' => esc_url_raw(rest_url('/cfpp/v1/calculate')),
                     'timeout' => apply_filters('cfpp_rest_timeout', 10000),
                 ],
-                'product_id' => $post->ID,
+                'product_id' => $post_id,
                 'i18n' => [
                     'invalid_postcode' => __('Please, check if postcode is valid.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),
                     'shipping_method_not_shown' => __('One or more shipping methods were not shown. Only administrators can see this message.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'),

@@ -2,7 +2,7 @@
 Contributors: lucasbustamante
 Donate link: https://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Stable tag: 3.1.93
+Stable tag: 3.1.94
 Requires at least: 4.4
 Tested up to: 5.3.2
 Requires PHP: 5.4
@@ -167,6 +167,8 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Fix missing composer autoloader
 = 3.1.93 =
 * Fix composer
+= 3.1.94 =
+* Fix notice ao pesquisar um produto que nao existe
 
 == Upgrade Notice ==
 
@@ -271,3 +273,5 @@ Primeiro lançamento.
 * Fix missing composer autoloader
 = 3.1.93 =
 * Fix composer
+= 3.1.94 =
+* Fix notice ao pesquisar um produto que nao existe
