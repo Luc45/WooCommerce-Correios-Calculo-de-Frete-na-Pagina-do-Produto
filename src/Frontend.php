@@ -46,7 +46,7 @@ class Frontend
             wp_localize_script('cfpp-js', 'cfppData', [
                 'rest' => [
                     'endpoint' => esc_url_raw(rest_url('/cfpp/v1/calculate')),
-                    'timeout' => apply_filters('cfpp_rest_timeout', 10000),
+                    'timeout' => apply_filters('cfpp_rest_timeout', 120 * 1000), // 120 seconds
                 ],
                 'product_id' => $post_id,
                 'i18n' => [
