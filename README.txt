@@ -275,3 +275,5 @@ Primeiro lançamento.
 * Fix composer
 = 3.1.94 =
 * Fix notice ao pesquisar um produto que nao existe
+= 3.1.95 =
+* Coronavirus: Evita falhas no calculo de frete ao aumentar o tempo de resposta que esperamos para a API dos Correios responder com os valores. A API esta demorando mais do que o normal devido ao surto de Coronavirus e o pessoal em casa fazendo muita compra online, sobrecarregando o sistema.
