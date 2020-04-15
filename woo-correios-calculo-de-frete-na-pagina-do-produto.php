@@ -56,3 +56,11 @@ add_action('plugins_loaded', function() {
     }
 }, 25);
 
+// Increase "WooCommerce Correios" timeout to 120 seconds due to slow shipping API due to Coronavirus outbreak
+add_filter( "http_request_timeout", function ( $timeout, $url ) {
+	if ( strpos( $url, 'correios' ) !== false ) {
+		return 120 * 1000;
+	}
+
+	return $timeout;
+}, 10, 2 );
