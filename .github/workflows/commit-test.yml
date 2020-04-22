@@ -5,12 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - run: ls
-      - run: "composer install --no-dev"
-      - run: "rm codeception.dist.yml && rm readme.md && rm -rf tests && rm composer.json && rm composer.lock"
-      - run: ls
-  send_to_wordpress_org:
-    runs-on: ubuntu-latest
-    needs: prepare_release
-    steps:
-      - run: ls
+      - run: |
+          ls
+          composer install --no-dev
+          ls
+          rm codeception.dist.yml && rm readme.md && rm -rf tests && rm composer.json && rm composer.lock
+          ls
