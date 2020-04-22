@@ -5,5 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: some_step
+      - name: ls before
+        run: ls
+      - name: Install Composer
+        run: "composer install --no-dev"
+      - name: ls after
         run: ls
