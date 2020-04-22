@@ -1,0 +1,8 @@
+name: Commit test
+on: [push]
+jobs:
+  do_something:
+    runs-on: ubuntu-latest
+    steps:
+      - name: some_step
+        run: ls
