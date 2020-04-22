@@ -1,7 +1,7 @@
-/tests
-/.wordpress-org
-/.git
-/.github
+tests
+.wordpress-org
+.git
+.github
 .distignore
 .gitignore
 .env.example
