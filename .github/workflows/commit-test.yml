@@ -4,5 +4,6 @@ jobs:
   do_something:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@master
       - name: some_step
         run: ls
