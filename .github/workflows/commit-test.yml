@@ -7,5 +7,5 @@ jobs:
       - uses: actions/checkout@master
       - run: ls
       - run: "composer install --no-dev"
-      - run "rm codeception.dist.yml && rm readme.md && rm -rf tests && rm composer.json && rm composer.lock"
+      - run: "rm codeception.dist.yml && rm readme.md && rm -rf tests && rm composer.json && rm composer.lock"
       - run: ls
