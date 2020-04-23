@@ -26,7 +26,10 @@ jobs:
           key: ${{ runner.os }}-${{ env.cache_version }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-${{ env.cache_version }}-composer-
 
-      - run: "composer install --optimize-autoloader"
+      - name: Composer install
+        uses: docker://composer:1.9.1
+        with:
+          args: install
 
       - run: ls
       - name: PHPCS check
