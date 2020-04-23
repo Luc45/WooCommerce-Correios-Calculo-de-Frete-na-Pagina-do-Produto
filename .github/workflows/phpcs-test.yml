@@ -12,7 +12,6 @@ jobs:
 
       - run: "composer global require hirak/prestissimo"
       - run: "composer install"
-      - name: Check Code
-        uses: ducla5/laravel-app-reviewdog-action@v1
-        with:
-          github_token: ${{ secrets.GH_BOT_TOKEN }}
+      - uses: docker://rtcamp/action-phpcs-code-review:v2.0.0
+        env:
+          GH_BOT_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
