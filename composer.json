@@ -12,7 +12,8 @@
     ],
     "require-dev": {
         "lucatume/wp-browser": "^2.2",
-        "phpcompatibility/php-compatibility": "^9.0",
+        "codeception/codeception": "^3.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.0",
         "woocommerce/wc-smooth-generator": "dev-master"
     },
     "minimum-stability": "dev",
