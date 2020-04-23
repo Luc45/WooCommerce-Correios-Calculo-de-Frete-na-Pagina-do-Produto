@@ -24,7 +24,7 @@
         "lucatume/wp-browser": "^2.2",
         "codeception/codeception": "^3.0",
         "phpcompatibility/phpcompatibility-wp": "^2.0",
-        "woocommerce/wc-smooth-generator": "dev-master",
+        "woocommerce/wc-smooth-generator": "dev-master"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
