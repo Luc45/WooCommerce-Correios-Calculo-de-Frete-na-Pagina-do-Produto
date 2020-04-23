@@ -8,10 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run composer
-        uses: nick-zh/composer-php@master
-        with:
-          action: 'install'
+      - run: "composer install"
 
       - name: PHP Code Style (phpcs)
         uses: chindit/actions-phpcs@master
