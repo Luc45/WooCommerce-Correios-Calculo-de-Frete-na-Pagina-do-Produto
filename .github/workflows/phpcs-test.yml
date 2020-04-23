@@ -26,10 +26,7 @@ jobs:
           key: ${{ runner.os }}-${{ env.cache_version }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-${{ env.cache_version }}-composer-
 
-      - name: Composer install
-        uses: docker://composer:1.9.1
-        with:
-          args: install
+      - uses: MilesChou/composer-action/install@master
 
       - run: ls
       - name: PHPCS check
