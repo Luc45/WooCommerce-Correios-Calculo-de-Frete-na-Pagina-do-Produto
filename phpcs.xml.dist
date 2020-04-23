@@ -7,6 +7,10 @@
     <rule ref="PHPCompatibility"/>
     <config name="testVersion" value="5.6-"/>
 
+    <file>src</file>
+    <file>views</file>
+    <file>woo-correios-calculo-de-frete-na-pagina-do-produto.php</file>
+
     <arg name="extensions" value="php"/>
     <arg value="s"/>
 
