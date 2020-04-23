@@ -10,11 +10,11 @@ jobs:
       - uses: actions/checkout@v2
       - run: ls
 
-    - name: Run composer
-      uses: nick-zh/composer-php@master
-      with:
-        action: 'install'
-        options: '--ignore-platform-reqs'
+      - name: Run composer
+        uses: nick-zh/composer-php@master
+        with:
+          action: 'install'
+          options: '--ignore-platform-reqs'
 
       - run: ls
       - name: PHPCS check
