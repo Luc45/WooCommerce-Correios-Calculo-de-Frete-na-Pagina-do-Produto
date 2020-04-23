@@ -17,6 +17,7 @@
         }
     ],
     "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.6",
         "lucatume/wp-browser": "^2.2",
         "codeception/codeception": "^3.0",
         "phpcompatibility/phpcompatibility-wp": "^2.0",
