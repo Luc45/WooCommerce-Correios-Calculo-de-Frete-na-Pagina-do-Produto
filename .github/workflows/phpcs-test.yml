@@ -11,8 +11,7 @@ jobs:
       - name: Run composer
         uses: nick-zh/composer-php@master
         with:
-          action: 'update'
-          options: '-o'
+          action: 'install'
 
       - name: PHP Code Style (phpcs)
         uses: chindit/actions-phpcs@master
