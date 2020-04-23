@@ -8,7 +8,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: "composer require phpcompatibility/php-compatibility:^9.0"
+      - name: Run composer
+        uses: nick-zh/composer-php@master
+        with:
+          action: 'update'
+          options: '-o'
 
       - name: PHP Code Style (phpcs)
         uses: chindit/actions-phpcs@master
