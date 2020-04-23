@@ -3,6 +3,8 @@
     <description>Generally-applicable sniffs for WordPress plugins</description>
 
     <config name="installed_paths" value="vendor/phpcompatibility/php-compatibility" />
+    <config name="installed_paths" value="vendor/automattic/vipwpcs" />
+    <config name="installed_paths" value="vendor/wp-config-standards/wpcs" />
 
     <rule ref="WordPress-VIP-Go"/>
     <rule ref="WordPress-Docs">
