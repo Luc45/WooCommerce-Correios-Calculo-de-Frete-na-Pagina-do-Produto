@@ -5,11 +5,8 @@ on: push
 jobs:
   phpcs:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-      - run: ls
-
       - run: "composer global require hirak/prestissimo"
       - run: "composer install"
       - uses: docker://rtcamp/action-phpcs-code-review:v2.0.0
