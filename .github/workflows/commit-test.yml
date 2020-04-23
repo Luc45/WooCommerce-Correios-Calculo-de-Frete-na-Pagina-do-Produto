@@ -1,0 +1,12 @@
+name: Commit test
+on: [push]
+jobs:
+  prepare_release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - run: ls
+      - run: "composer install --no-dev"
+      - run: ls
+      - run: "rm codeception.dist.yml && rm readme.md && rm -rf tests && rm composer.json && rm composer.lock"
+      - run: ls
