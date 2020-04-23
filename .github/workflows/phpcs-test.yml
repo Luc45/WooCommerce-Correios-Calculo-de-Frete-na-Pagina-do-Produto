@@ -6,16 +6,15 @@ jobs:
   phpcs:
     runs-on: ubuntu-latest
 
-    env:
-      cache_version: 2 # increment to flush all caches
-
     steps:
       - uses: actions/checkout@v2
       - run: ls
 
-      - uses: MilesChou/composer-action@master
-        with:
-          args: install --ignore-platform-reqs
+    - name: Run composer
+      uses: nick-zh/composer-php@master
+      with:
+        action: 'install'
+        options: '--ignore-platform-reqs'
 
       - run: ls
       - name: PHPCS check
