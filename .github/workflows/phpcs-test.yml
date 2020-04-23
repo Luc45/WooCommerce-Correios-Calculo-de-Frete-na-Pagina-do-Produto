@@ -13,7 +13,7 @@ jobs:
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
-          
+
       - name: Cache vendor folder
         id: cache-vendor
         uses: actions/cache@v1
@@ -30,6 +30,7 @@ jobs:
         run: "composer install"
 
       - run: ls
+          
       - name: PHPCS check
         uses: chekalsky/phpcs-action@v1
       - run: ls
