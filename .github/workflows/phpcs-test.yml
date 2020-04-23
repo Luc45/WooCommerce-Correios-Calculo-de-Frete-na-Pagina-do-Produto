@@ -12,8 +12,4 @@ jobs:
 
       - run: "composer global require hirak/prestissimo"
       - run: "composer install"
-
-      - run: ls
-      - name: PHPCS check
-        uses: chekalsky/phpcs-action@v1
-      - run: ls
+      - run: "vendor/bin/phpcs"
