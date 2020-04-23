@@ -10,6 +10,6 @@ jobs:
       - run: ls
       - run: "composer install"
       - run: ls
-      - name: PHP Code Style (phpcs)
-        uses: chindit/actions-phpcs@master
+      - name: PHPCS check
+        uses: chekalsky/phpcs-action@v1
       - run: ls
