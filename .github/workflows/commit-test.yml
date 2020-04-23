@@ -10,9 +10,3 @@ jobs:
       - run: ls
       - run: "rm codeception.dist.yml && rm readme.md && rm -rf tests && rm composer.json && rm composer.lock"
       - run: ls
-      - name: PHPCS Code Review
-        uses: rtCamp/action-phpcs-code-review@v2.0.1
-        env:
-          GH_BOT_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
-        with:
-          args: "WordPress,WordPress-Core,WordPress-Docs"
