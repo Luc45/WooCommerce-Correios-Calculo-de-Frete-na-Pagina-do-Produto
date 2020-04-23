@@ -5,32 +5,30 @@ on: push
 jobs:
   phpcs:
     runs-on: ubuntu-latest
+
+    env:
+      cache_version: 2 # increment to flush all caches
+
     steps:
       - uses: actions/checkout@v2
       - run: ls
 
-      - name: Get Composer Cache Directory
-        id: composer-cache
+      - name: Create composer config files
         run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Cache vendor folder
-        id: cache-vendor
+          mkdir -p dev/docker/composer
+          printf '{ "config": {}, "repositories": { "packagist": { "type": "composer", "url": "https://packagist.org" } } }' > dev/docker/composer/config.json
+          printf '{ "github-oauth": { "github.com": "%s" } }\n' ${{ secrets.GH_TOKEN }} > dev/docker/composer/auth.json
+      - name: Check for Cached Composer Dependencies
+        id: cache-composer-dependencies
         uses: actions/cache@v1
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+          path: dev/docker/composer/cache
+          key: ${{ runner.os }}-${{ env.cache_version }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-${{ env.cache_version }}-composer-
+
+      - run: "composer install --optimize-autoloader"
 
       - run: ls
-
-      - name: Run composer install
-        if: steps.cache-vendor.outputs.cache-hit != 'true'
-        run: "composer install"
-
-      - run: ls
-          
       - name: PHPCS check
         uses: chekalsky/phpcs-action@v1
       - run: ls
