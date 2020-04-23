@@ -13,7 +13,10 @@ jobs:
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v1
+          
+      - name: Cache vendor folder
+        id: cache-vendor
+        uses: actions/cache@v1
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -21,6 +24,10 @@ jobs:
             ${{ runner.os }}-composer-
 
       - run: ls
+
+      - name: Run composer install
+        if: steps.cache-vendor.outputs.cache-hit != 'true'
+        run: "composer install"
 
       - run: ls
       - name: PHPCS check
