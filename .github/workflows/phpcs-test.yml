@@ -21,7 +21,6 @@ jobs:
             ${{ runner.os }}-composer-
 
       - run: ls
-
       - run: "composer install"
 
       - run: ls
