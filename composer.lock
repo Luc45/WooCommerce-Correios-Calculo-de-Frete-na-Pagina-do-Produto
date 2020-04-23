@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7abf333128240fe2e870655c47c337c4",
+    "content-hash": "8e15c51e75f51d8ffc48ae8ec87a6c25",
     "packages": [
         {
             "name": "enshrined/svg-sanitize",
@@ -92,6 +92,52 @@
                 "testing"
             ],
             "time": "2019-12-22T17:52:09+00:00"
+        },
+        {
+            "name": "automattic/vipwpcs",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Automattic/VIP-Coding-Standards.git",
+                "reference": "fc02f491dc9f51da7c32941ac579f70b9ed300c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Automattic/VIP-Coding-Standards/zipball/fc02f491dc9f51da7c32941ac579f70b9ed300c5",
+                "reference": "fc02f491dc9f51da7c32941ac579f70b9ed300c5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6",
+                "squizlabs/php_codesniffer": "^3.3.1",
+                "wp-coding-standards/wpcs": "^2.1"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
+                "phpcompatibility/php-compatibility": "^9",
+                "phpunit/phpunit": "^5 || ^6 || ^7"
+            },
+            "suggest": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5 || This Composer plugin will sort out the PHPCS 'installed_paths' automatically."
+            },
+            "type": "phpcodesniffer-standard",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/Automattic/VIP-Coding-Standards/graphs/contributors"
+                }
+            ],
+            "description": "PHP_CodeSniffer rules (sniffs) to enforce WordPress VIP minimum coding conventions",
+            "keywords": [
+                "phpcs",
+                "standards",
+                "wordpress"
+            ],
+            "time": "2019-07-12T08:47:36+00:00"
         },
         {
             "name": "behat/gherkin",
@@ -2048,28 +2094,72 @@
             "time": "2018-01-23T09:38:11+00:00"
         },
         {
-            "name": "illuminate/contracts",
-            "version": "7.x-dev",
+            "name": "illuminate/collections",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/illuminate/contracts.git",
-                "reference": "69a40779d8fc43e3f43da973b9c0c20bdbd81203"
+                "url": "https://github.com/illuminate/collections.git",
+                "reference": "71228ace79e308254325da96b2dc581c243e9893"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/69a40779d8fc43e3f43da973b9c0c20bdbd81203",
-                "reference": "69a40779d8fc43e3f43da973b9c0c20bdbd81203",
+                "url": "https://api.github.com/repos/illuminate/collections/zipball/71228ace79e308254325da96b2dc581c243e9893",
+                "reference": "71228ace79e308254325da96b2dc581c243e9893",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2.5",
+                "illuminate/contracts": "^8.0",
+                "illuminate/macroable": "^8.0",
+                "php": "^7.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Collections\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Collections package.",
+            "homepage": "https://laravel.com",
+            "time": "2020-04-22T20:07:52+00:00"
+        },
+        {
+            "name": "illuminate/contracts",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/contracts.git",
+                "reference": "679ffa47136319e375dc29c04ff00fac8a46232f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/679ffa47136319e375dc29c04ff00fac8a46232f",
+                "reference": "679ffa47136319e375dc29c04ff00fac8a46232f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3",
                 "psr/container": "^1.0",
                 "psr/simple-cache": "^1.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "7.x-dev"
+                    "dev-master": "8.x-dev"
                 }
             },
             "autoload": {
@@ -2089,46 +2179,89 @@
             ],
             "description": "The Illuminate Contracts package.",
             "homepage": "https://laravel.com",
-            "time": "2020-04-09T15:01:22+00:00"
+            "time": "2020-04-09T17:21:25+00:00"
         },
         {
-            "name": "illuminate/support",
-            "version": "7.x-dev",
+            "name": "illuminate/macroable",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/illuminate/support.git",
-                "reference": "28d8727fc4703200d4be0e3967d2f025b586fbb3"
+                "url": "https://github.com/illuminate/macroable.git",
+                "reference": "14e535c2c278d7ec5ade92fb72b1de435620e1aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/28d8727fc4703200d4be0e3967d2f025b586fbb3",
-                "reference": "28d8727fc4703200d4be0e3967d2f025b586fbb3",
+                "url": "https://api.github.com/repos/illuminate/macroable/zipball/14e535c2c278d7ec5ade92fb72b1de435620e1aa",
+                "reference": "14e535c2c278d7ec5ade92fb72b1de435620e1aa",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Macroable\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Macroable package.",
+            "homepage": "https://laravel.com",
+            "time": "2020-04-21T16:30:44+00:00"
+        },
+        {
+            "name": "illuminate/support",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/support.git",
+                "reference": "999874c8f47c82e433d93c6ae2e81a9bf6a83028"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/999874c8f47c82e433d93c6ae2e81a9bf6a83028",
+                "reference": "999874c8f47c82e433d93c6ae2e81a9bf6a83028",
                 "shasum": ""
             },
             "require": {
                 "doctrine/inflector": "^1.1",
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "illuminate/contracts": "^7.0",
+                "illuminate/collections": "^8.0",
+                "illuminate/contracts": "^8.0",
+                "illuminate/macroable": "^8.0",
                 "nesbot/carbon": "^2.17",
-                "php": "^7.2.5",
+                "php": "^7.3",
                 "voku/portable-ascii": "^1.4.8"
             },
             "conflict": {
                 "tightenco/collect": "<5.5.33"
             },
             "suggest": {
-                "illuminate/filesystem": "Required to use the composer class (^7.0).",
-                "moontoast/math": "Required to use ordered UUIDs (^1.1).",
-                "ramsey/uuid": "Required to use Str::uuid() (^3.7|^4.0).",
-                "symfony/process": "Required to use the composer class (^5.0).",
-                "symfony/var-dumper": "Required to use the dd function (^5.0).",
+                "illuminate/filesystem": "Required to use the composer class (^8.0).",
+                "ramsey/uuid": "Required to use Str::uuid() (^4.0).",
+                "symfony/process": "Required to use the composer class (^5.1).",
+                "symfony/var-dumper": "Required to use the dd function (^5.1).",
                 "vlucas/phpdotenv": "Required to use the Env class and env helper (^4.0)."
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "7.x-dev"
+                    "dev-master": "8.x-dev"
                 }
             },
             "autoload": {
@@ -2151,7 +2284,7 @@
             ],
             "description": "The Illuminate Support package.",
             "homepage": "https://laravel.com",
-            "time": "2020-04-22T16:07:39+00:00"
+            "time": "2020-04-23T09:27:07+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -2221,16 +2354,16 @@
         },
         {
             "name": "lucatume/wp-browser",
-            "version": "2.4.6",
+            "version": "2.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "59e17f28347b83aca490454fe64d85e70ab8bd60"
+                "reference": "393a4cc5c0c3b6a417d7715231dcf95e43b4b659"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/59e17f28347b83aca490454fe64d85e70ab8bd60",
-                "reference": "59e17f28347b83aca490454fe64d85e70ab8bd60",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/393a4cc5c0c3b6a417d7715231dcf95e43b4b659",
+                "reference": "393a4cc5c0c3b6a417d7715231dcf95e43b4b659",
                 "shasum": ""
             },
             "require": {
@@ -2298,7 +2431,7 @@
                 "codeception",
                 "wordpress"
             ],
-            "time": "2020-04-20T14:03:06+00:00"
+            "time": "2020-04-23T16:21:02+00:00"
         },
         {
             "name": "mck89/peast",
@@ -2408,6 +2541,74 @@
                 "wordpress"
             ],
             "time": "2018-01-11T14:12:02+00:00"
+        },
+        {
+            "name": "moderntribe/TribalScents",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/moderntribe/TribalScents",
+                "reference": "3aa54f9c4b487ed69b19ff8b5e289f61ecf2b495"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/moderntribe/TribalScents/zipball/3aa54f9c4b487ed69b19ff8b5e289f61ecf2b495",
+                "reference": "3aa54f9c4b487ed69b19ff8b5e289f61ecf2b495",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6",
+                "squizlabs/php_codesniffer": "^3.3.1",
+                "wp-coding-standards/wpcs": "^2.1"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
+                "phpcompatibility/php-compatibility": "^9"
+            },
+            "suggest": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5 || This Composer plugin will sort out the PHPCS 'installed_paths' automatically."
+            },
+            "type": "phpcodesniffer-standard",
+            "scripts": {
+                "install-codestandards": [
+                    "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+                ],
+                "ruleset": [
+                    "bin/ruleset-tests"
+                ],
+                "lint": [
+                    "bin/php-lint",
+                    "bin/xml-lint"
+                ],
+                "phpcs": [
+                    "bin/phpcs"
+                ],
+                "phpunit": [
+                    "bin/unit-tests"
+                ],
+                "test": [
+                    "@lint",
+                    "@ruleset",
+                    "@phpunit",
+                    "@phpcs"
+                ]
+            },
+            "license": [
+                "GPL-3.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Modern Tribe",
+                    "email": "tribe@tri.be"
+                }
+            ],
+            "description": "Code sniffing rules for Modern Tribe products",
+            "keywords": [
+                "WordPress",
+                "phpcs",
+                "standards"
+            ],
+            "time": "2020-02-17T17:50:09+00:00"
         },
         {
             "name": "mustache/mustache",
@@ -7942,6 +8143,51 @@
             "time": "2019-07-23T17:24:43+00:00"
         },
         {
+            "name": "wp-coding-standards/wpcs",
+            "version": "2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/WordPress/WordPress-Coding-Standards.git",
+                "reference": "b5a453203114cc2284b1a614c4953456fbe4f546"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WordPress/WordPress-Coding-Standards/zipball/b5a453203114cc2284b1a614c4953456fbe4f546",
+                "reference": "b5a453203114cc2284b1a614c4953456fbe4f546",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "squizlabs/php_codesniffer": "^3.3.1"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5 || ^0.6",
+                "phpcompatibility/php-compatibility": "^9.0",
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0"
+            },
+            "suggest": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.6 || This Composer plugin will sort out the PHPCS 'installed_paths' automatically."
+            },
+            "type": "phpcodesniffer-standard",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/WordPress/WordPress-Coding-Standards/graphs/contributors"
+                }
+            ],
+            "description": "PHP_CodeSniffer rules (sniffs) to enforce WordPress coding conventions",
+            "keywords": [
+                "phpcs",
+                "standards",
+                "wordpress"
+            ],
+            "time": "2020-02-04T02:52:06+00:00"
+        },
+        {
             "name": "zordius/lightncandy",
             "version": "dev-master",
             "source": {
@@ -7997,7 +8243,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "woocommerce/wc-smooth-generator": 20
+        "woocommerce/wc-smooth-generator": 20,
+        "moderntribe/tribalscents": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
