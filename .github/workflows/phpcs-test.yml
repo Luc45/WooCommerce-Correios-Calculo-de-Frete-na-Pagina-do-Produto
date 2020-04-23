@@ -22,6 +22,7 @@ jobs:
 
       - run: "composer install"
 
+
       - run: ls
       - name: PHPCS check
         uses: chekalsky/phpcs-action@v1
