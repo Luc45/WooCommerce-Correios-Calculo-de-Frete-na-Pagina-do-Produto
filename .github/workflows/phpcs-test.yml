@@ -14,7 +14,7 @@ jobs:
         uses: nick-zh/composer-php@master
         with:
           action: 'install'
-          options: '--ignore-platform-reqs'
+          options: ''
 
       - run: ls
       - name: PHPCS check
