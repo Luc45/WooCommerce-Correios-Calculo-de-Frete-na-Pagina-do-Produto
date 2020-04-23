@@ -25,7 +25,7 @@
 	<arg name="extensions" value="php"/>
 
 	<!-- Check all files in this directory and the directories below it. -->
-	<file>.</file>
+	<file>src</file>
 
     <arg name="extensions" value="php"/>
     <arg value="s"/>
