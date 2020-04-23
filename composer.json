@@ -8,13 +8,22 @@
         {
             "type": "github",
             "url": "http://github.com/Luc45/wc-smooth-generator"
+        },
+        {
+            "name": "moderntribe/TribalScents",
+            "type": "github",
+            "url": "https://github.com/moderntribe/TribalScents",
+            "no-api": true
         }
     ],
     "require-dev": {
         "lucatume/wp-browser": "^2.2",
         "codeception/codeception": "^3.0",
         "phpcompatibility/phpcompatibility-wp": "^2.0",
-        "woocommerce/wc-smooth-generator": "dev-master"
+        "woocommerce/wc-smooth-generator": "dev-master",
+        "moderntribe/tribalscents": "dev-master",
+        "wp-coding-standards/wpcs": "^2.1",
+        "automattic/vipwpcs": "^2.0"
     },
     "minimum-stability": "dev",
     "extra": {

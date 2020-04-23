@@ -4,6 +4,16 @@
 
     <config name="installed_paths" value="vendor/phpcompatibility/php-compatibility" />
 
+    <rule ref="WordPress-VIP-Go"/>
+    <rule ref="WordPress-Docs">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+    <rule ref="WordPress">
+        <exclude name="WordPress.Files.FileName"/>
+        <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+    </rule>
+    <rule ref="TribalScents"/>
+
     <rule ref="PHPCompatibility"/>
     <config name="testVersion" value="5.6-"/>
 
