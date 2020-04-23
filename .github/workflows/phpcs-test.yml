@@ -26,7 +26,9 @@ jobs:
           key: ${{ runner.os }}-${{ env.cache_version }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-${{ env.cache_version }}-composer-
 
-      - uses: MilesChou/composer-action/install@master
+      - uses: MilesChou/composer-action@master
+        with:
+          args: install --ignore-platform-reqs
 
       - run: ls
       - name: PHPCS check
