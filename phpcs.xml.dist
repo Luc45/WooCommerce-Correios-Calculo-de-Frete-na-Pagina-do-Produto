@@ -7,15 +7,22 @@
     <rule ref="PHPCompatibility"/>
     <config name="testVersion" value="5.6-"/>
 
-    <file>src</file>
-    <file>views</file>
-    <file>woo-correios-calculo-de-frete-na-pagina-do-produto.php</file>
+	<!-- Strip the filepaths down to the relevant bit. -->
+	<arg name="basepath" value="./"/>
+
+	<!-- Check up to 8 files simultanously. -->
+	<arg name="parallel" value="8"/>
+
+	<!-- Only check the PHP files. JS, and CSS files are checked separately with @wordpress/scripts package. -->
+	<arg name="extensions" value="php"/>
+
+	<!-- Check all files in this directory and the directories below it. -->
+	<file>.</file>
 
     <arg name="extensions" value="php"/>
     <arg value="s"/>
 
-    <exclude-pattern>*/dev-lib/*</exclude-pattern>
-    <exclude-pattern>*/node_modules/*</exclude-pattern>
-    <exclude-pattern>*/vendor/*</exclude-pattern>
-    <exclude-pattern>.github/</exclude-pattern>
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/.github/*</exclude-pattern>
 </ruleset>
