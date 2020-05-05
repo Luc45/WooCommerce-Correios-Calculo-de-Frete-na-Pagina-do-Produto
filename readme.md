@@ -27,3 +27,8 @@ Este plugin é gratuito e open-source. Pull-requests são bem vindos!
 
 ## Link no repositório oficial de plugins do WordPress:
 https://br.wordpress.org/plugins/woo-correios-calculo-de-frete-na-pagina-do-produto/
+
+Thanks to [Jetbrains](https://www.jetbrains.com) for providing a free license for their excellent PHPStorm IDE.  
+<a href="https://www.jetbrains.com">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/1/1a/JetBrains_Logo_2016.svg" alt="Jetbrains">
+</a>
