@@ -8,14 +8,29 @@
         {
             "type": "github",
             "url": "http://github.com/Luc45/wc-smooth-generator"
+        },
+        {
+            "name": "moderntribe/TribalScents",
+            "type": "github",
+            "url": "https://github.com/moderntribe/TribalScents",
+            "no-api": true
         }
     ],
     "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+        "wp-coding-standards/wpcs": "^2.1",
+        "automattic/vipwpcs": "^2.0",
+        "moderntribe/tribalscents": "dev-master",
         "lucatume/wp-browser": "^2.2",
-        "phpcompatibility/php-compatibility": "^8.2",
+        "codeception/codeception": "^3.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.0",
         "woocommerce/wc-smooth-generator": "dev-master"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "preferred-install": "dist"
+    },
     "extra": {
        "imposter": {
        "namespace": "CFPP\\Vendor"
