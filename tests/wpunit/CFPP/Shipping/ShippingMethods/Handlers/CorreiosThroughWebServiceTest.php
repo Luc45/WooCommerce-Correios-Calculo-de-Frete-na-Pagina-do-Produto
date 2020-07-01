@@ -13,7 +13,7 @@ class CorreiosThroughWebServiceTest extends \Codeception\TestCase\WPTestCase
 
     protected $shipping_zone;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -31,7 +31,7 @@ class CorreiosThroughWebServiceTest extends \Codeception\TestCase\WPTestCase
         });
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }

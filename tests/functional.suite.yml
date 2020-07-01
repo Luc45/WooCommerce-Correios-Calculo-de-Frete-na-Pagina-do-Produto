@@ -7,28 +7,32 @@ modules:
         - \Helper\Functional
         - REST:
            depends: WPBrowser
-           url: 'http://cfpp.localhost/wp-json/cfpp/v1/'
+           url: 'http://cfpp.loc/wp-json/cfpp/v1/'
         - WPLoader
     config:
         WPLoader:
             loadOnly: true
             wpRootFolder: '%WP_ROOT_FOLDER%'
-            dbName: '%TEST_SITE_DB_NAME%'
-            dbHost: '%TEST_SITE_DB_HOST%'
-            dbUser: '%TEST_SITE_DB_USER%'
-            dbPassword: '%TEST_SITE_DB_PASSWORD%'
+            dbName: '%TEST_DB_NAME%'
+            dbHost: '%TEST_DB_HOST%'
+            dbUser: '%TEST_DB_USER%'
+            dbPassword: '%TEST_DB_PASSWORD%'
         WPDb:
-            dsn: 'mysql:host=%TEST_SITE_DB_HOST%;dbname=%TEST_SITE_DB_NAME%'
-            user: '%TEST_SITE_DB_USER%'
-            password: '%TEST_SITE_DB_PASSWORD%'
+            dump_dsn: 'mysql:host=%DUMP_DB_HOST%;dbname=%DUMP_DB_NAME%'
+            dump_user: '%DUMP_DB_USER%'
+            dump_password: '%DUMP_DB_PASSWORD%'
+
+            dsn: 'mysql:host=%TEST_DB_HOST%;dbname=%TEST_DB_NAME%'
+            user: '%TEST_DB_USER%'
+            password: '%TEST_DB_PASSWORD%'
             dump: 'tests/_data/dump.sql'
             populate: true
             cleanup: false
-            populator: 'mysql -u %TEST_SITE_DB_USER% -p%TEST_SITE_DB_PASSWORD% -h %TEST_SITE_DB_HOST% %TEST_SITE_DB_NAME% < %WP_ROOT_FOLDER%/wp-content/plugins/woo-correios-calculo-de-frete-na-pagina-do-produto/tests/_data/dump.sql'
+            #populator: 'mysql -u %TEST_DB_USER% -p%TEST_DB_PASSWORD% -h %TEST_DB_HOST% %TEST_DB_NAME% < %WP_ROOT_FOLDER%/wp-content/plugins/woo-correios-calculo-de-frete-na-pagina-do-produto/tests/_data/dump.sql'
             waitlock: 0
-            url: '%TEST_SITE_WP_URL%'
+            url: '%TEST_WP_URL%'
             urlReplacement: false
-            tablePrefix: '%TEST_SITE_TABLE_PREFIX%'
+            tablePrefix: '%TEST_TABLE_PREFIX%'
         WPBrowser:
             url: '%WP_URL%'
             adminUsername: '%ADMIN_USERNAME%'

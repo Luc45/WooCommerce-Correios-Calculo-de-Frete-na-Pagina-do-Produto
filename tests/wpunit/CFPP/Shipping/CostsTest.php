@@ -18,7 +18,7 @@ class CostsTest extends \Codeception\TestCase\WPTestCase
     /** @var \WC_Shipping_Zone */
     protected $default_shippingzone;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -37,7 +37,7 @@ class CostsTest extends \Codeception\TestCase\WPTestCase
 
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // Deletes all shipping methods from the default shipping zone
         $shipping_methods = $this->default_shippingzone->get_shipping_methods();

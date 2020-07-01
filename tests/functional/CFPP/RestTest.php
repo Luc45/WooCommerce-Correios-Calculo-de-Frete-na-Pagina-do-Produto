@@ -6,7 +6,7 @@ use WC\SmoothGenerator\Generator\Product;
 class RestTest extends \Codeception\TestCase\WPRestApiTestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         // before
         parent::setUp();
@@ -14,7 +14,7 @@ class RestTest extends \Codeception\TestCase\WPRestApiTestCase
         // your set up methods here
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // your tear down methods here
 
