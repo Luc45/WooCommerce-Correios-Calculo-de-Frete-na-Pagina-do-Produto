@@ -2,9 +2,9 @@
 Contributors: lucasbustamante
 Donate link: https://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Stable tag: 3.1.94
+Stable tag: 3.1.96
 Requires at least: 4.4
-Tested up to: 5.3.2
+Tested up to: 5.4.0
 Requires PHP: 5.4
 WC requires at least: 3.2
 WC tested up to: 3.9
@@ -275,3 +275,7 @@ Primeiro lançamento.
 * Fix composer
 = 3.1.94 =
 * Fix notice ao pesquisar um produto que nao existe
+= 3.1.95 =
+* Coronavirus: Evita falhas no calculo de frete ao aumentar o tempo de resposta que esperamos para a API dos Correios responder com os valores. A API esta demorando mais do que o normal devido ao surto de Coronavirus e o pessoal em casa fazendo muita compra online, sobrecarregando o sistema.
+= 3.1.96 =
+* Coronavirus: Evita falhas no calculo de frete ao aumentar o tempo de resposta que esperamos para a API dos Correios responder com os valores. A API esta demorando mais do que o normal devido ao surto de Coronavirus e o pessoal em casa fazendo muita compra online, sobrecarregando o sistema.
