@@ -30,6 +30,7 @@ class WC_Correios_Through_Webservice extends Handler
         if ($reflection_response['Erro'] == "0" || $reflection_response['Erro'] == "011") {
             $this->response->setDays($reflection_response['PrazoEntrega']);
             $this->response->setPrice($reflection_response['Valor']);
+            $this->response->setValue($reflection_response['Valor']);
             $this->response->setDebug($reflection_response);
         } else {
             throw HandlerException::webservice_error($reflection_response['MsgErro']);
