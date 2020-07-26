@@ -61,6 +61,15 @@ class Response
 
         $this->price = $price;
     }
+    
+    /**
+     * @param $value
+     * @throws ResponseException
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
 
     /**
      * @param $debug
