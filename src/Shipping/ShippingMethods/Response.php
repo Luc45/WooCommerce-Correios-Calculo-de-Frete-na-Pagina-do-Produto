@@ -23,6 +23,8 @@ class Response
         $this->days = __('Undefined', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
         $this->status = __('Undefined', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
         $this->debug = '';
+        $this->value = '';
+        $this->id = $shipping_method->id;
     }
 
     /**
