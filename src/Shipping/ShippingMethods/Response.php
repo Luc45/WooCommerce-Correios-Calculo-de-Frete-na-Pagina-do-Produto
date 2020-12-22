@@ -18,7 +18,7 @@ class Response
 
     public function __construct(\WC_Shipping_Method $shipping_method)
     {
-        $this->name = $shipping_method->method_title;
+        $this->name = $shipping_method->title;
         $this->price = __('Undefined', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
         $this->days = __('Undefined', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
         $this->status = __('Undefined', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
