@@ -88,7 +88,14 @@ class WC_Correios_Through_Webservice extends Handler
 
         if (array_key_exists('PrazoEntrega', $response)) {
             $additionalTime = apply_filters( 'woocommerce_correios_shipping_additional_time', $shipping_method->additional_time, $package );
-            $response['PrazoEntrega'] = absint($response['PrazoEntrega']) + absint($additionalTime);
+
+            // Permite additional time negativo
+            $response['PrazoEntrega'] = (int) $response['PrazoEntrega'] + (int) $additionalTime;
+
+            // Mas previne que o resultado final seja negativo
+            if ($response['PrazoEntrega'] <= 0) {
+                $response['PrazoEntrega'] = 1;
+            }
         }
 
         return $response;
