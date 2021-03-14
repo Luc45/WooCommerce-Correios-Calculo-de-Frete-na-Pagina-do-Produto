@@ -1,0 +1,33 @@
+{
+    "name": "lucasbustamante/mysqldump-php",
+    "description": "A fork of https://github.com/ifsnop/mysqldump-php, a PHP implementation of mysqldump.",
+    "type": "library",
+    "keywords": ["mysql", "mysqldump", "pdo", "php7", "php5", "database", "php", "sql", "hhvm", "mariadb", "mysql-backup"],
+    "homepage": "https://github.com/ifsnop/mysqldump-php",
+    "license": "GPL-3.0-or-later",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name" : "Diego Torres",
+            "homepage": "https://github.com/ifsnop",
+            "role": "Developer"
+        },
+        {
+            "name" : "Lucas Bustamante",
+            "homepage": "https://github.com/Luc45",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "1.*",
+        "phpunit/phpunit": "4.8.36"
+    },
+    "autoload": {
+        "psr-4": {
+            "MySqlDumpPhp\\": "src"
+        }
+    }
+}
