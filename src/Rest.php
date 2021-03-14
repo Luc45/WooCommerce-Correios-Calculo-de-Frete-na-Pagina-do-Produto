@@ -97,6 +97,7 @@ class Rest
 	        	return new WP_REST_Response( Performance_Profiler::$instance->get_timings() );
 	        }
 
+            $response = apply_filters('cfpp_modify_calculate_success_response', $response);
             do_action('cfpp_before_send_calculate_success_response', $response);
             return new WP_REST_Response($response);
 
