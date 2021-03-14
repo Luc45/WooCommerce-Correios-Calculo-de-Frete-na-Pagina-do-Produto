@@ -58,11 +58,11 @@ class Factory
         $shipping_method_slug = sanitize_title(get_class($shipping_method));
 
         /** Give the user a chance to override shipping method handler */
-        $custom_handler = apply_filters('cfpp_custom_handler_' . $shipping_method_slug, null);
+        $custom_handler = apply_filters('cfpp_custom_handler_' . $shipping_method_slug, null, $shipping_method);
 
         if ( ! empty($custom_handler)) {
             if ($custom_handler instanceof Handler) {
-                return new $custom_handler($shipping_method);
+                return $custom_handler;
             } else {
                 do_action('cfpp_exception_invalid_custom_handler', $shipping_method);
                 throw FactoryException::invalid_custom_handler_exception($shipping_method_name);
