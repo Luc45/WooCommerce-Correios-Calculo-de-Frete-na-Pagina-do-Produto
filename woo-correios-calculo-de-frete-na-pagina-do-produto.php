@@ -10,10 +10,10 @@
  * Domain Path:          /languages
  * License:              GPL 2.0
  * Requires at least:    4.4
- * Tested up to:         5.6.0
+ * Tested up to:         5.7.0
  * Requires PHP:         5.4
  * WC requires at least: 3.2
- * WC tested up to:      4.8
+ * WC tested up to:      5.1
  */
 
 namespace CFPP;
