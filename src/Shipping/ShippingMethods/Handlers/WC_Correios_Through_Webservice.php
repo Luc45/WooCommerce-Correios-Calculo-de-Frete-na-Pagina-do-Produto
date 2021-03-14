@@ -82,9 +82,23 @@ class WC_Correios_Through_Webservice extends Handler
 
         if ($r_response instanceof \SimpleXMLElement === false) {
             throw HandlerException::unexpected_reflection_response_exception();
-
         }
-        return (array) $r_response;
+
+        $response = (array) $r_response;
+
+        if (array_key_exists('PrazoEntrega', $response)) {
+            $additionalTime = apply_filters( 'woocommerce_correios_shipping_additional_time', $shipping_method->additional_time, $package );
+
+            // Permite additional time negativo
+            $response['PrazoEntrega'] = (int) $response['PrazoEntrega'] + (int) $additionalTime;
+
+            // Mas previne que o resultado final seja negativo
+            if ($response['PrazoEntrega'] <= 0) {
+                $response['PrazoEntrega'] = 1;
+            }
+        }
+
+        return $response;
     }
 
     /**
