@@ -169,6 +169,12 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Fix composer
 = 3.1.94 =
 * Fix notice ao pesquisar um produto que nao existe
+= 3.2 =
+* Leva em consideração dias adicionais de entrega configurados no WooCommerce para PAC, SEDEX e outros métodos de entrega que usam o Webservice dos Correios
+* Atualizado "Tested up to" para WordPress 5.7 e WooCommerce 5.1
+* Adicionado filtro para modificar a resposta do cálculo (obrigado wilmerlm11)
+* Modificado filtro que possibilita extensão do plugin com métodos de entregas de terceiros (obrigado wilmerlm11)
+
 
 == Upgrade Notice ==
 
@@ -279,3 +285,8 @@ Primeiro lançamento.
 * Coronavirus: Evita falhas no calculo de frete ao aumentar o tempo de resposta que esperamos para a API dos Correios responder com os valores. A API esta demorando mais do que o normal devido ao surto de Coronavirus e o pessoal em casa fazendo muita compra online, sobrecarregando o sistema.
 = 3.1.96 =
 * Coronavirus: Evita falhas no calculo de frete ao aumentar o tempo de resposta que esperamos para a API dos Correios responder com os valores. A API esta demorando mais do que o normal devido ao surto de Coronavirus e o pessoal em casa fazendo muita compra online, sobrecarregando o sistema.
+= 3.2 =
+* Leva em consideração dias adicionais de entrega configurados no WooCommerce para PAC, SEDEX e outros métodos de entrega que usam o Webservice dos Correios
+* Atualizado "Tested up to" para WordPress 5.7 e WooCommerce 5.1
+* Adicionado filtro para modificar a resposta do cálculo (obrigado wilmerlm11)
+* Modificado filtro que possibilita extensão do plugin com métodos de entregas de terceiros (obrigado wilmerlm11)
