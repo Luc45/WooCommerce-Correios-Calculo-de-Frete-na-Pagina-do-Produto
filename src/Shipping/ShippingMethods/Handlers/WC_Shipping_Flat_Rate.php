@@ -59,6 +59,7 @@ class WC_Shipping_Flat_Rate extends Handler
 
             $this->response->setDays(__('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
             $this->response->setPrice($sum);
+            $this->response->setValue($sum);
         } else {
             throw HandlerException::unexpected_result_exception($sum);
         }
