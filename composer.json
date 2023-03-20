@@ -33,6 +33,6 @@
       }
     },
     "require": {
-        "enshrined/svg-sanitize": "^0.13"
+        "enshrined/svg-sanitize": "^0.16"
     }
 }
