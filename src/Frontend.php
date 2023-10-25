@@ -2,7 +2,6 @@
 
 namespace CFPP;
 
-use enshrined\svgSanitize\Sanitizer;
 use WP_Post;
 
 class Frontend
@@ -81,11 +80,6 @@ class Frontend
             );
 
             $cfpp_data = apply_filters('cfpp_product_page_data', $cfpp_data);
-
-	        if ( (bool) apply_filters( 'cfpp/sanitize_svg', true ) ) {
-	        	$sanitizer = new Sanitizer();
-		        $cfpp_data['cfpp_icon_svg'] = (string) $sanitizer->sanitize( $cfpp_data['cfpp_icon_svg'] );
-            }
 
             extract($cfpp_data);
 

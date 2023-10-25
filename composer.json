@@ -31,8 +31,5 @@
        "imposter": {
        "namespace": "CFPP\\Vendor"
       }
-    },
-    "require": {
-        "enshrined/svg-sanitize": "^0.13"
     }
 }
