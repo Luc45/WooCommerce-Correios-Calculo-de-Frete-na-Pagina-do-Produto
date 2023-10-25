@@ -41,6 +41,7 @@ class Factory
             'WC_Shipping_Flat_Rate'                     => 'WC_Shipping_Flat_Rate',
             'WC_Shipping_Free_Shipping'                 => 'WC_Shipping_Free_Shipping',
             'WC_Shipping_Local_Pickup'                  => 'WC_Shipping_Local_Pickup',
+            'WC_Correios_Shipping_Cws'                  => 'WC_Correios_Through_Webservice',
         ];
     }
 
