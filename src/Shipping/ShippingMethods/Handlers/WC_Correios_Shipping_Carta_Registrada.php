@@ -24,6 +24,7 @@ class WC_Correios_Shipping_Carta_Registrada extends Handler
 
         $this->response->setDays($days);
         $this->response->setPrice($price);
+        $this->response->setValue($price);
     }
 
     /**

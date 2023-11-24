@@ -24,6 +24,7 @@ class WC_Shipping_Free_Shipping extends Handler
         if ($should_show) {
             $this->response->setDays(__('Contact us', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
             $this->response->setPrice(0);
+            $this->response->setValue(0);
         } else {
             throw HandlerException::unexpected_result_exception(__('Does not meet free shipping requirements.', 'woo-correios-calculo-de-frete-na-pagina-do-produto'));
         }
