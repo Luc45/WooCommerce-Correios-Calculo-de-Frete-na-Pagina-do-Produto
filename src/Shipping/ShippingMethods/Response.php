@@ -18,7 +18,13 @@ class Response
 
     public function __construct(\WC_Shipping_Method $shipping_method)
     {
-        $this->name = $shipping_method->title;
+		if ($shipping_method instanceof \WC_Correios_Shipping_Cws) {
+			#$this->name = $shipping_method->get_service_name();
+			$this->name = $shipping_method->get_method_title();
+		} else {
+			$this->name = $shipping_method->title;
+		}
+
         $this->price = __('Undefined', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
         $this->days = __('Undefined', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
         $this->status = __('Undefined', 'woo-correios-calculo-de-frete-na-pagina-do-produto');
