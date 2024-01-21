@@ -2,7 +2,7 @@
 Contributors: lucasbustamante
 Donate link: https://www.lucasbustamante.com.br
 Tags: woocommerce, woocomerce correios, woocommerce correios produto
-Stable tag: 3.3.1
+Stable tag: 3.4.0
 Requires at least: 4.4
 Tested up to: 6.3.2
 Requires PHP: 5.4
@@ -175,6 +175,9 @@ A tabela de cálculo de frete só irá aparecer se o produto tiver peso e dimens
 * Adicionado filtro para modificar a resposta do cálculo (obrigado wilmerlm11)
 * Modificado filtro que possibilita extensão do plugin com métodos de entregas de terceiros (obrigado wilmerlm11)
 
+= 3.4.0 =
+* Add suporte para nova API dos Correios
+
 
 == Upgrade Notice ==
 
@@ -290,3 +293,5 @@ Primeiro lançamento.
 * Atualizado "Tested up to" para WordPress 5.7 e WooCommerce 5.1
 * Adicionado filtro para modificar a resposta do cálculo (obrigado wilmerlm11)
 * Modificado filtro que possibilita extensão do plugin com métodos de entregas de terceiros (obrigado wilmerlm11)
+= 3.4.0 =
+* Add suporte para nova API dos Correios
